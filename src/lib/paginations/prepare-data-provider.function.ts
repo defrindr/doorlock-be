@@ -18,7 +18,6 @@ export const PrepareDataProvider = async (
   if (pageOptionsDto.sort) {
     for (const [key, value] of Object.entries(pageOptionsDto.sort)) {
       if (allowedSortFields.includes(key)) {
-        console.log(pageOptionsDto.sort);
         queryBuilder.addOrderBy(`"${key}"`, value);
       }
     }
