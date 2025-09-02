@@ -12,11 +12,12 @@ export const JwtConfig = {
   expiresIn: env.JWT_EXPIRED_IN || '1d',
 };
 export const DbConfig = {
-  host: env.DBSERVICE_AUTH_HOST,
+  type: env.DBSERVICE_AUTH_PROTOCOL || 'mysql',
+  host: env.DBSERVICE_AUTH_HOST || '127.0.0.1',
   port: parseInt(env.DBSERVICE_AUTH_PORT || '3306'),
-  username: env.DBSERVICE_AUTH_USER,
-  password: env.DBSERVICE_AUTH_PASSWORD,
-  database: env.DBSERVICE_AUTH_DATABASE,
+  username: env.DBSERVICE_AUTH_USER || 'devuser',
+  password: env.DBSERVICE_AUTH_PASSWORD || 'devpass',
+  database: env.DBSERVICE_AUTH_DATABASE || 'devdb',
 };
 
 export const BYPASS_AUTHOR = [''];

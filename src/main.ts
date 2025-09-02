@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Logger, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { ValidationPipe } from '@nestjs/common';
@@ -26,6 +26,11 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter({}),
   );
+
+  app.enableVersioning({
+    type: VersioningType.URI, // or HEADER, MEDIA_TYPE, CUSTOM
+    defaultVersion: '1',
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -55,10 +60,13 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('docs', app, document);
 
   await app.listen(port, AppConfig.host);
-  await SeederModule.forRoot();
+  // Only run seeder if '--seed' argument is present
+  if (process.argv.includes('--seed')) {
+    await SeederModule.forRoot();
+  }
 
   Logger.log(`🚀 ${AppConfig.name} is listening on ${await app.getUrl()}`);
 }

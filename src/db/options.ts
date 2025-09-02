@@ -1,15 +1,19 @@
-import { DataSource, DataSourceOptions } from 'typeorm';
+import { DataSource, DataSourceOptions, Db } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
 import { DbConfig } from './../config/constant';
 
 export const dbOptions: DataSourceOptions & SeederOptions = {
-  type: 'mysql',
+  type: DbConfig.type as any,
   host: DbConfig.host,
   port: DbConfig.port,
   username: DbConfig.username,
   password: DbConfig.password,
   database: DbConfig.database,
   synchronize: true,
+  options: {
+    encrypt: false, // set true if using Azure or SSL
+    enableArithAbort: true,
+  },
   // autoLoadEntities: true,
   entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
   seeds: [__dirname + '/../../**/*.seeder{.ts,.js}'],
