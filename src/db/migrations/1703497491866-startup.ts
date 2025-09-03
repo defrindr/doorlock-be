@@ -1,52 +1,137 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableForeignKey, TableColumnOptions } from 'typeorm';
 
 export class Startup1703497491866 implements MigrationInterface {
   name = 'Startup1703497491866';
 
+  // Helper untuk kolom umum agar tidak berulang (Prinsip DRY)
+  private readonly baseColumns: TableColumnOptions[] = [
+    { name: 'id', type: 'varchar', length: '36', isPrimary: true },
+    { name: 'created_at', type: 'datetime2', default: 'GETDATE()' },
+    { name: 'updated_at', type: 'datetime2', default: 'GETDATE()', onUpdate: 'GETDATE()' },
+    { name: 'deleted_at', type: 'datetime2', isNullable: true },
+  ];
+
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `CREATE TABLE \`permissions\` (\`id\` varchar(36) NOT NULL, \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), \`deleted_at\` datetime(6) NULL, \`name\` varchar(50) NOT NULL, \`description\` text NOT NULL, UNIQUE INDEX \`IDX_48ce552495d14eae9b187bb671\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`,
+    // =================================================================
+    // 1. BUAT SEMUA TABEL
+    // =================================================================
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'permissions',
+        columns: [
+          ...this.baseColumns,
+          { name: 'name', type: 'varchar', length: '50', isUnique: true },
+          { name: 'description', type: 'text' },
+        ],
+      }),
+      true, // true untuk createForeignKeys
     );
-    await queryRunner.query(
-      `CREATE TABLE \`users\` (\`id\` varchar(36) NOT NULL, \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), \`deleted_at\` datetime(6) NULL, \`username\` varchar(50) NOT NULL, \`password\` varchar(250) NOT NULL, \`name\` varchar(50) NOT NULL, \`phone\` varchar(20) NULL, \`email\` varchar(255) NULL, \`fcmToken\` varchar(255) NULL, \`refreshToken\` varchar(255) NULL, \`photoUrl\` varchar(255) NULL, \`roleId\` varchar(255) NOT NULL, UNIQUE INDEX \`IDX_fe0bb3f6520ee0469504521e71\` (\`username\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`,
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'roles',
+        columns: [
+          ...this.baseColumns,
+          { name: 'name', type: 'varchar', length: '50', isUnique: true },
+        ],
+      }),
+      true,
     );
-    await queryRunner.query(
-      `CREATE TABLE \`roles\` (\`id\` varchar(36) NOT NULL, \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), \`deleted_at\` datetime(6) NULL, \`name\` varchar(50) NOT NULL, UNIQUE INDEX \`name\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`,
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'users',
+        columns: [
+          ...this.baseColumns,
+          { name: 'username', type: 'varchar', length: '50', isUnique: true },
+          { name: 'password', type: 'varchar', length: '250' },
+          { name: 'name', type: 'varchar', length: '50' },
+          { name: 'phone', type: 'varchar', length: '20', isNullable: true },
+          { name: 'email', type: 'varchar', isNullable: true },
+          { name: 'fcmToken', type: 'varchar', isNullable: true },
+          { name: 'refreshToken', type: 'varchar', isNullable: true },
+          { name: 'photoUrl', type: 'varchar', isNullable: true },
+          { name: 'roleId', type: 'varchar', length: '36' }, // Tipe data harus sama dengan `roles.id`
+        ],
+      }),
+      true,
     );
-    await queryRunner.query(
-      `CREATE TABLE \`role_permissions\` (\`id\` int NOT NULL AUTO_INCREMENT, \`roleId\` varchar(255) NOT NULL, \`permissionId\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`, \`roleId\`, \`permissionId\`)) ENGINE=InnoDB`,
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'role_permissions',
+        columns: [
+          { name: 'id', type: 'int', isPrimary: true, isGenerated: true, generationStrategy: 'increment' },
+          { name: 'roleId', type: 'varchar', length: '36' },
+          { name: 'permissionId', type: 'varchar', length: '36' },
+        ],
+      }),
+      true,
     );
-    await queryRunner.query(
-      `ALTER TABLE \`users\` ADD CONSTRAINT \`FK_368e146b785b574f42ae9e53d5e\` FOREIGN KEY (\`roleId\`) REFERENCES \`roles\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`,
+
+    // =================================================================
+    // 2. BUAT SEMUA FOREIGN KEY
+    // =================================================================
+
+    await queryRunner.createForeignKey(
+      'users',
+      new TableForeignKey({
+        columnNames: ['roleId'],
+        referencedTableName: 'roles',
+        referencedColumnNames: ['id'],
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
+      }),
     );
-    await queryRunner.query(
-      `ALTER TABLE \`role_permissions\` ADD CONSTRAINT \`FK_b4599f8b8f548d35850afa2d12c\` FOREIGN KEY (\`roleId\`) REFERENCES \`roles\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`,
+
+    await queryRunner.createForeignKey(
+      'role_permissions',
+      new TableForeignKey({
+        columnNames: ['roleId'],
+        referencedTableName: 'roles',
+        referencedColumnNames: ['id'],
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
+      }),
     );
-    await queryRunner.query(
-      `ALTER TABLE \`role_permissions\` ADD CONSTRAINT \`FK_06792d0c62ce6b0203c03643cdd\` FOREIGN KEY (\`permissionId\`) REFERENCES \`permissions\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`,
+
+    await queryRunner.createForeignKey(
+      'role_permissions',
+      new TableForeignKey({
+        columnNames: ['permissionId'],
+        referencedTableName: 'permissions',
+        referencedColumnNames: ['id'],
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
+      }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `ALTER TABLE \`role_permissions\` DROP FOREIGN KEY \`FK_06792d0c62ce6b0203c03643cdd\``,
-    );
-    await queryRunner.query(
-      `ALTER TABLE \`role_permissions\` DROP FOREIGN KEY \`FK_b4599f8b8f548d35850afa2d12c\``,
-    );
-    await queryRunner.query(
-      `ALTER TABLE \`users\` DROP FOREIGN KEY \`FK_368e146b785b574f42ae9e53d5e\``,
-    );
-    await queryRunner.query(`DROP TABLE \`role_permissions\``);
-    await queryRunner.query(`DROP INDEX \`name\` ON \`roles\``);
-    await queryRunner.query(`DROP TABLE \`roles\``);
-    await queryRunner.query(
-      `DROP INDEX \`IDX_fe0bb3f6520ee0469504521e71\` ON \`users\``,
-    );
-    await queryRunner.query(`DROP TABLE \`users\``);
-    await queryRunner.query(
-      `DROP INDEX \`IDX_48ce552495d14eae9b187bb671\` ON \`permissions\``,
-    );
-    await queryRunner.query(`DROP TABLE \`permissions\``);
+    // Urutan `down` adalah kebalikan dari `up`
+
+    // =================================================================
+    // 1. HAPUS SEMUA FOREIGN KEY
+    // =================================================================
+    const usersTable = await queryRunner.getTable('users');
+    const rolePermissionsTable = await queryRunner.getTable('role_permissions');
+
+    const userRoleFk = usersTable?.foreignKeys.find(fk => fk.columnNames.indexOf('roleId') !== -1);
+    if (userRoleFk) await queryRunner.dropForeignKey('users', userRoleFk);
+
+    const rpRoleFk = rolePermissionsTable?.foreignKeys.find(fk => fk.columnNames.indexOf('roleId') !== -1);
+    if (rpRoleFk) await queryRunner.dropForeignKey('role_permissions', rpRoleFk);
+
+    const rpPermissionFk = rolePermissionsTable?.foreignKeys.find(fk => fk.columnNames.indexOf('permissionId') !== -1);
+    if (rpPermissionFk) await queryRunner.dropForeignKey('role_permissions', rpPermissionFk);
+
+    // =================================================================
+    // 2. HAPUS SEMUA TABEL
+    // =================================================================
+    await queryRunner.dropTable('role_permissions');
+    await queryRunner.dropTable('users');
+    await queryRunner.dropTable('roles');
+    await queryRunner.dropTable('permissions');
   }
 }

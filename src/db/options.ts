@@ -16,7 +16,7 @@ export const dbOptions: DataSourceOptions & SeederOptions = {
   },
   // autoLoadEntities: true,
   entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
-  migrations: [__dirname + '/db/migrations/*.js'],
+  migrations: [__dirname + '/migrations/*{.ts,.js}'],
   seeds: [__dirname + '/../../**/*.seeder{.ts,.js}'],
 };
 
