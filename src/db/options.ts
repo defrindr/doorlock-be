@@ -9,13 +9,14 @@ export const dbOptions: DataSourceOptions & SeederOptions = {
   username: DbConfig.username,
   password: DbConfig.password,
   database: DbConfig.database,
-  synchronize: true,
+  synchronize: false,
   options: {
     encrypt: false, // set true if using Azure or SSL
     enableArithAbort: true,
   },
   // autoLoadEntities: true,
   entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
+  migrations: [__dirname + '/db/migrations/*.js'],
   seeds: [__dirname + '/../../**/*.seeder{.ts,.js}'],
 };
 
