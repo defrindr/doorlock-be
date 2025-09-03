@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { UserStorage } from '../storage/user.storage';
+import { UserStorage } from '@src/shared/storage/user.storage';
 import { log } from 'console';
 
 @Injectable()

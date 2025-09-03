@@ -9,8 +9,8 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { PermissionAccess } from '@src/shared/decorators/permission-access.decorator';
-import { PageOptionsDto } from '@src/shared/paginations';
+import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
+import { PageOptionsDto } from '@src/shared/utils/paginations';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';

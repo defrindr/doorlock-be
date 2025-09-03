@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateRolePermissionDto } from './dto/create-role-permission.dto';
 import { RolePermission } from './entities/role-permission.entity';
-import { ErrorHandler } from '@src/shared/handlers/error.handler';
+import { ErrorHandler } from '@src/shared/core/handlers/error.handler';
 
 @Injectable()
 export class RolePermissionService {

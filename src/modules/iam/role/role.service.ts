@@ -7,9 +7,9 @@ import { Role } from './entities/role.entity';
 import {
   PageDto,
   PageOptionsDto,
-  PrepareDataProvider,
-} from '@src/shared/paginations';
-import { ErrorHandler } from '@src/shared/handlers/error.handler';
+  PaginationFactory,
+} from '@src/shared/utils/paginations';
+import { ErrorHandler } from '@src/shared/core/handlers/error.handler';
 
 @Injectable()
 export class RoleService {
@@ -24,12 +24,13 @@ export class RoleService {
     const allowedSortFields = ['name'];
     // dynamic search
     const allowedSearchFields = ['name'];
-    return await PrepareDataProvider(
-      queryBuilder,
+    const paginationFactory = new PaginationFactory(queryBuilder, {
       pageOptionsDto,
       allowedSortFields,
       allowedSearchFields,
-    );
+    });
+
+    return await paginationFactory.createPage();
   }
 
   async findOne(id: string) {

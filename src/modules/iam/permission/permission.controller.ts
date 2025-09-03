@@ -8,11 +8,11 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { PageOptionsDto } from '@src/shared/paginations';
+import { PageOptionsDto } from '@src/shared/utils/paginations';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { PermissionService } from './permission.service';
-import { PermissionAccess } from '@src/shared/decorators/permission-access.decorator';
+import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('permissions')

@@ -6,15 +6,14 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ErrorHandler } from '@src/shared/core/handlers/error.handler';
 import {
   BadRequestResponse,
   SuccessResponse,
-} from '@src/shared/handlers/response.handler';
-import * as argon2 from 'argon2';
-import { log } from 'console';
-import { Repository } from 'typeorm';
-import { ErrorHandler } from '@src/shared/handlers/error.handler';
+} from '@src/shared/core/handlers/response.handler';
 import { IUser } from '@src/shared/storage/user.storage';
+import * as argon2 from 'argon2';
+import { Repository } from 'typeorm';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token';
 import { RegisterDto } from './dto/register.dto';

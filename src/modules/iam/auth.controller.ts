@@ -8,8 +8,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { PermissionAccess } from '@src/shared/decorators/permission-access.decorator';
-import { User } from '@src/shared/decorators/user.decorator';
+import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
+import { User } from '@src/shared/core/decorators/user.decorator';
 import { IUser } from '@src/shared/storage/user.storage';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';

@@ -1,7 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { IsInt, IsOptional, Max, Min } from 'class-validator';
-import { ISort, Order, getSort } from './constants';
+import { ISort, getSort } from '../helpers/sort.helper';
+import { Order } from '../enums/order.enum';
 
 export class PageOptionsDto {
   @ApiPropertyOptional({

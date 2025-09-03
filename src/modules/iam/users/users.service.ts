@@ -3,11 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   PageDto,
   PageOptionsDto,
-  PrepareDataProvider,
-} from '@src/shared/paginations';
+  PaginationFactory,
+} from '@src/shared/utils/paginations';
 import * as argon2 from 'argon2';
 import { Repository } from 'typeorm';
-import { ErrorHandler } from '@src/shared/handlers/error.handler';
+import { ErrorHandler } from '@src/shared/core/handlers/error.handler';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -27,15 +27,13 @@ export class UsersService {
     // dynamic search
     const allowedSearchFields = ['username', 'email', 'nik', 'name'];
 
-    return await PrepareDataProvider(
-      queryBuilder,
+    const paginationFactory = new PaginationFactory(queryBuilder, {
       pageOptionsDto,
       allowedSortFields,
       allowedSearchFields,
-      (entities: User[]) => {
-        return entities;
-      },
-    );
+    });
+
+    return await paginationFactory.createPage();
   }
 
   async findSpecific(options: PageOptionsDto, type: number) {
@@ -56,15 +54,12 @@ export class UsersService {
 
     const allowedSortFields = ['id', 'username', 'email', 'nik', 'name'];
     const allowedSearchFields = ['username', 'email', 'nik', 'name'];
-    return await PrepareDataProvider(
-      queryBuilder,
-      options,
+    const paginationFactory = new PaginationFactory(queryBuilder, {
+      pageOptionsDto: options,
       allowedSortFields,
       allowedSearchFields,
-      (entities: User[]) => {
-        return entities;
-      },
-    );
+    });
+    return await paginationFactory.createPage();
   }
 
   async findOne(id: string) {
