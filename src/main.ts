@@ -16,7 +16,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AppConfig } from './config/constant';
+import { AppConfig } from './config/index';
 
 async function bootstrap() {
   let port = AppConfig.port;

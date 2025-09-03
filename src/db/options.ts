@@ -1,6 +1,6 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
-import { DbConfig } from './../config/constant';
+import { DbConfig } from './../config/index';
 
 export const dbOptions: DataSourceOptions & SeederOptions = {
   type: DbConfig.type as any,

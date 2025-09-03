@@ -5,7 +5,7 @@ import { RolePermissionModule } from './role-permission/role-permission.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JwtConfig } from '@src/config/constant';
+import { JwtConfig } from '@src/config/index';
 import { JwtAuthGuard } from '@src/shared/core/guards/jwt-auth.guard';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
