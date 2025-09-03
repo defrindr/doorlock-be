@@ -1,21 +1,33 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey, TableColumnOptions } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+  TableColumnOptions,
+} from 'typeorm';
 
 export class Startup1703497491866 implements MigrationInterface {
   name = 'Startup1703497491866';
 
-  // Helper untuk kolom umum agar tidak berulang (Prinsip DRY)
   private readonly baseColumns: TableColumnOptions[] = [
-    { name: 'id', type: 'varchar', length: '36', isPrimary: true },
+    {
+      name: 'id',
+      type: 'varchar',
+      length: '36',
+      isPrimary: true,
+      default: 'NEWID()',
+    },
     { name: 'created_at', type: 'datetime2', default: 'GETDATE()' },
-    { name: 'updated_at', type: 'datetime2', default: 'GETDATE()', onUpdate: 'GETDATE()' },
+    {
+      name: 'updated_at',
+      type: 'datetime2',
+      default: 'GETDATE()',
+      onUpdate: 'GETDATE()',
+    },
     { name: 'deleted_at', type: 'datetime2', isNullable: true },
   ];
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // =================================================================
-    // 1. BUAT SEMUA TABEL
-    // =================================================================
-
     await queryRunner.createTable(
       new Table({
         name: 'permissions',
@@ -62,7 +74,13 @@ export class Startup1703497491866 implements MigrationInterface {
       new Table({
         name: 'role_permissions',
         columns: [
-          { name: 'id', type: 'int', isPrimary: true, isGenerated: true, generationStrategy: 'increment' },
+          {
+            name: 'id',
+            type: 'int',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
           { name: 'roleId', type: 'varchar', length: '36' },
           { name: 'permissionId', type: 'varchar', length: '36' },
         ],
@@ -117,14 +135,22 @@ export class Startup1703497491866 implements MigrationInterface {
     const usersTable = await queryRunner.getTable('users');
     const rolePermissionsTable = await queryRunner.getTable('role_permissions');
 
-    const userRoleFk = usersTable?.foreignKeys.find(fk => fk.columnNames.indexOf('roleId') !== -1);
+    const userRoleFk = usersTable?.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf('roleId') !== -1,
+    );
     if (userRoleFk) await queryRunner.dropForeignKey('users', userRoleFk);
 
-    const rpRoleFk = rolePermissionsTable?.foreignKeys.find(fk => fk.columnNames.indexOf('roleId') !== -1);
-    if (rpRoleFk) await queryRunner.dropForeignKey('role_permissions', rpRoleFk);
+    const rpRoleFk = rolePermissionsTable?.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf('roleId') !== -1,
+    );
+    if (rpRoleFk)
+      await queryRunner.dropForeignKey('role_permissions', rpRoleFk);
 
-    const rpPermissionFk = rolePermissionsTable?.foreignKeys.find(fk => fk.columnNames.indexOf('permissionId') !== -1);
-    if (rpPermissionFk) await queryRunner.dropForeignKey('role_permissions', rpPermissionFk);
+    const rpPermissionFk = rolePermissionsTable?.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf('permissionId') !== -1,
+    );
+    if (rpPermissionFk)
+      await queryRunner.dropForeignKey('role_permissions', rpPermissionFk);
 
     // =================================================================
     // 2. HAPUS SEMUA TABEL

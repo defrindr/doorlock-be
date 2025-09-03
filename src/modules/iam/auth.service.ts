@@ -34,7 +34,7 @@ export class AuthService {
     try {
       const userExist = await this.userRepository.findOne({
         where: { id: user.id },
-        relations: ['role']
+        relations: ['role'],
       });
       if (!userExist) {
         return BadRequestResponse('User doesnt exist in our system');
@@ -182,7 +182,6 @@ export class AuthService {
       (item) => item.permission.name,
     );
     // generate token
-    log(this.jwtService);
     const token = await this.jwtService.signAsync({
       ...user,
       role: role.name,

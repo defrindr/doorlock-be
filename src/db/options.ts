@@ -1,4 +1,4 @@
-import { DataSource, DataSourceOptions, Db } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
 import { DbConfig } from './../config/constant';
 
@@ -15,7 +15,7 @@ export const dbOptions: DataSourceOptions & SeederOptions = {
     enableArithAbort: true,
   },
   // autoLoadEntities: true,
-  entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
+  entities: [__dirname + '/../modules/**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/migrations/*{.ts,.js}'],
   seeds: [__dirname + '/../../**/*.seeder{.ts,.js}'],
 };

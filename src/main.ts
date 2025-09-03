@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Logger, VersioningType } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Logger,
+  VersioningType,
+} from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { ValidationPipe } from '@nestjs/common';
@@ -12,7 +17,6 @@ import {
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppConfig } from './config/constant';
-import { SeederModule } from './db/seeder/seeder.module';
 
 async function bootstrap() {
   let port = AppConfig.port;
@@ -63,10 +67,6 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   await app.listen(port, AppConfig.host);
-  // Only run seeder if '--seed' argument is present
-  if (process.argv.includes('--seed')) {
-    await SeederModule.forRoot();
-  }
 
   Logger.log(`🚀 ${AppConfig.name} is listening on ${await app.getUrl()}`);
 }
