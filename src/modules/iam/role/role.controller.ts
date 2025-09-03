@@ -12,8 +12,8 @@ import {
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleService } from './role.service';
-import { PageOptionsDto } from '@src/lib/paginations';
-import { PermissionAccess } from '@src/lib/decorators/permission-access.decorator';
+import { PageOptionsDto } from '@src/shared/paginations';
+import { PermissionAccess } from '@src/shared/decorators/permission-access.decorator';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('roles')

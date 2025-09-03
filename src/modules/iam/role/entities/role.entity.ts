@@ -1,4 +1,4 @@
-import { AbstractEntity } from '@src/lib/entities/abstract.entity';
+import { BaseEntity } from '@src/shared/entities/abstract.entity';
 import { RolePermission } from '@src/modules/iam/role-permission/entities/role-permission.entity';
 import { User } from '@src/modules/iam/users/entities/user.entity';
 import { Type } from 'class-transformer';
@@ -12,7 +12,7 @@ export type IRole = {
 };
 
 @Entity('roles')
-export class Role extends AbstractEntity {
+export class Role extends BaseEntity {
   @Column({
     type: 'varchar',
     length: 50,

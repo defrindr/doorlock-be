@@ -1,4 +1,4 @@
-import { AbstractEntity } from '@src/lib/entities/abstract.entity';
+import { BaseEntity } from '@src/shared/entities/abstract.entity';
 import { Role } from '@src/modules/iam/role/entities/role.entity';
 import { Exclude } from 'class-transformer';
 import { IsNotEmpty } from 'class-validator';
@@ -7,7 +7,7 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 @Entity({
   name: 'users',
 })
-export class User extends AbstractEntity {
+export class User extends BaseEntity {
   @Column({
     length: 50,
     unique: true,

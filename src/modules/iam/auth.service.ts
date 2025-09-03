@@ -9,12 +9,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   BadRequestResponse,
   SuccessResponse,
-} from '@src/lib/handlers/response.handler';
+} from '@src/shared/handlers/response.handler';
 import * as argon2 from 'argon2';
 import { log } from 'console';
 import { Repository } from 'typeorm';
-import { ErrorHandler } from '../../lib/handlers/error.handler';
-import { IUser } from '../../lib/storage/user.storage';
+import { ErrorHandler } from '@src/shared/handlers/error.handler';
+import { IUser } from '@src/shared/storage/user.storage';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token';
 import { RegisterDto } from './dto/register.dto';

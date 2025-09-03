@@ -4,7 +4,6 @@ import { Role } from '../role/entities/role.entity';
 import { User } from '../users/entities/user.entity';
 import * as argon2 from 'argon2';
 
-
 export default class UserSeeder implements Seeder {
   public async run(
     dataSource: DataSource,
@@ -14,8 +13,10 @@ export default class UserSeeder implements Seeder {
     const roleRepository = dataSource.getRepository(Role);
 
     // Register Admin
-    const AdminRole = await roleRepository.findOne({ where: { name: 'Administrator' } })
-    const UserRole = await roleRepository.findOne({ where: { name: 'User' } })
+    const AdminRole = await roleRepository.findOne({
+      where: { name: 'Administrator' },
+    });
+    const UserRole = await roleRepository.findOne({ where: { name: 'User' } });
 
     const newUser = userRepository.create({
       username: 'admin',
@@ -27,7 +28,6 @@ export default class UserSeeder implements Seeder {
     await userRepository.save(newUser);
     console.log(`   - Created user: ${newUser.username}`);
 
-
     // Generate User
     const user = userRepository.create({
       username: 'user',
@@ -38,6 +38,5 @@ export default class UserSeeder implements Seeder {
     });
     await userRepository.save(user);
     console.log(`   - Created user: ${user.username}`);
-
   }
 }

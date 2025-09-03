@@ -8,8 +8,8 @@ import {
   PageDto,
   PageOptionsDto,
   PrepareDataProvider,
-} from 'src/lib/paginations';
-import { ErrorHandler } from '@src/lib/handlers/error.handler';
+} from '@src/shared/paginations';
+import { ErrorHandler } from '@src/shared/handlers/error.handler';
 
 @Injectable()
 export class RoleService {

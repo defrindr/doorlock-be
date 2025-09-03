@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
 import { CreateRolePermissionDto } from './dto/create-role-permission.dto';
 import { RolePermissionService } from './role-permission.service';
-import { PermissionAccess } from '@src/lib/decorators/permission-access.decorator';
+import { PermissionAccess } from '@src/shared/decorators/permission-access.decorator';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('role-permission')

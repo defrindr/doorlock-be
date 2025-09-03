@@ -4,10 +4,10 @@ import {
   PageDto,
   PageOptionsDto,
   PrepareDataProvider,
-} from '@src/lib/paginations';
+} from '@src/shared/paginations';
 import * as argon2 from 'argon2';
 import { Repository } from 'typeorm';
-import { ErrorHandler } from '../../../lib/handlers/error.handler';
+import { ErrorHandler } from '@src/shared/handlers/error.handler';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
