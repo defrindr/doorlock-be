@@ -7,19 +7,16 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ErrorHandler } from '@src/shared/core/handlers/error.handler';
-import {
-  BadRequestResponse,
-  SuccessResponse,
-} from '@src/shared/core/handlers/response.handler';
+import { OkResponse } from '@src/shared/core/handlers/response.handler';
 import { IUser } from '@src/shared/storage/user.storage';
 import * as argon2 from 'argon2';
 import { Repository } from 'typeorm';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token';
 import { RegisterDto } from './dto/register.dto';
-import { Role } from './role/entities/role.entity';
+import { Role } from './entities/role.entity';
+import { User } from './entities/user.entity';
 import { UpdateUserDto } from './users/dto/update-user.dto';
-import { User } from './users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -36,10 +33,10 @@ export class AuthService {
         relations: ['role'],
       });
       if (!userExist) {
-        return BadRequestResponse('User doesnt exist in our system');
+        throw new BadRequestException('User doesnt exist in our system');
       }
 
-      return SuccessResponse('Success get profile', { profile: userExist });
+      return OkResponse({ profile: userExist }, 'Success get profile');
     } catch (error) {
       return ErrorHandler(error);
     }
@@ -51,7 +48,7 @@ export class AuthService {
       where: { id: user.id },
     });
     if (!userExist) {
-      return BadRequestResponse('User doesnt exist in our system');
+      throw new BadRequestException('User doesnt exist in our system');
     }
 
     // merger request with existing data
@@ -65,7 +62,7 @@ export class AuthService {
     // trying save data to database
     try {
       const data = await this.userRepository.save(userExist);
-      return SuccessResponse('Profile successfully updated', { profile: data });
+      return OkResponse({ profile: data }, 'Profile successfully updated');
     } catch (error) {
       return ErrorHandler(error);
     }
@@ -140,18 +137,18 @@ export class AuthService {
   async login({ username, password, fcmToken = '' }: LoginDto) {
     // check user
     const user = await this.userRepository.findOne({
-      where: { username },
+      where: [{ username }, { email: username }],
     });
 
     if (!user) {
-      throw new BadRequestException('Credential invalid');
+      throw new BadRequestException('Credential is incorrect');
     }
 
     // check password
     const isPasswordValid = await argon2.verify(user.password, password);
 
     if (!isPasswordValid) {
-      throw new BadRequestException('Credential invalid');
+      throw new BadRequestException('Credential is incorrect');
     }
 
     // update user

@@ -1,10 +1,11 @@
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
-import { Role } from '../role/entities/role.entity';
-import { Permission } from '../permission/entities/permission.entity';
+import { Role } from '../entities/role.entity';
+import { Permission } from '../entities/permission.entity';
 export default class RoleSeeder implements Seeder {
   public async run(
     dataSource: DataSource,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _factoryManager: SeederFactoryManager,
   ): Promise<any> {
     const roleRepository = dataSource.getRepository(Role);
@@ -13,7 +14,7 @@ export default class RoleSeeder implements Seeder {
     // 1. Ambil semua permissions yang ada
     const allPermissions = await permissionRepository.find();
     const dashboardPermission = await permissionRepository.findOneBy({
-      name: 'view_dashboard',
+      name: 'dashboard:view',
     });
 
     // 2. Definisikan peran dan izinnya

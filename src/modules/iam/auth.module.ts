@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { PermissionModule } from './permission/permission.module';
-import { RolePermissionModule } from './role-permission/role-permission.module';
 
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
@@ -9,13 +8,13 @@ import { JwtConfig } from '@src/config/index';
 import { JwtAuthGuard } from '@src/shared/core/guards/jwt-auth.guard';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { Permission } from './permission/entities/permission.entity';
-import { RolePermission } from './role-permission/entities/role-permission.entity';
-import { Role } from './role/entities/role.entity';
+import { Permission } from './entities/permission.entity';
+import { Role } from './entities/role.entity';
 import { RoleModule } from './role/role.module';
 import { JwtStrategy } from './strategy/jwt.strategy';
-import { User } from './users/entities/user.entity';
+import { User } from './entities/user.entity';
 import { UsersModule } from './users/users.module';
+import { RolePermission } from './entities/role-permission.entity';
 
 @Module({
   imports: [
@@ -27,7 +26,6 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     RoleModule,
     PermissionModule,
-    RolePermissionModule,
   ],
   controllers: [AuthController],
   providers: [

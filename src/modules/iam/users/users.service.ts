@@ -10,7 +10,7 @@ import { Repository } from 'typeorm';
 import { ErrorHandler } from '@src/shared/core/handlers/error.handler';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UsersService {

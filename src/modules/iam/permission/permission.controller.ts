@@ -8,38 +8,71 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOkResponse,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { PageOptionsDto } from '@src/shared/utils/paginations';
 import { CreatePermissionDto } from './dto/create-permission.dto';
+import { PagePermissionDto } from './dto/page-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { PermissionService } from './permission.service';
-import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ResponsePermissionDto } from './dto/response-permission.dto';
+import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
+import { SingleResponseSchema } from '@src/shared/core/decorators/single-schema.decorator';
 
+@ApiTags('Permissions')
 @Controller('permissions')
 @ApiBearerAuth()
 export class PermissionController {
   constructor(private readonly permissionService: PermissionService) {}
 
   @Post('/')
-  @PermissionAccess('auth.permission.create')
+  @ApiExtraModels(ApiResponseDto, ResponsePermissionDto)
+  @ApiOkResponse({
+    schema: SingleResponseSchema(
+      ResponsePermissionDto,
+      'Data berhasil ditambahkan',
+      201,
+    ),
+  })
+  // @PermissionAccess('auth.permission.create')
   create(@Body() createPermissionDto: CreatePermissionDto) {
     return this.permissionService.create(createPermissionDto);
   }
 
   @Get('/')
-  @PermissionAccess('auth.permission.index')
-  findAll(@Query() pageOptionsDto: PageOptionsDto) {
+  @ApiOkResponse({ type: PagePermissionDto })
+  // @PermissionAccess('auth.permission.index')
+  findAll(@Query() pageOptionsDto: PageOptionsDto): Promise<PagePermissionDto> {
     return this.permissionService.findAll(pageOptionsDto);
   }
 
   @Get('/:id')
-  @PermissionAccess('auth.permission.view')
+  @ApiExtraModels(ApiResponseDto, ResponsePermissionDto)
+  @ApiOkResponse({
+    schema: SingleResponseSchema(
+      ResponsePermissionDto,
+      'Data berhasil dapatkan',
+    ),
+  })
+  // @PermissionAccess('auth.permission.view')
   findOne(@Param('id') id: string) {
     return this.permissionService.findOne(id);
   }
 
   @Put('/:id')
-  @PermissionAccess('auth.permission.update')
+  @ApiExtraModels(ApiResponseDto, ResponsePermissionDto)
+  @ApiOkResponse({
+    schema: SingleResponseSchema(
+      ResponsePermissionDto,
+      'Data berhasil diupdate',
+    ),
+  })
+  // @PermissionAccess('auth.permission.update')
   update(
     @Param('id') id: string,
     @Body() updatePermissionDto: UpdatePermissionDto,
@@ -48,7 +81,11 @@ export class PermissionController {
   }
 
   @Delete('/:id')
-  @PermissionAccess('auth.permission.delete')
+  @ApiOkResponse({
+    description: 'Delete permission by ID',
+    type: ApiResponseDto,
+  })
+  // @PermissionAccess('auth.permission.delete')
   remove(@Param('id') id: string) {
     return this.permissionService.remove(id);
   }

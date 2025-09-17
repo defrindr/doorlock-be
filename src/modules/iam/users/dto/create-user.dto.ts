@@ -14,7 +14,7 @@ import { Unique } from 'typeorm';
 export class CreateUserDto {
   @ApiProperty({
     description: 'Username',
-    example: 'defrindr',
+    example: 'admin@example.com',
   })
   @IsAlphanumeric()
   @IsNotEmpty()
@@ -27,7 +27,7 @@ export class CreateUserDto {
 
   @ApiProperty({
     description: 'Password untuk login',
-    example: 'defrindr',
+    example: 'password',
   })
   @MinLength(6, { message: 'Password minimal 6 karakter' })
   @MaxLength(16, { message: 'Password maksimal 16 karakter' })

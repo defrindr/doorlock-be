@@ -1,5 +1,3 @@
-import { Permission } from '@src/modules/iam/permission/entities/permission.entity';
-import { Role } from '@src/modules/iam/role/entities/role.entity';
 import { IsNotEmpty } from 'class-validator';
 import {
   Column,
@@ -8,6 +6,8 @@ import {
   PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Role } from './role.entity';
+import { Permission } from './permission.entity';
 
 type IRolePermission = {
   id: number;

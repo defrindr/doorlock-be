@@ -14,8 +14,9 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleService } from './role.service';
 import { PageOptionsDto } from '@src/shared/utils/paginations';
 import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Roles')
 @Controller('roles')
 @ApiBearerAuth()
 export class RoleController {

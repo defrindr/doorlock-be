@@ -1,5 +1,5 @@
 import { BaseEntity } from '@src/shared/database/entities/abstract.entity';
-import { Role } from '@src/modules/iam/role/entities/role.entity';
+import { Role } from '@src/modules/iam/entities/role.entity';
 import { Exclude } from 'class-transformer';
 import { IsNotEmpty } from 'class-validator';
 import { Column, Entity, ManyToOne } from 'typeorm';

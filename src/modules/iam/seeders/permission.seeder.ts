@@ -1,10 +1,11 @@
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
-import { Permission } from '../permission/entities/permission.entity';
+import { Permission } from '../entities/permission.entity';
 
 export default class PermissionSeeder implements Seeder {
   public async run(
     dataSource: DataSource,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _factoryManager: SeederFactoryManager,
   ): Promise<any> {
     const permissionRepository = dataSource.getRepository(Permission);
@@ -12,14 +13,14 @@ export default class PermissionSeeder implements Seeder {
     // Daftar izin dasar
     const permissions = [
       {
-        name: 'manage_users',
+        name: 'users:manage',
         description: 'Membuat, Melihat, Memperbarui, dan Menghapus Pengguna',
       },
       {
-        name: 'manage_roles',
+        name: 'roles:manage',
         description: 'Membuat, Melihat, Memperbarui, dan Menghapus Peran',
       },
-      { name: 'view_dashboard', description: 'Melihat dasbor analitik' },
+      { name: 'dashboard:view', description: 'Melihat dasbor analitik' },
       // Tambahkan izin lain sesuai kebutuhan
     ];
 

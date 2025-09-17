@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class LoginDto {
   @ApiProperty({
-    example: 'defrindr',
+    example: 'admin@example.com',
     description: 'The username used to login',
     required: true,
   })
@@ -11,7 +11,7 @@ export class LoginDto {
   username: string;
 
   @ApiProperty({
-    example: 'testing',
+    example: 'password',
     description: 'The password used to login',
     required: true,
   })

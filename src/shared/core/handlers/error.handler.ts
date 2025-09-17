@@ -1,26 +1,27 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { ConflictHttpException } from '../exceptions/exception';
 
 const ErrorHandler = (error: any) => {
+  console.log(error);
+  // SQL Server / MSSQL duplicate key error
+  if (
+    error.code === 'EREQUEST' &&
+    error.message.includes('Violation of UNIQUE KEY')
+  ) {
+    throw new ConflictHttpException(error.message);
+  }
+
+  // PostgreSQL duplicate key error
+  if (error.code === '23505') {
+    throw new ConflictHttpException(error.message);
+  }
+
   if (error.code === 'QueryFailedError') {
     throw new HttpException(
       {
         code: HttpStatus.BAD_REQUEST,
         message:
           'Terjadi kesalahan saat menjalankan aksi, mohon pastikan inputan anda dan coba lagi',
-      },
-      HttpStatus.BAD_REQUEST,
-      {
-        cause: error,
-      },
-    );
-  }
-
-  // check what is value duplicated
-  if (error.code === '23505') {
-    throw new HttpException(
-      {
-        code: HttpStatus.BAD_REQUEST,
-        message: 'Terdapat duplikasi data',
       },
       HttpStatus.BAD_REQUEST,
       {
