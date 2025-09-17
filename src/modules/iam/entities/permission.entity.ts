@@ -1,7 +1,8 @@
 import { BaseEntity } from '@src/shared/database/entities/abstract.entity';
 import { Type } from 'class-transformer';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { RolePermission } from './role-permission.entity';
+import { Role } from './role.entity';
 
 export type IPermission = {
   id: string;
@@ -32,4 +33,12 @@ export class Permission extends BaseEntity implements IPermission {
     (rolePermission) => rolePermission.permission,
   )
   rolePermissions: RolePermission[];
+
+  @ManyToMany(() => Permission)
+  @JoinTable({
+    name: 'role_permissions',
+    joinColumn: { name: 'roleId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'permissionId', referencedColumnName: 'id' },
+  })
+  permissions: Permission[];
 }

@@ -21,10 +21,12 @@ export default class RoleSeeder implements Seeder {
     const rolesData = [
       {
         name: 'Administrator',
+        description: '-',
         permissions: allPermissions, // Admin mendapatkan semua izin
       },
       {
         name: 'User',
+        description: '-',
         permissions: dashboardPermission ? [dashboardPermission] : [], // User hanya bisa melihat dasbor
       },
     ];
@@ -36,11 +38,11 @@ export default class RoleSeeder implements Seeder {
         name: roleData.name,
       });
       if (!roleExists) {
-        const newRole = roleRepository.create({
+        const newRole = await roleRepository.create({
           name: roleData.name,
+          description: roleData.description,
+          permissions: roleData.permissions,
         });
-        // Assign permissions if the property exists on the entity
-        (newRole as any).permissions = roleData.permissions;
         await roleRepository.save(newRole);
         console.log(`   - Created role: ${roleData.name}`);
       }

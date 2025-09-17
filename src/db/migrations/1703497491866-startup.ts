@@ -34,7 +34,7 @@ export class Startup1703497491866 implements MigrationInterface {
         columns: [
           ...this.baseColumns,
           { name: 'name', type: 'varchar', length: '50', isUnique: true },
-          { name: 'description', type: 'text' },
+          { name: 'description', type: 'varchar', isNullable: true },
         ],
       }),
       true, // true untuk createForeignKeys
@@ -46,6 +46,7 @@ export class Startup1703497491866 implements MigrationInterface {
         columns: [
           ...this.baseColumns,
           { name: 'name', type: 'varchar', length: '50', isUnique: true },
+          { name: 'description', type: 'varchar', isNullable: true },
         ],
       }),
       true,

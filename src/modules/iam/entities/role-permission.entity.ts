@@ -22,12 +22,12 @@ export class RolePermission implements IRolePermission {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'string' })
+  @Column({ type: 'varchar' })
   @IsNotEmpty()
   @PrimaryColumn()
   roleId: string;
 
-  @Column({ type: 'string' })
+  @Column({ type: 'varchar' })
   @IsNotEmpty()
   @PrimaryColumn()
   permissionId: string;

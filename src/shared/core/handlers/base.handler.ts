@@ -40,21 +40,30 @@ export abstract class BaseHandler<TCommand extends ICommand, TResult = any>
         throw error;
       }
 
-      if (
-        error.code === 'EREQUEST' &&
-        error.message.includes('Violation of UNIQUE KEY')
-      ) {
-        throw new ConflictHttpException(error.message);
+      console.log(error);
+
+      if (error.code === 'EREQUEST') {
+        if (error.message.includes('Violation of UNIQUE KEY')) {
+          throw new ConflictHttpException(error.message);
+        } else if (
+          error.message.includes(
+            'The DELETE statement conflicted with the REFERENCE constraint',
+          )
+        ) {
+          throw new ConflictHttpException(
+            "This data used by another. can't delete the data currenly",
+          );
+        }
       }
 
       if (error.code === 'QueryFailedError') {
         throw new ConflictHttpException(
-          'Terjadi kesalahan saat menjalankan aksi, mohon pastikan inputan anda dan coba lagi',
+          'An error occurred while performing the action, please check your input and try again',
         );
       }
 
       throw new InternalServerErrorHttpException(
-        'Terjadi kesalahan pada server',
+        'An error occurred on the server',
       );
     } finally {
       await this.afterRun(result, command);

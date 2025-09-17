@@ -1,12 +1,23 @@
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
-import { RoleService } from './role.service';
-import { RoleController } from './role.controller';
+import { CqrsModule } from '@nestjs/cqrs';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from '../entities/role.entity';
+import { CreateRoleHandler } from './commands/handlers/create-role.handler';
+import { DeleteRoleHandler } from './commands/handlers/delete-role.handler';
+import { UpdateRoleHandler } from './commands/handlers/update-role.handler';
+import { GetRoleHandler } from './queries/handlers/get-role.handler';
+import { GetRolesHandler } from './queries/handlers/get-roles.handler';
+import { RoleController } from './role.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Role])],
+  imports: [TypeOrmModule.forFeature([Role]), CqrsModule],
   controllers: [RoleController],
-  providers: [RoleService],
+  providers: [
+    CreateRoleHandler,
+    UpdateRoleHandler,
+    DeleteRoleHandler,
+    GetRoleHandler,
+    GetRolesHandler,
+  ],
 })
 export class RoleModule {}

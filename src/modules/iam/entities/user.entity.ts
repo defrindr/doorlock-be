@@ -1,8 +1,7 @@
 import { BaseEntity } from '@src/shared/database/entities/abstract.entity';
-import { Role } from '@src/modules/iam/entities/role.entity';
 import { Exclude } from 'class-transformer';
 import { IsNotEmpty } from 'class-validator';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 
 @Entity({
   name: 'users',
@@ -46,10 +45,10 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   public photoUrl?: string;
 
-  @Column({ type: 'string' })
+  @Column({ type: 'varchar' })
   @IsNotEmpty()
   roleId: string;
 
-  @ManyToOne(() => Role, (role) => role.users)
-  public role?: Role;
+  // @ManyToOne(() => Role, (role) => role.users)
+  // public role?: Role;
 }
