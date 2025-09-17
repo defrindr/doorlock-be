@@ -6,8 +6,9 @@
 import { AsyncLocalStorage } from 'async_hooks';
 
 export interface IUser {
-  id: string;
-  roles: number[] | number;
+  sub: string;
+  roles: string[] | string;
+  permissions: string[] | string;
 }
 
 export const UserStorage = {

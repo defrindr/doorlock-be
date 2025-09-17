@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 
 export class UserDto {
   @ApiProperty()
@@ -21,6 +21,10 @@ export class UserDto {
   @ApiProperty()
   @Expose()
   public fcmToken?: string;
+
+  @ApiProperty()
+  @Exclude()
+  public refreshToken?: string;
 
   @ApiProperty()
   @Expose()

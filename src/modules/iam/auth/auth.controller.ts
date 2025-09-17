@@ -14,48 +14,49 @@ import { IUser } from '@src/shared/storage/user.storage';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token';
-import { RegisterDto } from './dto/register.dto';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { LoginCommand } from './command/imp/login.command';
+import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-response.decorator';
+import { LoginResponseDto } from './dto/login-response.dto';
+import { RefreshTokenCommand } from './command/imp/refresh-token.command';
+import { GetProfileQuery } from './query/imp/get-profile.query';
+import { UserDto } from '../users/dto/user.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
 @ApiBearerAuth()
 export class AuthController {
-  constructor(private readonly svc: AuthService) {}
+  constructor(
+    private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
+    private readonly svc: AuthService,
+  ) {}
 
   @ApiOperation({ summary: 'Mendapatkan token untuk authentication' })
   @Post('login')
+  @ApiSingleResponse(LoginResponseDto, 'Login successful')
   @HttpCode(200)
-  async login(@Body() data: LoginDto): Promise<any> {
-    return await this.svc.login(data);
+  async login(@Body() payload: LoginDto): Promise<any> {
+    return this.commandBus.execute(new LoginCommand(payload));
   }
 
-  @Post('register')
+  @Get('profile')
+  @ApiOperation({
+    summary: 'get detail current logged in user',
+  })
   @HttpCode(200)
-  async register(@Body() data: RegisterDto): Promise<any> {
-    return await this.svc.register(data);
-  }
-
-  @Get('me')
-  @HttpCode(200)
+  @ApiSingleResponse(UserDto, 'Successful get profile')
   @PermissionAccess()
   @UseInterceptors(ClassSerializerInterceptor)
   async me(@User() user: IUser): Promise<any> {
-    return await this.svc.me(user);
+    return this.queryBus.execute(new GetProfileQuery(user));
   }
 
-  // @Post('update')
-  // @HttpCode(200)
-  // @PermissionAccess()
-  // async update(
-  //   @User() user: IUser,
-  //   @Body() payload: UpdateUserDto,
-  // ): Promise<any> {
-  //   return await this.svc.update(user, payload);
-  // }
-
+  @ApiOperation({ summary: 'Refresh token for authentication' })
   @Post('refresh-token')
+  @ApiSingleResponse(LoginResponseDto, 'Refresh token successful')
   @HttpCode(200)
-  async refreshToken(@Body() data: RefreshTokenDto): Promise<any> {
-    return await this.svc.refreshToken(data);
+  async refreshToken(@Body() payload: RefreshTokenDto): Promise<any> {
+    return this.commandBus.execute(new RefreshTokenCommand(payload));
   }
 }
