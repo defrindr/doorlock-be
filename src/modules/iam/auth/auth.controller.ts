@@ -21,6 +21,7 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { RefreshTokenCommand } from './command/imp/refresh-token.command';
 import { GetProfileQuery } from './query/imp/get-profile.query';
 import { UserDto } from '../users/dto/user.dto';
+import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -35,7 +36,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Mendapatkan token untuk authentication' })
   @Post('login')
   @ApiSingleResponse(LoginResponseDto, 'Login successful')
-  @HttpCode(200)
+  @ApiCommonErrors()
   async login(@Body() payload: LoginDto): Promise<any> {
     return this.commandBus.execute(new LoginCommand(payload));
   }
@@ -44,10 +45,10 @@ export class AuthController {
   @ApiOperation({
     summary: 'get detail current logged in user',
   })
-  @HttpCode(200)
   @ApiSingleResponse(UserDto, 'Successful get profile')
   @PermissionAccess()
   @UseInterceptors(ClassSerializerInterceptor)
+  @ApiCommonErrors()
   async me(@User() user: IUser): Promise<any> {
     return this.queryBus.execute(new GetProfileQuery(user));
   }
@@ -55,7 +56,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Refresh token for authentication' })
   @Post('refresh-token')
   @ApiSingleResponse(LoginResponseDto, 'Refresh token successful')
-  @HttpCode(200)
+  @ApiCommonErrors()
   async refreshToken(@Body() payload: RefreshTokenDto): Promise<any> {
     return this.commandBus.execute(new RefreshTokenCommand(payload));
   }
