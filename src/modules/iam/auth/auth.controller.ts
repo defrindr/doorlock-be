@@ -15,7 +15,6 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token';
 import { RegisterDto } from './dto/register.dto';
-import { UpdateUserDto } from './users/dto/update-user.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -44,15 +43,15 @@ export class AuthController {
     return await this.svc.me(user);
   }
 
-  @Post('update')
-  @HttpCode(200)
-  @PermissionAccess()
-  async update(
-    @User() user: IUser,
-    @Body() payload: UpdateUserDto,
-  ): Promise<any> {
-    return await this.svc.update(user, payload);
-  }
+  // @Post('update')
+  // @HttpCode(200)
+  // @PermissionAccess()
+  // async update(
+  //   @User() user: IUser,
+  //   @Body() payload: UpdateUserDto,
+  // ): Promise<any> {
+  //   return await this.svc.update(user, payload);
+  // }
 
   @Post('refresh-token')
   @HttpCode(200)

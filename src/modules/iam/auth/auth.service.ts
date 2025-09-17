@@ -14,11 +14,11 @@ import { Repository } from 'typeorm';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token';
 import { RegisterDto } from './dto/register.dto';
-import { Role } from './entities/role.entity';
-import { User } from './entities/user.entity';
-import { UpdateUserDto } from './users/dto/update-user.dto';
-import { UserDto } from './users/dto/user.dto';
 import { plainToInstance } from 'class-transformer';
+import { User } from '../entities/user.entity';
+import { Role } from '../entities/role.entity';
+import { UpdateUserDto } from '../users/dto/update-user.dto';
+import { UserDto } from '../users/dto/user.dto';
 
 @Injectable()
 export class AuthService {
