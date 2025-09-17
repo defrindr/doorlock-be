@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { DbModule } from './db/db.module';
-import { IamModule } from './modules/iam/auth.module';
+import { IamModule } from './modules/iam/iam.module';
 
 @Module({
   imports: [IamModule, DbModule],

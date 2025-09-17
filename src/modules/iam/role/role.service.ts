@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PageMetaDto, PageOptionsDto } from '@src/shared/utils/paginations';
-import { applyPaginationFilters } from '@src/shared/utils/paginations/apply-pagination-filter';
+import { PageMetaDto, PageOptionsDto } from '@src/shared/paginations';
+import { applyPaginationFilters } from '@src/shared/paginations/apply-pagination-filter';
 import { plainToInstance } from 'class-transformer';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import { RolePermission } from '../entities/role-permission.entity';

@@ -19,16 +19,16 @@ import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.de
 import { ApiPaginatedResponse } from '@src/shared/core/decorators/api-paginated-response.decorator';
 import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-response.decorator';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
-import { PageOptionsDto } from '@src/shared/utils/paginations';
-import { CreatePermissionCommand } from './commands/create-permission.command';
-import { DeletePermissionCommand } from './commands/delete-permission.command';
-import { UpdatePermissionCommand } from './commands/update-permission.command';
+import { PageOptionsDto } from '@src/shared/paginations';
+import { CreatePermissionCommand } from './commands/imp/create-permission.command';
+import { DeletePermissionCommand } from './commands/imp/delete-permission.command';
+import { UpdatePermissionCommand } from './commands/imp/update-permission.command';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { PagePermissionDto } from './dto/page-permission.dto';
 import { ResponsePermissionDto } from './dto/response-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
-import { GetPermissionQuery } from './queries/get-permission.query';
-import { GetPermissionsQuery } from './queries/get-permissions.query';
+import { GetPermissionQuery } from './queries/imp/get-permission.query';
+import { GetPermissionsQuery } from './queries/imp/get-permissions.query';
 
 @ApiTags('Permissions')
 @Controller('iam/permissions')

@@ -6,7 +6,7 @@ import { BaseHandler } from '@src/shared/core/handlers/base.handler';
 import { OkResponse } from '@src/shared/core/handlers/response.handler';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { Repository } from 'typeorm';
-import { DeletePermissionCommand } from '../delete-permission.command';
+import { DeletePermissionCommand } from '../imp/delete-permission.command';
 
 @CommandHandler(DeletePermissionCommand)
 export class DeletePermissionHandler extends BaseHandler<

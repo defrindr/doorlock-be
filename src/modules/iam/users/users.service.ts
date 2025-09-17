@@ -4,7 +4,7 @@ import {
   PageDto,
   PageOptionsDto,
   PaginationFactory,
-} from '@src/shared/utils/paginations';
+} from '@src/shared/paginations';
 import * as argon2 from 'argon2';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';

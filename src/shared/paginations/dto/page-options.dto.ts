@@ -38,7 +38,7 @@ export class PageOptionsDto {
   @Transform(({ value }) => getSort(value))
   readonly sort?: ISort;
 
-  @ApiPropertyOptional({ example: 'admin', description: 'Global search' })
+  @ApiPropertyOptional({ example: '', description: 'Global search' })
   @IsOptional()
   @IsString()
   readonly search?: string = '';

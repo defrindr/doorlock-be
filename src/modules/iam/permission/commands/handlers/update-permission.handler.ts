@@ -1,5 +1,5 @@
 import { BaseHandler } from '@src/shared/core/handlers/base.handler';
-import { UpdatePermissionCommand } from './../update-permission.command';
+import { UpdatePermissionCommand } from '../imp/update-permission.command';
 import { CommandHandler } from '@nestjs/cqrs';
 import { Not, Repository } from 'typeorm';
 import { Permission } from '@src/modules/iam/entities/permission.entity';

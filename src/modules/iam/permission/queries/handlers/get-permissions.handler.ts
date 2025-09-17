@@ -2,13 +2,13 @@ import { QueryHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Permission } from '@src/modules/iam/entities/permission.entity';
 import { BaseHandler } from '@src/shared/core/handlers/base.handler';
-import { applyPaginationFilters } from '@src/shared/utils/paginations/apply-pagination-filter';
-import { PageMetaDto } from '@src/shared/utils/paginations/dto';
+import { applyPaginationFilters } from '@src/shared/paginations/apply-pagination-filter';
+import { PageMetaDto } from '@src/shared/paginations/dto';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
 import { PagePermissionDto } from '../../dto/page-permission.dto';
 import { ResponsePermissionDto } from '../../dto/response-permission.dto';
-import { GetPermissionsQuery } from '../get-permissions.query';
+import { GetPermissionsQuery } from '../imp/get-permissions.query';
 
 @QueryHandler(GetPermissionsQuery)
 export class GetPermissionsHandler extends BaseHandler<

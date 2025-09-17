@@ -1,4 +1,4 @@
-import { UpdatePermissionDto } from '../dto/update-permission.dto';
+import { UpdatePermissionDto } from '../../dto/update-permission.dto';
 
 export class UpdatePermissionCommand {
   constructor(

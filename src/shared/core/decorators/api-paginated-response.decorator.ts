@@ -1,22 +1,23 @@
 import { applyDecorators, Type } from '@nestjs/common';
-import { ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
-import { PageMetaDto } from '@src/shared/utils/paginations';
+import { ApiExtraModels, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
+import { PageDto } from '@src/shared/paginations';
 
-// Dekorator ini spesifik untuk respons dengan paginasi
-export function ApiPaginatedResponse<TModel extends Type<any>>(model: TModel) {
+export const ApiPaginatedResponse = <TModel extends Type<any>>(
+  model: TModel,
+) => {
   return applyDecorators(
+    ApiExtraModels(PageDto),
     ApiOkResponse({
+      description: 'Successfully received model list',
       schema: {
         title: `PaginatedResponseOf${model.name}`,
         allOf: [
+          { $ref: getSchemaPath(PageDto) },
           {
             properties: {
               data: {
                 type: 'array',
                 items: { $ref: getSchemaPath(model) },
-              },
-              meta: {
-                $ref: getSchemaPath(PageMetaDto),
               },
             },
           },
@@ -24,4 +25,4 @@ export function ApiPaginatedResponse<TModel extends Type<any>>(model: TModel) {
       },
     }),
   );
-}
+};

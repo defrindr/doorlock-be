@@ -6,7 +6,7 @@ import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
 import { ResponsePermissionDto } from '../../dto/response-permission.dto';
-import { CreatePermissionCommand } from './../create-permission.command';
+import { CreatePermissionCommand } from '../imp/create-permission.command';
 import { BadRequestHttpException } from '@src/shared/core/exceptions/exception';
 import { CommandHandler } from '@nestjs/cqrs';
 

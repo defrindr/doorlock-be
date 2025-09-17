@@ -8,7 +8,7 @@ import { NotFoundHttpException } from '@src/shared/core/exceptions/exception';
 import { plainToInstance } from 'class-transformer';
 import { OkResponse } from '@src/shared/core/handlers/response.handler';
 import { QueryHandler } from '@nestjs/cqrs';
-import { GetPermissionQuery } from '../get-permission.query';
+import { GetPermissionQuery } from '../imp/get-permission.query';
 
 @QueryHandler(GetPermissionQuery)
 export class GetPermissionHandler extends BaseHandler<

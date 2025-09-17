@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { ResponsePermissionDto } from './response-permission.dto';
-import { PageDto, PageMetaDto } from '@src/shared/utils/paginations';
+import { PageDto, PageMetaDto } from '@src/shared/paginations';
 
 export class PagePermissionDto extends PageDto<ResponsePermissionDto> {
   @ApiProperty({ type: [ResponsePermissionDto] })

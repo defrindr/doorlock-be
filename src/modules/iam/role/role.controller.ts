@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { SingleResponseSchema } from '@src/shared/core/decorators/single-schema.decorator';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
-import { PageOptionsDto } from '@src/shared/utils/paginations';
+import { PageOptionsDto } from '@src/shared/paginations';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { PageRoleDto } from './dto/page-role.dto';
 import { RoleDto } from './dto/role.dto';
