@@ -2,7 +2,6 @@ import { BaseEntity } from '@src/shared/database/entities/abstract.entity';
 import { Type } from 'class-transformer';
 import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { RolePermission } from './role-permission.entity';
-import { Role } from './role.entity';
 
 export type IPermission = {
   id: string;
