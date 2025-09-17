@@ -5,7 +5,7 @@ import { Column, Entity, OneToMany, Unique } from 'typeorm';
 import { RolePermission } from './role-permission.entity';
 
 export type IRole = {
-  id?: number;
+  id?: string;
   name: string;
   rolePermission?: any[];
   users: User[];

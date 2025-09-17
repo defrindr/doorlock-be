@@ -17,6 +17,8 @@ import { RegisterDto } from './dto/register.dto';
 import { Role } from './entities/role.entity';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './users/dto/update-user.dto';
+import { UserDto } from './users/dto/user.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
@@ -187,10 +189,15 @@ export class AuthService {
     const date = new Date();
     date.setDate(date.getDate() + 1);
 
+    const userDto = plainToInstance(UserDto, user, {
+      excludeExtraneousValues: true,
+    });
+
     return {
       code: 200,
       message: 'Login Success',
       data: {
+        user: userDto,
         refreshToken: user.refreshToken,
         token,
         expiredAt: date.getTime(),

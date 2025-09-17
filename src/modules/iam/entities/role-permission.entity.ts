@@ -11,8 +11,8 @@ import { Permission } from './permission.entity';
 
 type IRolePermission = {
   id: number;
-  roleId: number;
-  permissionId: number;
+  roleId: string;
+  permissionId: string;
   role: Role;
   permission: Permission;
 };
@@ -22,15 +22,15 @@ export class RolePermission implements IRolePermission {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'string' })
   @IsNotEmpty()
   @PrimaryColumn()
-  roleId: number;
+  roleId: string;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'string' })
   @IsNotEmpty()
   @PrimaryColumn()
-  permissionId: number;
+  permissionId: string;
 
   @ManyToOne(() => Role, (role) => role.rolePermissions)
   role: Role;

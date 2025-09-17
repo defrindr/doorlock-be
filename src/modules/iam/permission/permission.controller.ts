@@ -13,19 +13,18 @@ import {
   ApiExtraModels,
   ApiOkResponse,
   ApiTags,
-  getSchemaPath,
 } from '@nestjs/swagger';
+import { SingleResponseSchema } from '@src/shared/core/decorators/single-schema.decorator';
+import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { PageOptionsDto } from '@src/shared/utils/paginations';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { PagePermissionDto } from './dto/page-permission.dto';
+import { ResponsePermissionDto } from './dto/response-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { PermissionService } from './permission.service';
-import { ResponsePermissionDto } from './dto/response-permission.dto';
-import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
-import { SingleResponseSchema } from '@src/shared/core/decorators/single-schema.decorator';
 
 @ApiTags('Permissions')
-@Controller('permissions')
+@Controller('iam/permissions')
 @ApiBearerAuth()
 export class PermissionController {
   constructor(private readonly permissionService: PermissionService) {}

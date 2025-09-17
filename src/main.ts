@@ -31,6 +31,12 @@ async function bootstrap() {
     new FastifyAdapter({}),
   );
 
+  app.enableCors({
+    origin: '*', // allow your frontend
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true, // if you use cookies or Authorization headers
+  });
+
   app.enableVersioning({
     type: VersioningType.URI, // or HEADER, MEDIA_TYPE, CUSTOM
     defaultVersion: '1',
@@ -43,14 +49,19 @@ async function bootstrap() {
       forbidNonWhitelisted: false,
       forbidUnknownValues: false,
       disableErrorMessages: false,
-      exceptionFactory: (errors: any) => {
-        const response: any = {
-          code: 400,
-          error: 'Bad Request',
-          message: [],
-        };
+      exceptionFactory: (err: any) => {
+        const errors = err.flatMap((err: any) => {
+          if (err.constraints) {
+            return Object.values(err.constraints).map((msg) => `${msg}`);
+          }
+          return [];
+        });
 
-        log(`Errors: ${JSON.stringify(errors)}`);
+        const response = {
+          code: HttpStatus.BAD_REQUEST,
+          message: errors?.[0] || 'Bad Request',
+          errors: errors,
+        };
 
         return new HttpException(response, HttpStatus.BAD_REQUEST);
       },

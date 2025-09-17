@@ -2,7 +2,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { ConflictHttpException } from '../exceptions/exception';
 
 const ErrorHandler = (error: any) => {
-  console.log(error);
+  console.log('ErrorHandler', error);
   // SQL Server / MSSQL duplicate key error
   if (
     error.code === 'EREQUEST' &&

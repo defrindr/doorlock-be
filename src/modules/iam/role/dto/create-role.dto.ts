@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateRoleDto {
   @ApiProperty({
@@ -26,9 +26,8 @@ export class CreateRoleDto {
     description: 'List of permission IDs associated with the role',
     example: [1, 2],
     required: false,
-    type: [Number],
+    type: [String],
   })
-  @IsNumber({}, { each: true })
-  @Type(() => Number)
-  permissionIds?: number[];
+  @Type(() => String)
+  permissionIds?: string[];
 }
