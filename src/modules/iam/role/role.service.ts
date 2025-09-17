@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ErrorHandler } from '@src/shared/core/handlers/error.handler';
 import { PageMetaDto, PageOptionsDto } from '@src/shared/utils/paginations';
 import { applyPaginationFilters } from '@src/shared/utils/paginations/apply-pagination-filter';
 import { plainToInstance } from 'class-transformer';
@@ -120,7 +119,7 @@ export class RoleService {
           data: role,
         };
       } catch (error) {
-        return ErrorHandler(error);
+        throw error;
       }
     });
   }
@@ -150,7 +149,7 @@ export class RoleService {
         data,
       };
     } catch (error) {
-      ErrorHandler(error);
+      throw error;
     }
   }
 
@@ -174,7 +173,7 @@ export class RoleService {
         message: 'Role deleted',
       };
     } catch (error) {
-      return ErrorHandler(error);
+      throw error;
     }
   }
 }

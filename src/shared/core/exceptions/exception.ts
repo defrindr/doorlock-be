@@ -25,4 +25,10 @@ export class ConflictHttpException extends ApiException {
   }
 }
 
+export class InternalServerErrorHttpException extends ApiException {
+  constructor(message = 'Internal server error') {
+    super(message, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+}
+
 // Tambahkan exception lain sesuai kebutuhan

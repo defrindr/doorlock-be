@@ -1,12 +1,25 @@
-import { Permission } from '../entities/permission.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
-import { PermissionService } from './permission.service';
+import { CqrsModule } from '@nestjs/cqrs';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Permission } from '../entities/permission.entity';
+import { CreatePermissionHandler } from './commands/handlers/create-permission.handler';
+import { DeletePermissionHandler } from './commands/handlers/delete-permission.handler';
+import { UpdatePermissionHandler } from './commands/handlers/update-permission.handler';
 import { PermissionController } from './permission.controller';
+import { PermissionService } from './permission.service';
+import { GetPermissionHandler } from './queries/handlers/get-permission.handler';
+import { GetPermissionsHandler } from './queries/handlers/get-permissions.handler';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Permission])],
+  imports: [TypeOrmModule.forFeature([Permission]), CqrsModule],
   controllers: [PermissionController],
-  providers: [PermissionService],
+  providers: [
+    CreatePermissionHandler,
+    UpdatePermissionHandler,
+    DeletePermissionHandler,
+    GetPermissionHandler,
+    GetPermissionsHandler,
+    PermissionService,
+  ],
 })
 export class PermissionModule {}

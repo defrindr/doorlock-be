@@ -6,19 +6,18 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ErrorHandler } from '@src/shared/core/handlers/error.handler';
 import { OkResponse } from '@src/shared/core/handlers/response.handler';
 import { IUser } from '@src/shared/storage/user.storage';
 import * as argon2 from 'argon2';
+import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
+import { Role } from '../entities/role.entity';
+import { User } from '../entities/user.entity';
+import { UpdateUserDto } from '../users/dto/update-user.dto';
+import { UserDto } from '../users/dto/user.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token';
 import { RegisterDto } from './dto/register.dto';
-import { plainToInstance } from 'class-transformer';
-import { User } from '../entities/user.entity';
-import { Role } from '../entities/role.entity';
-import { UpdateUserDto } from '../users/dto/update-user.dto';
-import { UserDto } from '../users/dto/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -40,7 +39,7 @@ export class AuthService {
 
       return OkResponse({ profile: userExist }, 'Success get profile');
     } catch (error) {
-      return ErrorHandler(error);
+      throw error;
     }
   }
 
@@ -66,7 +65,7 @@ export class AuthService {
       const data = await this.userRepository.save(userExist);
       return OkResponse({ profile: data }, 'Profile successfully updated');
     } catch (error) {
-      return ErrorHandler(error);
+      throw error;
     }
   }
 
@@ -132,7 +131,7 @@ export class AuthService {
         },
       };
     } catch (error) {
-      ErrorHandler(error);
+      throw error;
     }
   }
 

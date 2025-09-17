@@ -1,5 +1,10 @@
 import { Logger } from '@nestjs/common';
 import { ICommandHandler, ICommand } from '@nestjs/cqrs';
+import {
+  ConflictHttpException,
+  InternalServerErrorHttpException,
+} from '../exceptions/exception';
+import { ApiException } from '../exceptions/api-exception';
 
 // TCommand adalah tipe dari command-nya
 // TResult adalah tipe dari hasil yang diharapkan (bisa any atau tipe spesifik)
@@ -29,7 +34,28 @@ export abstract class BaseHandler<TCommand extends ICommand, TResult = any>
         error.stack,
         { command },
       );
-      throw error;
+
+      // if instance of ApiException
+      if (error instanceof ApiException) {
+        throw error;
+      }
+
+      if (
+        error.code === 'EREQUEST' &&
+        error.message.includes('Violation of UNIQUE KEY')
+      ) {
+        throw new ConflictHttpException(error.message);
+      }
+
+      if (error.code === 'QueryFailedError') {
+        throw new ConflictHttpException(
+          'Terjadi kesalahan saat menjalankan aksi, mohon pastikan inputan anda dan coba lagi',
+        );
+      }
+
+      throw new InternalServerErrorHttpException(
+        'Terjadi kesalahan pada server',
+      );
     } finally {
       await this.afterRun(result, command);
     }
@@ -56,7 +82,7 @@ export abstract class BaseHandler<TCommand extends ICommand, TResult = any>
     this.logger.log(
       `Successfully executed command: ${command.constructor.name}`,
     );
-    this.logger.debug(`With result:`, { result });
+    // this.logger.debug(`With result:`, { result });
   }
 
   protected abstract handle(command: TCommand): Promise<TResult>;

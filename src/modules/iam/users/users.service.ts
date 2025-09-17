@@ -7,10 +7,9 @@ import {
 } from '@src/shared/utils/paginations';
 import * as argon2 from 'argon2';
 import { Repository } from 'typeorm';
-import { ErrorHandler } from '@src/shared/core/handlers/error.handler';
+import { User } from '../entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -95,7 +94,7 @@ export class UsersService {
         data,
       };
     } catch (error) {
-      ErrorHandler(error);
+      throw error;
     }
   }
 
@@ -129,7 +128,7 @@ export class UsersService {
         data,
       };
     } catch (error) {
-      ErrorHandler(error);
+      throw error;
     }
   }
 
@@ -154,7 +153,7 @@ export class UsersService {
         message: 'User deleted',
       };
     } catch (error) {
-      ErrorHandler(error);
+      throw error;
     }
   }
 }

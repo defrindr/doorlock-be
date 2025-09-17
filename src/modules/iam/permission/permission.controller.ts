@@ -8,6 +8,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   ApiBearerAuth,
   ApiExtraModels,
@@ -22,12 +23,21 @@ import { PagePermissionDto } from './dto/page-permission.dto';
 import { ResponsePermissionDto } from './dto/response-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { PermissionService } from './permission.service';
+import { GetPermissionQuery } from './queries/get-permission.query';
+import { GetPermissionsQuery } from './queries/get-permissions.query';
+import { CreatePermissionCommand } from './commands/create-permission.command';
+import { DeletePermissionCommand } from './commands/delete-permission.command';
+import { UpdatePermissionCommand } from './commands/update-permission.command';
 
 @ApiTags('Permissions')
 @Controller('iam/permissions')
 @ApiBearerAuth()
 export class PermissionController {
-  constructor(private readonly permissionService: PermissionService) {}
+  constructor(
+    private readonly permissionService: PermissionService,
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   @Post('/')
   @ApiExtraModels(ApiResponseDto, ResponsePermissionDto)
@@ -39,15 +49,15 @@ export class PermissionController {
     ),
   })
   // @PermissionAccess('auth.permission.create')
-  create(@Body() createPermissionDto: CreatePermissionDto) {
-    return this.permissionService.create(createPermissionDto);
+  create(@Body() payload: CreatePermissionDto) {
+    return this.commandBus.execute(new CreatePermissionCommand(payload));
   }
 
   @Get('/')
   @ApiOkResponse({ type: PagePermissionDto })
   // @PermissionAccess('auth.permission.index')
   findAll(@Query() pageOptionsDto: PageOptionsDto): Promise<PagePermissionDto> {
-    return this.permissionService.findAll(pageOptionsDto);
+    return this.queryBus.execute(new GetPermissionsQuery(pageOptionsDto));
   }
 
   @Get('/:id')
@@ -60,7 +70,7 @@ export class PermissionController {
   })
   // @PermissionAccess('auth.permission.view')
   findOne(@Param('id') id: string) {
-    return this.permissionService.findOne(id);
+    return this.queryBus.execute(new GetPermissionQuery(id));
   }
 
   @Put('/:id')
@@ -76,7 +86,9 @@ export class PermissionController {
     @Param('id') id: string,
     @Body() updatePermissionDto: UpdatePermissionDto,
   ) {
-    return this.permissionService.update(id, updatePermissionDto);
+    return this.commandBus.execute(
+      new UpdatePermissionCommand(id, updatePermissionDto),
+    );
   }
 
   @Delete('/:id')
@@ -86,6 +98,6 @@ export class PermissionController {
   })
   // @PermissionAccess('auth.permission.delete')
   remove(@Param('id') id: string) {
-    return this.permissionService.remove(id);
+    return this.commandBus.execute(new DeletePermissionCommand(id));
   }
 }

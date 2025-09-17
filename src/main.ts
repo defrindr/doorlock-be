@@ -7,7 +7,6 @@ import {
 import { NestFactory } from '@nestjs/core';
 
 import { ValidationPipe } from '@nestjs/common';
-import { log } from 'console';
 import { env } from 'process';
 import { AppModule } from './app.module';
 
@@ -29,6 +28,9 @@ async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter({}),
+    {
+      logger: ['warn', 'error', 'log'],
+    },
   );
 
   app.enableCors({
