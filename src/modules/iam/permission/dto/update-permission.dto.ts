@@ -1,4 +1,18 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreatePermissionDto } from './create-permission.dto';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
-export class UpdatePermissionDto extends PartialType(CreatePermissionDto) {}
+export class UpdatePermissionDto {
+  @ApiPropertyOptional({
+    description: 'Permission name',
+    example: 'create-permission',
+  })
+  @Type(() => String)
+  name?: string;
+
+  @ApiPropertyOptional({
+    description: 'Permission description',
+    example: 'Create permission',
+  })
+  @Type(() => String)
+  description?: string;
+}

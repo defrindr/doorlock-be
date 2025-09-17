@@ -11,6 +11,7 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiExtraModels,
   ApiOkResponse,
   ApiTags,
@@ -18,23 +19,21 @@ import {
 import { SingleResponseSchema } from '@src/shared/core/decorators/single-schema.decorator';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { PageOptionsDto } from '@src/shared/utils/paginations';
+import { CreatePermissionCommand } from './commands/create-permission.command';
+import { DeletePermissionCommand } from './commands/delete-permission.command';
+import { UpdatePermissionCommand } from './commands/update-permission.command';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { PagePermissionDto } from './dto/page-permission.dto';
 import { ResponsePermissionDto } from './dto/response-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
-import { PermissionService } from './permission.service';
 import { GetPermissionQuery } from './queries/get-permission.query';
 import { GetPermissionsQuery } from './queries/get-permissions.query';
-import { CreatePermissionCommand } from './commands/create-permission.command';
-import { DeletePermissionCommand } from './commands/delete-permission.command';
-import { UpdatePermissionCommand } from './commands/update-permission.command';
 
 @ApiTags('Permissions')
 @Controller('iam/permissions')
 @ApiBearerAuth()
 export class PermissionController {
   constructor(
-    private readonly permissionService: PermissionService,
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
@@ -81,6 +80,7 @@ export class PermissionController {
       'Data berhasil diupdate',
     ),
   })
+  @ApiBody({ type: UpdatePermissionDto })
   // @PermissionAccess('auth.permission.update')
   update(
     @Param('id') id: string,

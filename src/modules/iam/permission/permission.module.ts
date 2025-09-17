@@ -6,7 +6,6 @@ import { CreatePermissionHandler } from './commands/handlers/create-permission.h
 import { DeletePermissionHandler } from './commands/handlers/delete-permission.handler';
 import { UpdatePermissionHandler } from './commands/handlers/update-permission.handler';
 import { PermissionController } from './permission.controller';
-import { PermissionService } from './permission.service';
 import { GetPermissionHandler } from './queries/handlers/get-permission.handler';
 import { GetPermissionsHandler } from './queries/handlers/get-permissions.handler';
 
@@ -19,7 +18,6 @@ import { GetPermissionsHandler } from './queries/handlers/get-permissions.handle
     DeletePermissionHandler,
     GetPermissionHandler,
     GetPermissionsHandler,
-    PermissionService,
   ],
 })
 export class PermissionModule {}
