@@ -1,11 +1,13 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import { IsNotEmpty } from 'class-validator';
 
 export class UpdatePermissionDto {
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'Permission name',
     example: 'create-permission',
   })
+  @IsNotEmpty()
   @Type(() => String)
   name?: string;
 
