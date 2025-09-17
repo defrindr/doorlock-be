@@ -1,9 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Logger,
-  VersioningType,
-} from '@nestjs/common';
+import { Logger, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { ValidationPipe } from '@nestjs/common';
@@ -16,6 +11,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppConfig } from './config/index';
+import { createValidationException } from './shared/core/factories/validation-exception.factory';
 
 async function bootstrap() {
   let port = AppConfig.port;
@@ -51,22 +47,7 @@ async function bootstrap() {
       forbidNonWhitelisted: false,
       forbidUnknownValues: false,
       disableErrorMessages: false,
-      exceptionFactory: (err: any) => {
-        const errors = err.flatMap((err: any) => {
-          if (err.constraints) {
-            return Object.values(err.constraints).map((msg) => `${msg}`);
-          }
-          return [];
-        });
-
-        const response = {
-          code: HttpStatus.BAD_REQUEST,
-          message: errors?.[0] || 'Bad Request',
-          errors: errors,
-        };
-
-        return new HttpException(response, HttpStatus.BAD_REQUEST);
-      },
+      exceptionFactory: createValidationException,
     }),
   );
 

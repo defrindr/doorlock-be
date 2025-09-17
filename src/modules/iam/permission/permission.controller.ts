@@ -12,11 +12,12 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   ApiBearerAuth,
   ApiBody,
-  ApiExtraModels,
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { SingleResponseSchema } from '@src/shared/core/decorators/single-schema.decorator';
+import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.decorator';
+import { ApiPaginatedResponse } from '@src/shared/core/decorators/api-paginated-response.decorator';
+import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-response.decorator';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { PageOptionsDto } from '@src/shared/utils/paginations';
 import { CreatePermissionCommand } from './commands/create-permission.command';
@@ -39,49 +40,30 @@ export class PermissionController {
   ) {}
 
   @Post('/')
-  @ApiExtraModels(ApiResponseDto, ResponsePermissionDto)
-  @ApiOkResponse({
-    schema: SingleResponseSchema(
-      ResponsePermissionDto,
-      'Data berhasil ditambahkan',
-      201,
-    ),
-  })
-  // @PermissionAccess('auth.permission.create')
+  @ApiSingleResponse(ResponsePermissionDto, 'Data berhasil ditambahkan')
+  @ApiCommonErrors()
   create(@Body() payload: CreatePermissionDto) {
     return this.commandBus.execute(new CreatePermissionCommand(payload));
   }
 
   @Get('/')
-  @ApiOkResponse({ type: PagePermissionDto })
-  // @PermissionAccess('auth.permission.index')
+  @ApiPaginatedResponse(ResponsePermissionDto)
+  @ApiCommonErrors()
   findAll(@Query() pageOptionsDto: PageOptionsDto): Promise<PagePermissionDto> {
     return this.queryBus.execute(new GetPermissionsQuery(pageOptionsDto));
   }
 
   @Get('/:id')
-  @ApiExtraModels(ApiResponseDto, ResponsePermissionDto)
-  @ApiOkResponse({
-    schema: SingleResponseSchema(
-      ResponsePermissionDto,
-      'Data berhasil dapatkan',
-    ),
-  })
-  // @PermissionAccess('auth.permission.view')
+  @ApiSingleResponse(ResponsePermissionDto, 'Data berhasil didapatkan')
+  @ApiCommonErrors()
   findOne(@Param('id') id: string) {
     return this.queryBus.execute(new GetPermissionQuery(id));
   }
 
   @Put('/:id')
-  @ApiExtraModels(ApiResponseDto, ResponsePermissionDto)
-  @ApiOkResponse({
-    schema: SingleResponseSchema(
-      ResponsePermissionDto,
-      'Data berhasil diupdate',
-    ),
-  })
+  @ApiSingleResponse(ResponsePermissionDto, 'Data berhasil diubah')
+  @ApiCommonErrors()
   @ApiBody({ type: UpdatePermissionDto })
-  // @PermissionAccess('auth.permission.update')
   update(
     @Param('id') id: string,
     @Body() updatePermissionDto: UpdatePermissionDto,
@@ -92,11 +74,8 @@ export class PermissionController {
   }
 
   @Delete('/:id')
-  @ApiOkResponse({
-    description: 'Delete permission by ID',
-    type: ApiResponseDto,
-  })
-  // @PermissionAccess('auth.permission.delete')
+  @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
+  @ApiCommonErrors()
   remove(@Param('id') id: string) {
     return this.commandBus.execute(new DeletePermissionCommand(id));
   }
