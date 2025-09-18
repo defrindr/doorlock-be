@@ -10,13 +10,10 @@ import {
   Query,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import {
-  ApiBearerAuth,
-  ApiExtraModels,
-  ApiOkResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { SingleResponseSchema } from '@src/shared/core/decorators/single-schema.decorator';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.decorator';
+import { ApiPaginatedResponse } from '@src/shared/core/decorators/api-paginated-response.decorator';
+import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-response.decorator';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { PageOptionsDto } from '@src/shared/paginations';
 import { CreateRoleCommand } from './commands/imp/create-role.command';
@@ -39,43 +36,38 @@ export class RoleController {
   ) {}
 
   @Post('/')
-  @ApiExtraModels(ApiResponseDto, RoleDto)
-  @ApiOkResponse({
-    schema: SingleResponseSchema(RoleDto, 'Data berhasil ditambahkan', 201),
-  })
-  // @PermissionAccess('auth.role.create')
+  @ApiSingleResponse(RoleDto, 'Data berhasil ditambahkan', 201)
+  @ApiCommonErrors()
   create(@Body() createRoleDto: CreateRoleDto) {
     return this.commandBus.execute(new CreateRoleCommand(createRoleDto));
   }
 
   @Get('/')
-  @ApiOkResponse({ type: PageRoleDto })
-  // @PermissionAccess()
+  @ApiPaginatedResponse(PageRoleDto)
+  @ApiCommonErrors()
   @HttpCode(200)
   async findAll(@Query() pageOptionsDto: PageOptionsDto) {
     return this.queryBus.execute(new GetRolesQuery(pageOptionsDto));
   }
 
   @Get('/:id')
-  @ApiExtraModels(ApiResponseDto, RoleDto)
-  @ApiOkResponse({
-    schema: SingleResponseSchema(RoleDto, 'Data berhasil ditambahkan', 201),
-  })
-  // @PermissionAccess('auth.role.view')
+  @ApiSingleResponse(RoleDto, 'Data berhasil didapatkan', 200)
+  @ApiCommonErrors()
   @HttpCode(200)
   findOne(@Param('id') id: string) {
     return this.queryBus.execute(new GetRoleQuery(id));
   }
 
   @Put('/:id')
-  // @PermissionAccess('auth.role.update')
-  @HttpCode(200)
+  @ApiSingleResponse(RoleDto, 'Data berhasil diubah', 200)
+  @ApiCommonErrors()
   update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
     return this.commandBus.execute(new UpdateRoleCommand(id, updateRoleDto));
   }
 
   @Delete('/:id')
-  // @PermissionAccess('auth.role.delete')
+  @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
+  @ApiCommonErrors()
   remove(@Param('id') id: string) {
     return this.commandBus.execute(new DeleteRoleCommand(id));
   }

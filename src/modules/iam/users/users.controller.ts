@@ -9,13 +9,10 @@ import {
   Query,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import {
-  ApiBearerAuth,
-  ApiExtraModels,
-  ApiOkResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { SingleResponseSchema } from '@src/shared/core/decorators/single-schema.decorator';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.decorator';
+import { ApiPaginatedResponse } from '@src/shared/core/decorators/api-paginated-response.decorator';
+import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-response.decorator';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { PageOptionsDto } from '@src/shared/paginations';
 import { CreateUserCommand } from './commands/imp/create-user.command';
@@ -38,40 +35,36 @@ export class UsersController {
   ) {}
 
   @Post('')
-  @ApiExtraModels(ApiResponseDto, UserDto)
-  @ApiOkResponse({
-    schema: SingleResponseSchema(UserDto, 'Data berhasil ditambahkan', 201),
-  })
+  @ApiSingleResponse(UserDto, 'Data berhasil ditambahkan', 201)
+  @ApiCommonErrors()
   create(@Body() createUserDto: CreateUserDto) {
     return this.commandBus.execute(new CreateUserCommand(createUserDto));
   }
 
   @Get('')
-  @ApiOkResponse({ type: PageUserDto })
+  @ApiPaginatedResponse(PageUserDto)
+  @ApiCommonErrors()
   async findAll(@Query() pageOptionsDto: PageOptionsDto) {
     return this.queryBus.execute(new GetUsersQuery(pageOptionsDto));
   }
 
   @Get(':id')
-  @ApiExtraModels(ApiResponseDto, UserDto)
-  @ApiOkResponse({
-    schema: SingleResponseSchema(UserDto, 'Data berhasil didapatkan', 200),
-  })
+  @ApiSingleResponse(UserDto, 'Data berhasil didapatkan', 200)
+  @ApiCommonErrors()
   findOne(@Param('id') id: string) {
     return this.queryBus.execute(new GetUserQuery(id));
   }
 
   @Put(':id')
-  @ApiExtraModels(ApiResponseDto, UserDto)
-  @ApiOkResponse({
-    schema: SingleResponseSchema(UserDto, 'Data berhasil diubah', 200),
-  })
+  @ApiSingleResponse(UserDto, 'Data berhasil diubah', 200)
+  @ApiCommonErrors()
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.commandBus.execute(new UpdateUserCommand(id, updateUserDto));
   }
 
   @Delete(':id')
   @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
+  @ApiCommonErrors()
   remove(@Param('id') id: string) {
     return this.commandBus.execute(new DeleteUserCommand(id));
   }
