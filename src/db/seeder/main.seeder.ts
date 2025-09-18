@@ -6,6 +6,7 @@ import dataSource from '../options';
 import PermissionSeeder from '@src/modules/iam/seeders/permission.seeder';
 import RoleSeeder from '@src/modules/iam/seeders/role.seeder';
 import UserSeeder from '@src/modules/iam/seeders/user.seeder';
+import { LocationSeeder } from '@src/modules/locations/seeders/location.seeder';
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -57,6 +58,7 @@ async function bootstrap() {
     permission: PermissionSeeder,
     role: RoleSeeder,
     user: UserSeeder,
+    location: LocationSeeder,
   };
 
   await dataSource.initialize();
@@ -78,6 +80,9 @@ async function bootstrap() {
   } else {
     // Perilaku default: jalankan semua seeder secara berurutan
     console.log('\n▶️  Running all seeders in sequence...');
+    // Data master
+    await runSeeder(dataSource, LocationSeeder);
+    // IAM
     await runSeeder(dataSource, PermissionSeeder);
     await runSeeder(dataSource, RoleSeeder);
     await runSeeder(dataSource, UserSeeder);
