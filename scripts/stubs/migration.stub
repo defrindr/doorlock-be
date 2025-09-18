@@ -1,0 +1,70 @@
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+
+export class Create{{PLURAL_PASCAL}}Table{{TIMESTAMP}} implements MigrationInterface {
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.createTable(
+      new Table({
+        name: '{{PLURAL_SNAKE}}',
+        columns: [
+          {
+            name: 'id',
+            type: 'char',
+            length: '36',
+            isPrimary: true,
+            generationStrategy: 'uuid',
+          },
+          {
+            name: 'name',
+            type: 'nvarchar',
+            length: '255',
+            isNullable: false,
+          },
+          {
+            name: 'description',
+            type: 'text',
+            isNullable: true,
+          },
+          {
+            name: 'status',
+            type: 'tinyint',
+            default: 1,
+            isNullable: false,
+          },
+          {
+            name: 'createdAt',
+            type: 'datetime',
+            default: 'CURRENT_TIMESTAMP',
+            isNullable: false,
+          },
+          {
+            name: 'updatedAt',
+            type: 'datetime',
+            default: 'CURRENT_TIMESTAMP',
+            onUpdate: 'CURRENT_TIMESTAMP',
+            isNullable: false,
+          },
+          {
+            name: 'deletedAt',
+            type: 'datetime',
+            isNullable: true,
+          },
+        ],
+        indices: [
+          {
+            name: 'IDX_{{PLURAL_UPPER}}_NAME',
+            columnNames: ['name'],
+          },
+          {
+            name: 'IDX_{{PLURAL_UPPER}}_CREATED_AT',
+            columnNames: ['createdAt'],
+          },
+        ],
+      }),
+      true,
+    );
+  }
+
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropTable('{{PLURAL_SNAKE}}');
+  }
+}

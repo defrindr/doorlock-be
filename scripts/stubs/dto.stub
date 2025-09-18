@@ -1,0 +1,25 @@
+import { ApiProperty } from '@nestjs/swagger';
+
+export class {{SINGULAR_PASCAL}}Dto {
+  @ApiProperty({ description: '{{SINGULAR_PASCAL}} ID' })
+  id: string;
+
+  @ApiProperty({ description: '{{SINGULAR_PASCAL}} name' })
+  name: string;
+
+  @ApiProperty({ description: '{{SINGULAR_PASCAL}} description', nullable: true })
+  description?: string;
+
+  @ApiProperty({ description: '{{SINGULAR_PASCAL}} status' })
+  status: number;
+
+  @ApiProperty({ description: 'Creation date' })
+  createdAt: Date;
+
+  @ApiProperty({ description: 'Last update date' })
+  updatedAt: Date;
+
+  constructor(partial: Partial<{{SINGULAR_PASCAL}}Dto>) {
+    Object.assign(this, partial);
+  }
+}

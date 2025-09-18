@@ -24,7 +24,8 @@
     "db:create": "npm run typeorm -- migration:create",
     "db:revert": "npm run typeorm -- migration:revert",
     "db:clear": "npm run typeorm -- schema:drop",
-    "db:seed": "ts-node -r tsconfig-paths/register src/db/seeder/main.seeder.ts"
+    "db:seed": "ts-node -r tsconfig-paths/register src/db/seeder/main.seeder.ts",
+    "make:module": "node scripts/generate-crud.js"
   },
   "dependencies": {
     "@fastify/static": "^6.12.0",

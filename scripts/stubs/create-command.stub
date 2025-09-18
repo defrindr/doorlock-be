@@ -1,0 +1,5 @@
+import { Create{{SINGULAR_PASCAL}}Dto } from '../../dto/create-{{SINGULAR_KEBAB}}.dto';
+
+export class Create{{SINGULAR_PASCAL}}Command {
+  constructor(public readonly create{{SINGULAR_PASCAL}}Dto: Create{{SINGULAR_PASCAL}}Dto) {}
+}

@@ -1,0 +1,8 @@
+import { Update{{SINGULAR_PASCAL}}Dto } from '../../dto/update-{{SINGULAR_KEBAB}}.dto';
+
+export class Update{{SINGULAR_PASCAL}}Command {
+  constructor(
+    public readonly id: string,
+    public readonly update{{SINGULAR_PASCAL}}Dto: Update{{SINGULAR_PASCAL}}Dto,
+  ) {}
+}

@@ -1,0 +1,51 @@
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { BaseHandler } from '@src/shared/core/handlers/base.handler';
+import { OkResponse } from '@src/shared/core/handlers/response.handler';
+import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
+import { PageMetaDto } from '@src/shared/paginations/dto';
+import { plainToInstance } from 'class-transformer';
+
+import { {{SINGULAR_PASCAL}}Dto } from '../../dto/{{SINGULAR_KEBAB}}.dto';
+import { Page{{SINGULAR_PASCAL}}Dto } from '../../dto/page-{{SINGULAR_KEBAB}}.dto';
+import { {{SINGULAR_PASCAL}} } from '../../entities/{{SINGULAR_KEBAB}}.entity';
+import { Get{{PLURAL_PASCAL}}Query } from '../imp/get-{{PLURAL_KEBAB}}.query';
+
+@QueryHandler(Get{{PLURAL_PASCAL}}Query)
+export class Get{{PLURAL_PASCAL}}Handler
+  extends BaseHandler<Get{{PLURAL_PASCAL}}Query, ApiResponseDto<Page{{SINGULAR_PASCAL}}Dto>>
+  implements IQueryHandler<Get{{PLURAL_PASCAL}}Query, ApiResponseDto<Page{{SINGULAR_PASCAL}}Dto>>
+{
+  constructor(
+    @InjectRepository({{SINGULAR_PASCAL}})
+    private readonly {{SINGULAR_CAMEL}}Repository: Repository<{{SINGULAR_PASCAL}}>,
+  ) {
+    super();
+  }
+
+  async handle(query: Get{{PLURAL_PASCAL}}Query): Promise<ApiResponseDto<Page{{SINGULAR_PASCAL}}Dto>> {
+    const { pageOptionsDto } = query;
+
+    const queryBuilder = this.{{SINGULAR_CAMEL}}Repository.createQueryBuilder('{{SINGULAR_CAMEL}}');
+
+    queryBuilder
+      .orderBy('{{SINGULAR_CAMEL}}.createdAt', 'DESC')
+      .skip(pageOptionsDto.skip)
+      .take(pageOptionsDto.take);
+
+    const itemCount = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+
+    const {{SINGULAR_CAMEL}}Dtos = plainToInstance({{SINGULAR_PASCAL}}Dto, entities, {
+      excludeExtraneousValues: false,
+    });
+
+    const page{{SINGULAR_PASCAL}}Dto = new Page{{SINGULAR_PASCAL}}Dto({{SINGULAR_CAMEL}}Dtos, pageMetaDto);
+
+    return OkResponse(page{{SINGULAR_PASCAL}}Dto, '{{PLURAL_PASCAL}} retrieved successfully');
+  }
+}

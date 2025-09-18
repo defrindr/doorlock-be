@@ -1,0 +1,48 @@
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { BaseHandler } from '@src/shared/core/handlers/base.handler';
+import { CreatedResponse } from '@src/shared/core/handlers/response.handler';
+import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
+import { plainToInstance } from 'class-transformer';
+
+import { ConflictHttpException } from '@src/shared/core/exceptions/exception';
+import { {{SINGULAR_PASCAL}}Dto } from '../../dto/{{SINGULAR_KEBAB}}.dto';
+import { {{SINGULAR_PASCAL}} } from '../../entities/{{SINGULAR_KEBAB}}.entity';
+import { Create{{SINGULAR_PASCAL}}Command } from '../imp/create-{{SINGULAR_KEBAB}}.command';
+
+@CommandHandler(Create{{SINGULAR_PASCAL}}Command)
+export class Create{{SINGULAR_PASCAL}}Handler
+  extends BaseHandler<Create{{SINGULAR_PASCAL}}Command, ApiResponseDto<{{SINGULAR_PASCAL}}Dto>>
+  implements ICommandHandler<Create{{SINGULAR_PASCAL}}Command, ApiResponseDto<{{SINGULAR_PASCAL}}Dto>>
+{
+  constructor(
+    @InjectRepository({{SINGULAR_PASCAL}})
+    private readonly {{SINGULAR_CAMEL}}Repository: Repository<{{SINGULAR_PASCAL}}>,
+  ) {
+    super();
+  }
+
+  async handle(command: Create{{SINGULAR_PASCAL}}Command): Promise<ApiResponseDto<{{SINGULAR_PASCAL}}Dto>> {
+    const { create{{SINGULAR_PASCAL}}Dto } = command;
+
+    // Check if {{SINGULAR_CAMEL}} with same name already exists
+    const existing{{SINGULAR_PASCAL}} = await this.{{SINGULAR_CAMEL}}Repository.findOne({
+      where: { name: create{{SINGULAR_PASCAL}}Dto.name },
+    });
+
+    if (existing{{SINGULAR_PASCAL}}) {
+      throw new ConflictHttpException('{{SINGULAR_PASCAL}} with this name already exists');
+    }
+
+    const {{SINGULAR_CAMEL}} = this.{{SINGULAR_CAMEL}}Repository.create(create{{SINGULAR_PASCAL}}Dto);
+    const saved{{SINGULAR_PASCAL}} = await this.{{SINGULAR_CAMEL}}Repository.save({{SINGULAR_CAMEL}});
+
+    const {{SINGULAR_CAMEL}}Dto = plainToInstance({{SINGULAR_PASCAL}}Dto, saved{{SINGULAR_PASCAL}}, {
+      excludeExtraneousValues: false,
+    });
+
+    return CreatedResponse([{{SINGULAR_CAMEL}}Dto], '{{SINGULAR_PASCAL}} created successfully');
+  }
+}

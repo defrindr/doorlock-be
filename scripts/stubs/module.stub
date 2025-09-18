@@ -1,0 +1,25 @@
+import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Create{{SINGULAR_PASCAL}}Handler } from './commands/handlers/create-{{SINGULAR_KEBAB}}.handler';
+import { Delete{{SINGULAR_PASCAL}}Handler } from './commands/handlers/delete-{{SINGULAR_KEBAB}}.handler';
+import { Update{{SINGULAR_PASCAL}}Handler } from './commands/handlers/update-{{SINGULAR_KEBAB}}.handler';
+import { {{SINGULAR_PASCAL}} } from './entities/{{SINGULAR_KEBAB}}.entity';
+import { {{PLURAL_PASCAL}}Controller } from './{{PLURAL_KEBAB}}.controller';
+import { Get{{SINGULAR_PASCAL}}Handler } from './queries/handlers/get-{{SINGULAR_KEBAB}}.handler';
+import { Get{{PLURAL_PASCAL}}Handler } from './queries/handlers/get-{{PLURAL_KEBAB}}.handler';
+
+const commandHandlers = [
+  Create{{SINGULAR_PASCAL}}Handler,
+  Update{{SINGULAR_PASCAL}}Handler,
+  Delete{{SINGULAR_PASCAL}}Handler,
+];
+
+const queryHandlers = [Get{{PLURAL_PASCAL}}Handler, Get{{SINGULAR_PASCAL}}Handler];
+
+@Module({
+  imports: [TypeOrmModule.forFeature([{{SINGULAR_PASCAL}}]), CqrsModule],
+  controllers: [{{PLURAL_PASCAL}}Controller],
+  providers: [...commandHandlers, ...queryHandlers],
+})
+export class {{PLURAL_PASCAL}}Module {}

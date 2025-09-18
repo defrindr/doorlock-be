@@ -1,0 +1,43 @@
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { BaseHandler } from '@src/shared/core/handlers/base.handler';
+import { OkResponse } from '@src/shared/core/handlers/response.handler';
+import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
+
+import { NotFoundHttpException } from '@src/shared/core/exceptions/exception';
+import { {{SINGULAR_PASCAL}} } from '../../entities/{{SINGULAR_KEBAB}}.entity';
+import { Delete{{SINGULAR_PASCAL}}Command } from '../imp/delete-{{SINGULAR_KEBAB}}.command';
+
+@CommandHandler(Delete{{SINGULAR_PASCAL}}Command)
+export class Delete{{SINGULAR_PASCAL}}Handler
+  extends BaseHandler<Delete{{SINGULAR_PASCAL}}Command, ApiResponseDto<string>>
+  implements ICommandHandler<Delete{{SINGULAR_PASCAL}}Command, ApiResponseDto<string>>
+{
+  constructor(
+    @InjectRepository({{SINGULAR_PASCAL}})
+    private readonly {{SINGULAR_CAMEL}}Repository: Repository<{{SINGULAR_PASCAL}}>,
+  ) {
+    super();
+  }
+
+  async handle(command: Delete{{SINGULAR_PASCAL}}Command): Promise<ApiResponseDto<string>> {
+    const { id } = command;
+
+    const {{SINGULAR_CAMEL}} = await this.{{SINGULAR_CAMEL}}Repository.findOne({
+      where: { id },
+    });
+
+    if (!{{SINGULAR_CAMEL}}) {
+      throw new NotFoundHttpException('{{SINGULAR_PASCAL}} not found');
+    }
+
+    await this.{{SINGULAR_CAMEL}}Repository.softDelete(id);
+
+    return OkResponse(
+      '{{SINGULAR_PASCAL}} deleted successfully',
+      '{{SINGULAR_PASCAL}} deleted successfully',
+    );
+  }
+}

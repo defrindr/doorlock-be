@@ -1,0 +1,98 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.decorator';
+import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-response.decorator';
+import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
+import { PageOptionsDto } from '@src/shared/paginations';
+import { Create{{SINGULAR_PASCAL}}Command } from './commands/imp/create-{{SINGULAR_KEBAB}}.command';
+import { Delete{{SINGULAR_PASCAL}}Command } from './commands/imp/delete-{{SINGULAR_KEBAB}}.command';
+import { Update{{SINGULAR_PASCAL}}Command } from './commands/imp/update-{{SINGULAR_KEBAB}}.command';
+import { Create{{SINGULAR_PASCAL}}Dto } from './dto/create-{{SINGULAR_KEBAB}}.dto';
+import { {{SINGULAR_PASCAL}}Dto } from './dto/{{SINGULAR_KEBAB}}.dto';
+import { Page{{SINGULAR_PASCAL}}Dto } from './dto/page-{{SINGULAR_KEBAB}}.dto';
+import { Update{{SINGULAR_PASCAL}}Dto } from './dto/update-{{SINGULAR_KEBAB}}.dto';
+import { Get{{SINGULAR_PASCAL}}Query } from './queries/imp/get-{{SINGULAR_KEBAB}}.query';
+import { Get{{PLURAL_PASCAL}}Query } from './queries/imp/get-{{PLURAL_KEBAB}}.query';
+
+@Controller('{{PLURAL_KEBAB}}')
+@ApiTags('{{PLURAL_KEBAB}}')
+@ApiBearerAuth()
+export class {{PLURAL_PASCAL}}Controller {
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new {{SINGULAR_CAMEL}}' })
+  @ApiSingleResponse({{SINGULAR_PASCAL}}Dto, '{{SINGULAR_PASCAL}} created successfully')
+  @ApiCommonErrors()
+  async create(
+    @Body() create{{SINGULAR_PASCAL}}Dto: Create{{SINGULAR_PASCAL}}Dto,
+  ): Promise<ApiResponseDto<{{SINGULAR_PASCAL}}Dto>> {
+    return this.commandBus.execute(new Create{{SINGULAR_PASCAL}}Command(create{{SINGULAR_PASCAL}}Dto));
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get all {{PLURAL_CAMEL}} with pagination' })
+  @ApiOkResponse({
+    description: '{{PLURAL_PASCAL}} retrieved successfully',
+    type: Page{{SINGULAR_PASCAL}}Dto,
+  })
+  @ApiCommonErrors()
+  async findAll(
+    @Query() pageOptionsDto: PageOptionsDto,
+  ): Promise<ApiResponseDto<Page{{SINGULAR_PASCAL}}Dto>> {
+    return this.queryBus.execute(new Get{{PLURAL_PASCAL}}Query(pageOptionsDto));
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get {{SINGULAR_CAMEL}} by ID' })
+  @ApiSingleResponse({{SINGULAR_PASCAL}}Dto, '{{SINGULAR_PASCAL}} retrieved successfully')
+  @ApiCommonErrors()
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ApiResponseDto<{{SINGULAR_PASCAL}}Dto>> {
+    return this.queryBus.execute(new Get{{SINGULAR_PASCAL}}Query(id));
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Update {{SINGULAR_CAMEL}} by ID' })
+  @ApiSingleResponse({{SINGULAR_PASCAL}}Dto, '{{SINGULAR_PASCAL}} updated successfully')
+  @ApiCommonErrors()
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() update{{SINGULAR_PASCAL}}Dto: Update{{SINGULAR_PASCAL}}Dto,
+  ): Promise<ApiResponseDto<{{SINGULAR_PASCAL}}Dto>> {
+    return this.commandBus.execute(new Update{{SINGULAR_PASCAL}}Command(id, update{{SINGULAR_PASCAL}}Dto));
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete {{SINGULAR_CAMEL}} by ID' })
+  @ApiOkResponse({
+    description: '{{SINGULAR_PASCAL}} deleted successfully',
+    type: String,
+  })
+  @ApiCommonErrors()
+  async remove(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ApiResponseDto<string>> {
+    return this.commandBus.execute(new Delete{{SINGULAR_PASCAL}}Command(id));
+  }
+}

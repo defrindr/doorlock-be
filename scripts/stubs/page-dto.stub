@@ -1,0 +1,11 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { PageDto } from '@src/shared/paginations/dto/page.dto';
+import { {{SINGULAR_PASCAL}}Dto } from './{{SINGULAR_KEBAB}}.dto';
+
+export class Page{{SINGULAR_PASCAL}}Dto extends PageDto<{{SINGULAR_PASCAL}}Dto> {
+  @ApiProperty({
+    type: {{SINGULAR_PASCAL}}Dto,
+    isArray: true,
+  })
+  readonly data: {{SINGULAR_PASCAL}}Dto[];
+}

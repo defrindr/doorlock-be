@@ -1,0 +1,44 @@
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { BaseHandler } from '@src/shared/core/handlers/base.handler';
+import { OkResponse } from '@src/shared/core/handlers/response.handler';
+import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
+import { plainToInstance } from 'class-transformer';
+
+import { NotFoundHttpException } from '@src/shared/core/exceptions/exception';
+import { {{SINGULAR_PASCAL}}Dto } from '../../dto/{{SINGULAR_KEBAB}}.dto';
+import { {{SINGULAR_PASCAL}} } from '../../entities/{{SINGULAR_KEBAB}}.entity';
+import { Get{{SINGULAR_PASCAL}}Query } from '../imp/get-{{SINGULAR_KEBAB}}.query';
+
+@QueryHandler(Get{{SINGULAR_PASCAL}}Query)
+export class Get{{SINGULAR_PASCAL}}Handler
+  extends BaseHandler<Get{{SINGULAR_PASCAL}}Query, ApiResponseDto<{{SINGULAR_PASCAL}}Dto>>
+  implements IQueryHandler<Get{{SINGULAR_PASCAL}}Query, ApiResponseDto<{{SINGULAR_PASCAL}}Dto>>
+{
+  constructor(
+    @InjectRepository({{SINGULAR_PASCAL}})
+    private readonly {{SINGULAR_CAMEL}}Repository: Repository<{{SINGULAR_PASCAL}}>,
+  ) {
+    super();
+  }
+
+  async handle(query: Get{{SINGULAR_PASCAL}}Query): Promise<ApiResponseDto<{{SINGULAR_PASCAL}}Dto>> {
+    const { id } = query;
+
+    const {{SINGULAR_CAMEL}} = await this.{{SINGULAR_CAMEL}}Repository.findOne({
+      where: { id },
+    });
+
+    if (!{{SINGULAR_CAMEL}}) {
+      throw new NotFoundHttpException('{{SINGULAR_PASCAL}} not found');
+    }
+
+    const {{SINGULAR_CAMEL}}Dto = plainToInstance({{SINGULAR_PASCAL}}Dto, {{SINGULAR_CAMEL}}, {
+      excludeExtraneousValues: false,
+    });
+
+    return OkResponse({{SINGULAR_CAMEL}}Dto, '{{SINGULAR_PASCAL}} retrieved successfully');
+  }
+}
