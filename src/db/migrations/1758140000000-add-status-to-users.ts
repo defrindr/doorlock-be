@@ -10,6 +10,9 @@ export class AddStatusToUsers1758140000000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `ALTER TABLE [users] DROP CONSTRAINT [DF_users_status_default]`,
+    );
     await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "status"`);
   }
 }
