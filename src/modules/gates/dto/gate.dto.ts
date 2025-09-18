@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose, Transform } from 'class-transformer';
+import { Exclude, Expose, Transform, Type } from 'class-transformer';
 import { GateType } from '../entities/gate-type.enum';
+import { LocationDto } from '@src/modules/locations/dto/location.dto';
 
 export class GateDto {
   @ApiProperty({
@@ -59,10 +60,7 @@ export class GateDto {
     description: 'Location details',
     required: false,
   })
+  @Type(() => LocationDto)
   @Expose()
-  location?: {
-    id: string;
-    name: string;
-    type: string;
-  };
+  location?: LocationDto;
 }

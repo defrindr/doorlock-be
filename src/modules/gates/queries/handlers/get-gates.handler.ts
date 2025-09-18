@@ -1,20 +1,18 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { PageRoleDto } from '@src/modules/iam/role/dto/page-role.dto';
 import { BaseHandler } from '@src/shared/core/handlers/base.handler';
-import { OkResponse } from '@src/shared/core/handlers/response.handler';
-import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
-import { plainToInstance } from 'class-transformer';
-import { PageMetaDto } from '@src/shared/paginations/dto';
 import { applyPaginationFilters } from '@src/shared/paginations/apply-pagination-filter';
-import { Gate } from '../../entities/gate.entity';
+import { PageMetaDto } from '@src/shared/paginations/dto';
+import { plainToInstance } from 'class-transformer';
+import { Repository } from 'typeorm';
 import { GateDto } from '../../dto/gate.dto';
-import { PageGateDto } from '../../dto/page-gate.dto';
+import { Gate } from '../../entities/gate.entity';
 import { GetGatesQuery } from '../imp/get-gates.query';
 
 @QueryHandler(GetGatesQuery)
 export class GetGatesHandler
-  extends BaseHandler<GetGatesQuery, ApiResponseDto<PageGateDto>>
+  extends BaseHandler<GetGatesQuery, PageRoleDto>
   implements IQueryHandler<GetGatesQuery>
 {
   constructor(
@@ -24,7 +22,7 @@ export class GetGatesHandler
     super();
   }
 
-  async handle(command: GetGatesQuery): Promise<ApiResponseDto<PageGateDto>> {
+  async handle(command: GetGatesQuery): Promise<PageRoleDto> {
     const { pageOptionsDto } = command;
 
     let qb = this.gateRepository.createQueryBuilder('gate');
@@ -51,10 +49,6 @@ export class GetGatesHandler
       pageOptionsDto,
     });
 
-    const pageDto = new PageGateDto();
-    pageDto.data = gatesDto;
-    pageDto.meta = pageMetaDto;
-
-    return OkResponse(pageDto, 'Gates retrieved successfully');
+    return new PageRoleDto(gatesDto, pageMetaDto);
   }
 }

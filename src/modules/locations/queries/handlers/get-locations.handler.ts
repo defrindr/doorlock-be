@@ -1,20 +1,18 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { BaseHandler } from '@src/shared/core/handlers/base.handler';
-import { OkResponse } from '@src/shared/core/handlers/response.handler';
-import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
-import { plainToInstance } from 'class-transformer';
-import { PageMetaDto } from '@src/shared/paginations/dto';
 import { applyPaginationFilters } from '@src/shared/paginations/apply-pagination-filter';
-import { Location } from '../../entities/location.entity';
+import { PageMetaDto } from '@src/shared/paginations/dto';
+import { plainToInstance } from 'class-transformer';
+import { Repository } from 'typeorm';
 import { LocationDto } from '../../dto/location.dto';
 import { PageLocationDto } from '../../dto/page-location.dto';
+import { Location } from '../../entities/location.entity';
 import { GetLocationsQuery } from '../imp/get-locations.query';
 
 @QueryHandler(GetLocationsQuery)
 export class GetLocationsHandler
-  extends BaseHandler<GetLocationsQuery, ApiResponseDto<PageLocationDto>>
+  extends BaseHandler<GetLocationsQuery, PageLocationDto>
   implements IQueryHandler<GetLocationsQuery>
 {
   constructor(
@@ -24,9 +22,7 @@ export class GetLocationsHandler
     super();
   }
 
-  async handle(
-    command: GetLocationsQuery,
-  ): Promise<ApiResponseDto<PageLocationDto>> {
+  async handle(command: GetLocationsQuery): Promise<PageLocationDto> {
     const { pageOptionsDto } = command;
 
     let qb = this.locationRepository.createQueryBuilder('location');
@@ -46,8 +42,7 @@ export class GetLocationsHandler
     });
 
     const pageMeta = new PageMetaDto({ itemCount, pageOptionsDto });
-    const pageLocationDto = new PageLocationDto(data, pageMeta);
 
-    return OkResponse(pageLocationDto, 'Locations retrieved successfully');
+    return new PageLocationDto(data, pageMeta);
   }
 }
