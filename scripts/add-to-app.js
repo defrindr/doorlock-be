@@ -1,13 +1,14 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-var-requires */
 
-import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
+const fs = require('fs');
+const path = require('path');
 
 // Helper script to add generated module to app.module.ts
 function addModuleToApp(moduleName) {
-  const appModulePath = join(__dirname, '..', 'src', 'app.module.ts');
+  const appModulePath = path.join(__dirname, '..', 'src', 'app.module.ts');
 
-  if (!existsSync(appModulePath)) {
+  if (!fs.existsSync(appModulePath)) {
     console.error('app.module.ts not found!');
     return;
   }
@@ -18,7 +19,7 @@ function addModuleToApp(moduleName) {
   const pluralKebab = pluralize(moduleName);
   const pluralPascal = pluralize(singularPascal);
 
-  let content = readFileSync(appModulePath, 'utf8');
+  let content = fs.readFileSync(appModulePath, 'utf8');
 
   // Add import
   const importLine = `import { ${pluralPascal}Module } from './modules/${pluralKebab}/${pluralKebab}.module';`;
@@ -35,7 +36,7 @@ function addModuleToApp(moduleName) {
   if (lastImportIndex > -1) {
     content =
       content.slice(0, lastImportIndex) +
-      '\\n' +
+      '\n' +
       importLine +
       content.slice(lastImportIndex);
   }
@@ -53,7 +54,7 @@ function addModuleToApp(moduleName) {
     content = content.replace(importsRegex, `imports: [${newImports}]`);
   }
 
-  writeFileSync(appModulePath, content);
+  fs.writeFileSync(appModulePath, content);
   console.log(`✅ Added ${pluralPascal}Module to app.module.ts`);
 }
 

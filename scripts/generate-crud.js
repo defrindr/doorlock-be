@@ -1,14 +1,21 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-var-requires */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { join, dirname } from 'path';
+const fs = require('fs');
+const path = require('path');
 
 class CrudGenerator {
   constructor(moduleName) {
     this.moduleName = moduleName;
     this.setupVariables();
-    this.stubsPath = join(__dirname, 'stubs');
-    this.outputPath = join(__dirname, '..', 'src', 'modules', this.pluralKebab);
+    this.stubsPath = path.join(__dirname, 'stubs');
+    this.outputPath = path.join(
+      __dirname,
+      '..',
+      'src',
+      'modules',
+      this.pluralKebab,
+    );
   }
 
   setupVariables() {
@@ -53,9 +60,9 @@ class CrudGenerator {
       .replace(/^_/, '');
   }
 
-  // Simple pluralization
+  // Simple pluralization with case preservation
   pluralize(word) {
-    // Handle special cases
+    // Handle special cases - preserve case of first character
     const irregulars = {
       company: 'companies',
       person: 'people',
@@ -64,23 +71,32 @@ class CrudGenerator {
       goose: 'geese',
     };
 
-    if (irregulars[word.toLowerCase()]) {
-      return irregulars[word.toLowerCase()];
+    const lowerWord = word.toLowerCase();
+    if (irregulars[lowerWord]) {
+      const pluralForm = irregulars[lowerWord];
+      // Preserve the case of the first character from the original word
+      if (word[0] === word[0].toUpperCase()) {
+        return pluralForm.charAt(0).toUpperCase() + pluralForm.slice(1);
+      }
+      return pluralForm;
     }
 
-    if (word.endsWith('y')) {
-      return word.slice(0, -1) + 'ies';
-    }
-    if (
-      word.endsWith('s') ||
-      word.endsWith('sh') ||
-      word.endsWith('ch') ||
-      word.endsWith('x') ||
-      word.endsWith('z')
+    let result;
+    if (word.toLowerCase().endsWith('y')) {
+      result = word.slice(0, -1) + 'ies';
+    } else if (
+      word.toLowerCase().endsWith('s') ||
+      word.toLowerCase().endsWith('sh') ||
+      word.toLowerCase().endsWith('ch') ||
+      word.toLowerCase().endsWith('x') ||
+      word.toLowerCase().endsWith('z')
     ) {
-      return word + 'es';
+      result = word + 'es';
+    } else {
+      result = word + 's';
     }
-    return word + 's';
+
+    return result;
   }
 
   // Replace placeholders in template content
@@ -100,21 +116,21 @@ class CrudGenerator {
 
   // Create directory if it doesn't exist
   ensureDirectoryExists(dirPath) {
-    if (!existsSync(dirPath)) {
-      mkdirSync(dirPath, { recursive: true });
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
     }
   }
 
   // Generate file from stub
   generateFile(stubName, outputPath, customReplacements = {}) {
-    const stubPath = join(this.stubsPath, `${stubName}.stub`);
+    const stubPath = path.join(this.stubsPath, `${stubName}.stub`);
 
-    if (!existsSync(stubPath)) {
+    if (!fs.existsSync(stubPath)) {
       console.error(`Stub file not found: ${stubPath}`);
       return;
     }
 
-    let content = readFileSync(stubPath, 'utf8');
+    let content = fs.readFileSync(stubPath, 'utf8');
 
     // Apply standard replacements
     content = this.replacePlaceholders(content);
@@ -124,9 +140,9 @@ class CrudGenerator {
       content = content.replace(new RegExp(key, 'g'), value);
     }
 
-    this.ensureDirectoryExists(dirname(outputPath));
-    writeFileSync(outputPath, content);
-    console.log(`Generated: ${outputPath}`);
+    this.ensureDirectoryExists(path.dirname(outputPath));
+    fs.writeFileSync(outputPath, content);
+    // console.log(`Generated: ${outputPath}`);
   }
 
   // Generate all CRUD files
@@ -136,41 +152,45 @@ class CrudGenerator {
 
     // Create main directories
     this.ensureDirectoryExists(this.outputPath);
-    this.ensureDirectoryExists(join(this.outputPath, 'entities'));
-    this.ensureDirectoryExists(join(this.outputPath, 'dto'));
-    this.ensureDirectoryExists(join(this.outputPath, 'commands', 'imp'));
-    this.ensureDirectoryExists(join(this.outputPath, 'commands', 'handlers'));
-    this.ensureDirectoryExists(join(this.outputPath, 'queries', 'imp'));
-    this.ensureDirectoryExists(join(this.outputPath, 'queries', 'handlers'));
+    this.ensureDirectoryExists(path.join(this.outputPath, 'entities'));
+    this.ensureDirectoryExists(path.join(this.outputPath, 'dto'));
+    this.ensureDirectoryExists(path.join(this.outputPath, 'commands', 'imp'));
+    this.ensureDirectoryExists(
+      path.join(this.outputPath, 'commands', 'handlers'),
+    );
+    this.ensureDirectoryExists(path.join(this.outputPath, 'queries', 'imp'));
+    this.ensureDirectoryExists(
+      path.join(this.outputPath, 'queries', 'handlers'),
+    );
 
     // Generate entity
     this.generateFile(
       'entity',
-      join(this.outputPath, 'entities', `${this.singularKebab}.entity.ts`),
+      path.join(this.outputPath, 'entities', `${this.singularKebab}.entity.ts`),
     );
 
     // Generate DTOs
     this.generateFile(
       'create-dto',
-      join(this.outputPath, 'dto', `create-${this.singularKebab}.dto.ts`),
+      path.join(this.outputPath, 'dto', `create-${this.singularKebab}.dto.ts`),
     );
     this.generateFile(
       'update-dto',
-      join(this.outputPath, 'dto', `update-${this.singularKebab}.dto.ts`),
+      path.join(this.outputPath, 'dto', `update-${this.singularKebab}.dto.ts`),
     );
     this.generateFile(
       'dto',
-      join(this.outputPath, 'dto', `${this.singularKebab}.dto.ts`),
+      path.join(this.outputPath, 'dto', `${this.singularKebab}.dto.ts`),
     );
     this.generateFile(
       'page-dto',
-      join(this.outputPath, 'dto', `page-${this.singularKebab}.dto.ts`),
+      path.join(this.outputPath, 'dto', `page-${this.singularKebab}.dto.ts`),
     );
 
     // Generate commands
     this.generateFile(
       'create-command',
-      join(
+      path.join(
         this.outputPath,
         'commands',
         'imp',
@@ -179,7 +199,7 @@ class CrudGenerator {
     );
     this.generateFile(
       'update-command',
-      join(
+      path.join(
         this.outputPath,
         'commands',
         'imp',
@@ -188,7 +208,7 @@ class CrudGenerator {
     );
     this.generateFile(
       'delete-command',
-      join(
+      path.join(
         this.outputPath,
         'commands',
         'imp',
@@ -199,7 +219,7 @@ class CrudGenerator {
     // Generate command handlers
     this.generateFile(
       'create-handler',
-      join(
+      path.join(
         this.outputPath,
         'commands',
         'handlers',
@@ -208,7 +228,7 @@ class CrudGenerator {
     );
     this.generateFile(
       'update-handler',
-      join(
+      path.join(
         this.outputPath,
         'commands',
         'handlers',
@@ -217,7 +237,7 @@ class CrudGenerator {
     );
     this.generateFile(
       'delete-handler',
-      join(
+      path.join(
         this.outputPath,
         'commands',
         'handlers',
@@ -228,7 +248,7 @@ class CrudGenerator {
     // Generate queries
     this.generateFile(
       'get-all-query',
-      join(
+      path.join(
         this.outputPath,
         'queries',
         'imp',
@@ -237,7 +257,7 @@ class CrudGenerator {
     );
     this.generateFile(
       'get-one-query',
-      join(
+      path.join(
         this.outputPath,
         'queries',
         'imp',
@@ -248,7 +268,7 @@ class CrudGenerator {
     // Generate query handlers
     this.generateFile(
       'get-all-handler',
-      join(
+      path.join(
         this.outputPath,
         'queries',
         'handlers',
@@ -257,7 +277,7 @@ class CrudGenerator {
     );
     this.generateFile(
       'get-one-handler',
-      join(
+      path.join(
         this.outputPath,
         'queries',
         'handlers',
@@ -268,30 +288,30 @@ class CrudGenerator {
     // Generate controller
     this.generateFile(
       'controller',
-      join(this.outputPath, `${this.pluralKebab}.controller.ts`),
+      path.join(this.outputPath, `${this.pluralKebab}.controller.ts`),
     );
 
     // Generate module
     this.generateFile(
       'module',
-      join(this.outputPath, `${this.pluralKebab}.module.ts`),
+      path.join(this.outputPath, `${this.pluralKebab}.module.ts`),
     );
 
     // Generate migration
-    const migrationPath = join(
-      __dirname,
-      '..',
-      'src',
-      'db',
-      'migrations',
-      `${this.timestamp}-create-${this.pluralKebab}-table.ts`,
-    );
-    this.generateFile('migration', migrationPath);
+    // const migrationPath = path.join(
+    //   __dirname,
+    //   '..',
+    //   'src',
+    //   'db',
+    //   'migrations',
+    //   `${this.timestamp}-create-${this.pluralKebab}-table.ts`,
+    // );
+    // this.generateFile('migration', migrationPath);
 
     console.log(
-      `\\n✅ CRUD module '${this.moduleName}' generated successfully!`,
+      `\n✅ CRUD module '${this.moduleName}' generated successfully!`,
     );
-    console.log(`\\nNext steps:`);
+    console.log(`\nNext steps:`);
     console.log(
       `1. Add ${this.pluralPascal}Module to your app.module.ts imports`,
     );
