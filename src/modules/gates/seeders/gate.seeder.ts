@@ -109,9 +109,7 @@ export class GateSeeder implements Seeder {
       });
 
       if (!existingGate) {
-        const gate = gateRepository.create(gateData);
-        await gateRepository.save(gate);
-      } else {
+        await gateRepository.create(gateData);
       }
     }
 
