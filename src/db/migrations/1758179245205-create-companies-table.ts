@@ -9,12 +9,15 @@ export class CreateCompaniesTable1758179245205 implements MigrationInterface {
             [id] uniqueidentifier NOT NULL CONSTRAINT "DF_companies_id" DEFAULT NEWSEQUENTIALID(),
             [name] varchar(250) NOT NULL,
             [address] nvarchar(MAX) NULL,
-            [phone] varchar(20) NULL,
-            [npwp] varchar(16) NULL,
+            [status] tinyint NOT NULL CONSTRAINT "DF_companies_status" DEFAULT 1,
             [createdAt] datetime2 NOT NULL CONSTRAINT "DF_companies_createdAt" DEFAULT getdate(),
             [updatedAt] datetime2 NOT NULL CONSTRAINT "DF_companies_updatedAt" DEFAULT getdate(),
             [deletedAt] datetime2,
         }`,
+    );
+
+    await queryRunner.query(
+      `ALTER TABLE "companies" ADD CONSTRAINT "CHK_companies_status" CHECK ("status" IN (0, 1))`,
     );
   }
 
