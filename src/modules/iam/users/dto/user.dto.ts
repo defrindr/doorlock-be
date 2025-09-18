@@ -1,7 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Expose, Type } from 'class-transformer';
+import { UserRoleDto } from './user-role.dto';
 
 export class UserDto {
+  @ApiProperty()
+  @Expose()
+  public id: string;
+
   @ApiProperty()
   @Expose()
   public username: string;
@@ -20,13 +25,26 @@ export class UserDto {
 
   @ApiProperty()
   @Expose()
-  public fcmToken?: string;
+  public photoUrl?: string;
 
   @ApiProperty()
   @Expose()
-  public photoUrl?: string;
+  public roleId: string;
 
-  constructor(partial: Partial<UserDto>) {
-    Object.assign(this, partial);
-  }
+  @ApiPropertyOptional()
+  @Expose()
+  @Type(() => UserRoleDto)
+  public role?: UserRoleDto;
+
+  @ApiProperty()
+  @Expose()
+  public status: 'active' | 'inactive';
+
+  @ApiProperty()
+  @Expose()
+  public createdAt: Date;
+
+  @ApiProperty()
+  @Expose()
+  public updatedAt: Date;
 }

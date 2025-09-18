@@ -1,84 +1,96 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
-  IsAlphanumeric,
   IsEmail,
+  IsEnum,
   IsNotEmpty,
-  IsNumberString,
   IsOptional,
   IsString,
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { Unique } from 'typeorm';
 
 export class CreateUserDto {
   @ApiProperty({
     description: 'Username',
-    example: 'admin@example.com',
+    example: 'admin',
+    required: true,
   })
-  @IsAlphanumeric()
   @IsNotEmpty()
-  @Unique('username', (value) => [
-    {
-      username: value,
-    },
-  ])
+  @IsString()
+  @Type(() => String)
   public username: string;
 
   @ApiProperty({
-    description: 'Password untuk login',
-    example: 'password',
+    description: 'Password for login',
+    example: 'password123',
+    required: true,
   })
-  @MinLength(6, { message: 'Password minimal 6 karakter' })
-  @MaxLength(16, { message: 'Password maksimal 16 karakter' })
   @IsNotEmpty()
+  @IsString()
+  @MinLength(6, { message: 'Password minimal 6 karakter' })
+  @MaxLength(50, { message: 'Password maksimal 50 karakter' })
+  @Type(() => String)
   public password: string;
 
   @ApiProperty({
-    description: 'Nama lengkap',
-    example: 'Akun Demo',
+    description: 'Full name',
+    example: 'John Doe',
+    required: true,
   })
   @IsNotEmpty()
+  @IsString()
+  @Type(() => String)
   public name: string;
 
   @ApiProperty({
-    required: false,
-    description: 'Nomor telepon',
+    description: 'Phone number',
     example: '081234567890',
+    required: false,
   })
-  @IsNumberString()
+  @IsOptional()
+  @IsString()
+  @Type(() => String)
   public phone?: string;
 
   @ApiProperty({
+    description: 'Email address',
+    example: 'john.doe@example.com',
     required: false,
-    description: 'Alamat email',
-    example: 'loremipsum@mail.com',
   })
+  @IsOptional()
   @IsEmail()
+  @Type(() => String)
   public email?: string;
 
   @ApiProperty({
-    required: false,
-    description: 'Token Firebase Cloud Messaging',
-    example: '1234567890',
-  })
-  @IsString()
-  public fcmToken?: string;
-
-  @ApiProperty({
-    required: true,
-    description: 'ID Role',
+    description: 'Role ID',
     example: 'xxx-xxx-xxx-xxx',
+    required: true,
   })
+  @IsNotEmpty()
   @IsString()
-  public roleId?: string;
+  @Type(() => String)
+  public roleId: string;
 
   @ApiProperty({
+    description: 'Photo URL',
+    example: 'https://example.com/photo.jpg',
     required: false,
-    description: 'URL foto',
-    example: 'https://example.com/foto.jpg',
   })
-  @IsString()
   @IsOptional()
+  @IsString()
+  @Type(() => String)
   public photoUrl?: string;
+
+  @ApiProperty({
+    description: 'User status',
+    example: 'active',
+    enum: ['active', 'inactive'],
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(['active', 'inactive'])
+  @Type(() => String)
+  public status?: 'active' | 'inactive';
 }

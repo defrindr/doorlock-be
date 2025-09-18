@@ -1992,7 +1992,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/qs@npm:*":
+"@types/qs@npm:*, @types/qs@npm:^6.14.0":
   version: 6.14.0
   resolution: "@types/qs@npm:6.14.0"
   checksum: 1909205514d22b3cbc7c2314e2bd8056d5f05dfb21cf4377f0730ee5e338ea19957c41735d5e4806c746176563f50005bbab602d8358432e25d900bdf4970826
@@ -2661,6 +2661,7 @@ __metadata:
     "@types/jest": ^29.5.2
     "@types/node": ^20.3.1
     "@types/passport-jwt": ^3.0.13
+    "@types/qs": ^6.14.0
     "@types/supertest": ^2.0.12
     "@typescript-eslint/eslint-plugin": ^6.0.0
     "@typescript-eslint/parser": ^6.0.0
@@ -2676,6 +2677,7 @@ __metadata:
     passport: ^0.7.0
     passport-jwt: ^4.0.1
     prettier: ^3.0.0
+    qs: ^6.14.0
     reflect-metadata: ^0.1.13
     rxjs: ^7.8.1
     source-map-support: ^0.5.21
@@ -7444,7 +7446,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.11.0":
+"qs@npm:^6.11.0, qs@npm:^6.14.0":
   version: 6.14.0
   resolution: "qs@npm:6.14.0"
   dependencies:

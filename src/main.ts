@@ -12,6 +12,7 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppConfig } from './config/index';
 import { createValidationException } from './shared/core/factories/validation-exception.factory';
+import * as qs from 'qs';
 
 async function bootstrap() {
   let port = AppConfig.port;
@@ -23,7 +24,11 @@ async function bootstrap() {
 
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter({}),
+    new FastifyAdapter({
+      querystringParser(str) {
+        return qs.parse(str);
+      },
+    }),
     {
       logger: ['warn', 'error', 'log'],
     },
@@ -47,6 +52,9 @@ async function bootstrap() {
       forbidNonWhitelisted: false,
       forbidUnknownValues: false,
       disableErrorMessages: false,
+      transformOptions: {
+        enableImplicitConversion: true, // Allows for automatic type conversion
+      },
       exceptionFactory: createValidationException,
     }),
   );

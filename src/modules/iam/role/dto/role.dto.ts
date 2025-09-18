@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { ResponsePermissionDto } from '../../permission/dto/response-permission.dto';
 
@@ -15,7 +15,7 @@ export class RoleDto {
   @Expose()
   description?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @Expose()
   @Type(() => ResponsePermissionDto)
   permissions?: ResponsePermissionDto[];

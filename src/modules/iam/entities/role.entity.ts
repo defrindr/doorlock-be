@@ -48,6 +48,6 @@ export class Role extends BaseEntity {
   })
   permissions: Permission[];
 
-  // @OneToMany(() => User, (user) => user.role)
-  // users?: User[];
+  @OneToMany(() => User, (user) => user.role)
+  users?: User[];
 }

@@ -1,7 +1,8 @@
 import { BaseEntity } from '@src/shared/database/entities/abstract.entity';
 import { Exclude } from 'class-transformer';
 import { IsNotEmpty } from 'class-validator';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Role } from './role.entity';
 
 @Entity({
   name: 'users',
@@ -49,6 +50,14 @@ export class User extends BaseEntity {
   @IsNotEmpty()
   roleId: string;
 
-  // @ManyToOne(() => Role, (role) => role.users)
-  // public role?: Role;
+  @Column({
+    type: 'varchar',
+    length: 20,
+    default: 'active',
+  })
+  status: 'active' | 'inactive';
+
+  @ManyToOne(() => Role, (role) => role.users)
+  @JoinColumn({ name: 'roleId' })
+  public role?: Role;
 }

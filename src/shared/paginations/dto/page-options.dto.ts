@@ -46,9 +46,10 @@ export class PageOptionsDto {
   @ApiPropertyOptional({
     description: 'Column filters, e.g. filter[name]=admin',
   })
+  @Type(() => Object)
   @IsOptional()
   @Transform(({ value }) => value || {}) // ensure object
-  readonly filter?: Record<string, string>;
+  readonly filter?: Record<string, any>;
 
   get skip(): number {
     return ((this.page ?? 1) - 1) * (this.take ?? 20);

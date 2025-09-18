@@ -50,12 +50,15 @@ export function applyPaginationFilters<T extends ObjectLiteral>(
   }
 
   // --- Column-specific filters ---
+  console.log('Applying filter', pageOptions);
   if (pageOptions.filter) {
     Object.entries(pageOptions.filter).forEach(([key, value]) => {
       if (allowedFilter.includes(key)) {
         qb.andWhere(`${alias}.${key} = :${key}`, { [key]: value });
       }
     });
+
+    console.log(qb.getSql());
   }
 
   return qb;
