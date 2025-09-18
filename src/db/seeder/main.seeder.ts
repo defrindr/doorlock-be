@@ -8,6 +8,7 @@ import RoleSeeder from '@src/modules/iam/seeders/role.seeder';
 import UserSeeder from '@src/modules/iam/seeders/user.seeder';
 import { LocationSeeder } from '@src/modules/locations/seeders/location.seeder';
 import { GateSeeder } from '@src/modules/gates/seeders/gate.seeder';
+import { AccountSeeder } from '@src/modules/identity/seeders/account.seeder';
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -38,11 +39,27 @@ async function clearDatabase(ds: DataSource) {
   await ds.query('DELETE FROM role_permissions');
   console.log('   - Cleared join table: role_permissions');
 
-  // 2. Hapus tabel users yang mereferensikan roles.
+  // 2. Hapus tabel identity (account detail tables first, then main account table)
+  await ds.query('DELETE FROM account_guests');
+  console.log('   - Cleared table: account_guests');
+  await ds.query('DELETE FROM account_interns');
+  console.log('   - Cleared table: account_interns');
+  await ds.query('DELETE FROM account_employees');
+  console.log('   - Cleared table: account_employees');
+  await ds.query('DELETE FROM accounts');
+  console.log('   - Cleared table: accounts');
+
+  // 3. Hapus tabel gates dan locations
+  await ds.query('DELETE FROM gates');
+  console.log('   - Cleared table: gates');
+  await ds.query('DELETE FROM locations');
+  console.log('   - Cleared table: locations');
+
+  // 4. Hapus tabel users yang mereferensikan roles.
   await ds.query('DELETE FROM users');
   console.log('   - Cleared table: users');
 
-  // 3. Sekarang tabel parent/referensi bisa dihapus dengan aman.
+  // 5. Sekarang tabel parent/referensi bisa dihapus dengan aman.
   await ds.query('DELETE FROM roles');
   console.log('   - Cleared table: roles');
 
@@ -61,6 +78,7 @@ async function bootstrap() {
     user: UserSeeder,
     location: LocationSeeder,
     gate: GateSeeder,
+    account: AccountSeeder,
   };
 
   await dataSource.initialize();
@@ -85,6 +103,7 @@ async function bootstrap() {
     // Data master
     await runSeeder(dataSource, LocationSeeder);
     await runSeeder(dataSource, GateSeeder);
+    await runSeeder(dataSource, AccountSeeder);
     // IAM
     await runSeeder(dataSource, PermissionSeeder);
     await runSeeder(dataSource, RoleSeeder);
