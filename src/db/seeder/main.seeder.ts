@@ -7,6 +7,7 @@ import PermissionSeeder from '@src/modules/iam/seeders/permission.seeder';
 import RoleSeeder from '@src/modules/iam/seeders/role.seeder';
 import UserSeeder from '@src/modules/iam/seeders/user.seeder';
 import { LocationSeeder } from '@src/modules/locations/seeders/location.seeder';
+import { GateSeeder } from '@src/modules/gates/seeders/gate.seeder';
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -59,6 +60,7 @@ async function bootstrap() {
     role: RoleSeeder,
     user: UserSeeder,
     location: LocationSeeder,
+    gate: GateSeeder,
   };
 
   await dataSource.initialize();
@@ -82,6 +84,7 @@ async function bootstrap() {
     console.log('\n▶️  Running all seeders in sequence...');
     // Data master
     await runSeeder(dataSource, LocationSeeder);
+    await runSeeder(dataSource, GateSeeder);
     // IAM
     await runSeeder(dataSource, PermissionSeeder);
     await runSeeder(dataSource, RoleSeeder);
