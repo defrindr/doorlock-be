@@ -19,25 +19,33 @@ export default class UserSeeder implements Seeder {
     });
     const UserRole = await roleRepository.findOne({ where: { name: 'User' } });
 
-    const newUser = userRepository.create({
-      username: 'admin',
-      password: await argon2.hash('password'),
-      name: 'Admin User',
-      email: 'admin@example.com',
-      roleId: AdminRole?.id,
-    });
-    await userRepository.save(newUser);
-    console.log(`   - Created user: ${newUser.username}`);
+    const users = [
+      {
+        username: 'admin',
+        password: await argon2.hash('password'),
+        name: 'Admin User',
+        email: 'admin@example.com',
+        roleId: AdminRole?.id,
+      },
+      {
+        username: 'user',
+        password: await argon2.hash('password'),
+        name: 'Regular User',
+        email: 'user@example.com',
+        roleId: UserRole?.id,
+      },
+    ];
 
-    // Generate User
-    const user = userRepository.create({
-      username: 'user',
-      password: await argon2.hash('password'),
-      name: 'Regular User',
-      email: 'user@example.com',
-      roleId: UserRole?.id,
-    });
-    await userRepository.save(user);
-    console.log(`   - Created user: ${user.username}`);
+    for (const user of users) {
+      const userExist = await userRepository.findOne({
+        where: { username: user.username },
+      });
+
+      if (!userExist) {
+        const newUser = userRepository.create(user);
+        await userRepository.save(newUser);
+        console.log(`   - Created user: ${newUser.username}`);
+      }
+    }
   }
 }
