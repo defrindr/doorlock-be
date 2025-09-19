@@ -82,7 +82,7 @@ export class CreateIdentityTable1758182403102 implements MigrationInterface {
             default: 'NEWSEQUENTIALID()',
           },
           { name: 'account_id', type: 'uniqueidentifier' },
-          { name: 'employee_id', type: 'varchar', length: '50' },
+          { name: 'employee_number', type: 'varchar', length: '50' },
           { name: 'full_name', type: 'nvarchar', length: '255' },
           {
             name: 'department',
@@ -110,13 +110,13 @@ export class CreateIdentityTable1758182403102 implements MigrationInterface {
           { name: 'deletedAt', type: 'datetime2', isNullable: true },
         ],
         uniques: [
-          { columnNames: ['employee_id'] },
+          { columnNames: ['employee_number'] },
           { columnNames: ['account_id'] },
         ],
         indices: [
           {
-            name: 'IDX_account_employees_employee_id',
-            columnNames: ['employee_id'],
+            name: 'IDX_account_employees_employee_number',
+            columnNames: ['employee_number'],
           },
           {
             name: 'IDX_account_employees_department',

@@ -20,8 +20,13 @@ export class AccountEmployee {
   @Column({ type: 'uuid', name: 'account_id', unique: true })
   accountId: string;
 
-  @Column({ type: 'varchar', length: 50, unique: true, name: 'employee_id' })
-  employeeId: string;
+  @Column({
+    type: 'varchar',
+    length: 50,
+    unique: true,
+    name: 'employee_number',
+  })
+  employeeNumber: string;
 
   @Column({ type: 'nvarchar', length: 255, name: 'full_name' })
   fullName: string;
@@ -29,14 +34,14 @@ export class AccountEmployee {
   @Column({ type: 'nvarchar', length: 100, nullable: true })
   department: string;
 
-  @Column({ type: 'int', name: 'violation_points' })
-  violationPoints: number;
-
   @Column({ type: 'nvarchar', length: 100, nullable: true })
   position: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   email: string;
+
+  @Column({ type: 'int', name: 'violation_points' })
+  violationPoints: number;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
   phone: string;

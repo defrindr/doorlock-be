@@ -29,7 +29,7 @@ export class AccountSeeder implements Seeder {
       {
         nfcCode: 'NFC001EMP',
         accountType: AccountType.EMPLOYEE,
-        employeeId: 'EMP001',
+        employeeNumber: 'EMP001',
         fullName: 'John Smith',
         department: 'Information Technology',
         position: 'Senior Software Engineer',
@@ -40,7 +40,7 @@ export class AccountSeeder implements Seeder {
       {
         nfcCode: 'NFC002EMP',
         accountType: AccountType.EMPLOYEE,
-        employeeId: 'EMP002',
+        employeeNumber: 'EMP002',
         fullName: 'Sarah Johnson',
         department: 'Human Resources',
         position: 'HR Manager',
@@ -51,7 +51,7 @@ export class AccountSeeder implements Seeder {
       {
         nfcCode: 'NFC003EMP',
         accountType: AccountType.EMPLOYEE,
-        employeeId: 'EMP003',
+        employeeNumber: 'EMP003',
         fullName: 'Michael Brown',
         department: 'Information Technology',
         position: 'DevOps Engineer',
@@ -62,7 +62,7 @@ export class AccountSeeder implements Seeder {
       {
         nfcCode: 'NFC004EMP',
         accountType: AccountType.EMPLOYEE,
-        employeeId: 'EMP004',
+        employeeNumber: 'EMP004',
         fullName: 'Lisa Davis',
         department: 'Finance',
         position: 'Financial Analyst',
@@ -84,7 +84,7 @@ export class AccountSeeder implements Seeder {
       // Create employee details
       const employee = new AccountEmployee();
       employee.accountId = savedAccount.id;
-      employee.employeeId = empData.employeeId;
+      employee.employeeNumber = empData.employeeNumber;
       employee.fullName = empData.fullName;
       employee.department = empData.department;
       employee.position = empData.position;
