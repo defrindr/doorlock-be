@@ -107,11 +107,8 @@ export class CompaniesController {
     description:
       'Permanently remove a company from the system. This action cannot be undone and will also remove all associated data',
   })
-  @ApiOkResponse({
-    description: 'Company deleted successfully',
-    type: String,
-  })
   @ApiCommonErrors()
+  @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ApiResponseDto<null>> {

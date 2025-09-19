@@ -117,10 +117,7 @@ export class GuestsController {
     description:
       'Permanently remove a guest from the system. This will also remove all associated access logs and identification records',
   })
-  @ApiOkResponse({
-    description: 'Guest deleted successfully',
-    type: String,
-  })
+  @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
   @ApiCommonErrors()
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
