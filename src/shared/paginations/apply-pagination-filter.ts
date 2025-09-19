@@ -14,6 +14,12 @@ export interface QueryOptions {
   };
 }
 
+const getColumnName = (columnName: string, defaultAlias: string) => {
+  return columnName.includes('.')
+    ? columnName
+    : `${defaultAlias}.${columnName}`;
+};
+
 export function applyPaginationFilters<T extends ObjectLiteral>(
   qb: SelectQueryBuilder<T>,
   options: QueryOptions,
@@ -34,7 +40,7 @@ export function applyPaginationFilters<T extends ObjectLiteral>(
     Object.entries(pageOptions.sort).forEach(([key, value]) => {
       if (allowedSort.includes(key)) {
         qb.addOrderBy(
-          `${alias}.${key}`,
+          getColumnName(key, alias),
           value.toUpperCase() === 'DESC' ? 'DESC' : 'ASC',
         );
       }
@@ -44,7 +50,7 @@ export function applyPaginationFilters<T extends ObjectLiteral>(
   // --- Global search ---
   if (pageOptions.search && allowedSearch.length) {
     const searchWhere = allowedSearch
-      .map((col) => `${alias}.${col} LIKE :search`)
+      .map((col) => `${getColumnName(col, alias)} LIKE :search`)
       .join(' OR ');
     qb.andWhere(searchWhere, { search: `%${pageOptions.search}%` });
   }
@@ -54,7 +60,7 @@ export function applyPaginationFilters<T extends ObjectLiteral>(
   if (pageOptions.filter) {
     Object.entries(pageOptions.filter).forEach(([key, value]) => {
       if (allowedFilter.includes(key)) {
-        qb.andWhere(`${alias}.${key} = :${key}`, { [key]: value });
+        qb.andWhere(`${getColumnName(key, alias)} = :${key}`, { [key]: value });
       }
     });
 
