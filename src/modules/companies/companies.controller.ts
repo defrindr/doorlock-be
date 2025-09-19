@@ -94,7 +94,7 @@ export class CompaniesController {
   @ApiCommonErrors()
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<ApiResponseDto<string>> {
+  ): Promise<ApiResponseDto<null>> {
     return this.commandBus.execute(new DeleteCompanyCommand(id));
   }
 }

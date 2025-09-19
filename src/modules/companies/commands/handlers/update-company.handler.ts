@@ -42,6 +42,7 @@ export class UpdateCompanyHandler
     if (!company) {
       throw new NotFoundHttpException('Company not found');
     }
+
     if (companyExist) {
       throw new ConflictHttpException('Company with this name already exists');
     }

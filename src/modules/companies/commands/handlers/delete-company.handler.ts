@@ -12,8 +12,8 @@ import { DeleteCompanyCommand } from '../imp/delete-company.command';
 
 @CommandHandler(DeleteCompanyCommand)
 export class DeleteCompanyHandler
-  extends BaseHandler<DeleteCompanyCommand, ApiResponseDto<string>>
-  implements ICommandHandler<DeleteCompanyCommand, ApiResponseDto<string>>
+  extends BaseHandler<DeleteCompanyCommand, ApiResponseDto<null>>
+  implements ICommandHandler<DeleteCompanyCommand, ApiResponseDto<null>>
 {
   constructor(
     @InjectRepository(Company)
@@ -22,7 +22,7 @@ export class DeleteCompanyHandler
     super();
   }
 
-  async handle(command: DeleteCompanyCommand): Promise<ApiResponseDto<string>> {
+  async handle(command: DeleteCompanyCommand): Promise<ApiResponseDto<null>> {
     const { id } = command;
 
     const company = await this.companyRepository.findOne({
@@ -35,9 +35,6 @@ export class DeleteCompanyHandler
 
     await this.companyRepository.softDelete(id);
 
-    return OkResponse(
-      'Company deleted successfully',
-      'Company deleted successfully',
-    );
+    return OkResponse(null, 'Company deleted successfully');
   }
 }
