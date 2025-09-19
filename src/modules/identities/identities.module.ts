@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Account } from './entities/account.entity';
+import { Module } from '@nestjs/common';
+import { GuestsModule } from './guests/guests.module';
 import { AccountEmployee } from './entities/account-employee.entity';
-import { AccountIntern } from './entities/account-intern.entity';
 import { AccountGuest } from './entities/account-guest.entity';
+import { AccountIntern } from './entities/account-intern.entity';
 
 @Module({
   imports: [
@@ -14,8 +15,7 @@ import { AccountGuest } from './entities/account-guest.entity';
       AccountGuest,
     ]),
   ],
-  providers: [],
   controllers: [],
-  exports: [TypeOrmModule],
+  providers: [GuestsModule],
 })
-export class IdentityModule {}
+export class IdentitiesModule {}

@@ -193,12 +193,7 @@ export class CreateIdentityTable1758182403102 implements MigrationInterface {
           },
           { name: 'account_id', type: 'uniqueidentifier' },
           { name: 'full_name', type: 'nvarchar', length: '255' },
-          {
-            name: 'company',
-            type: 'nvarchar',
-            length: '255',
-            isNullable: true,
-          },
+          { name: 'company_id', type: 'uniqueidentifier' },
           { name: 'email', type: 'varchar', length: '255', isNullable: true },
           { name: 'phone', type: 'varchar', length: '50', isNullable: true },
           {
@@ -315,15 +310,20 @@ export class CreateIdentityTable1758182403102 implements MigrationInterface {
       }),
     ]);
 
-    await queryRunner.createForeignKey(
-      'account_guests',
+    await queryRunner.createForeignKeys('account_guests', [
       new TableForeignKey({
         columnNames: ['account_id'],
         referencedTableName: 'accounts',
         referencedColumnNames: ['id'],
         onDelete: 'CASCADE',
       }),
-    );
+      new TableForeignKey({
+        columnNames: ['company_id'],
+        referencedTableName: 'companies',
+        referencedColumnNames: ['id'],
+        onDelete: 'RESTRICT',
+      }),
+    ]);
 
     await queryRunner.createForeignKey(
       'visits',

@@ -24,8 +24,8 @@ export class AccountGuest {
   @Column({ type: 'nvarchar', length: 255, name: 'full_name' })
   fullName: string;
 
-  @Column({ type: 'nvarchar', length: 255, nullable: true })
-  company: string;
+  @Column({ type: 'uuid', name: 'company_id', unique: true })
+  companyId: string;
 
   @Column({ type: 'nvarchar', length: 500, nullable: true })
   purpose: string;

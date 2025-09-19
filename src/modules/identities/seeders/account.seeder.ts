@@ -5,6 +5,7 @@ import { AccountEmployee } from '../entities/account-employee.entity';
 import { AccountIntern } from '../entities/account-intern.entity';
 import { AccountGuest } from '../entities/account-guest.entity';
 import { AccountType, IdentificationType } from '../entities/account-type.enum';
+import { Company } from '@src/modules/master/companies/entities/company.entity';
 
 export class AccountSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<any> {
@@ -12,6 +13,7 @@ export class AccountSeeder implements Seeder {
     const employeeRepository = dataSource.getRepository(AccountEmployee);
     const internRepository = dataSource.getRepository(AccountIntern);
     const guestRepository = dataSource.getRepository(AccountGuest);
+    const companyRepository = dataSource.getRepository(Company);
 
     // Check if data already exists
     const existingAccounts = await accountRepository.count();
@@ -109,7 +111,6 @@ export class AccountSeeder implements Seeder {
         fullName: 'Alex Wilson',
         university: 'University of Technology',
         major: 'Computer Science',
-        semester: 6,
         email: 'alex.wilson@university.edu',
         phone: '+628123456005',
         startDate: new Date('2024-08-01'),
@@ -122,7 +123,6 @@ export class AccountSeeder implements Seeder {
         fullName: 'Emma Taylor',
         university: 'Business University',
         major: 'Business Administration',
-        semester: 4,
         email: 'emma.taylor@university.edu',
         phone: '+628123456006',
         startDate: new Date('2024-09-01'),
@@ -145,7 +145,6 @@ export class AccountSeeder implements Seeder {
       intern.fullName = intData.fullName;
       intern.university = intData.university;
       intern.major = intData.major;
-      intern.semester = intData.semester;
       intern.email = intData.email;
       intern.phone = intData.phone;
       intern.startDate = intData.startDate;
@@ -158,17 +157,15 @@ export class AccountSeeder implements Seeder {
     }
 
     // Create guest accounts
+    const company = await companyRepository.findOne({});
     const guestAccounts = [
       {
         nfcCode: 'NFC007GST',
         accountType: AccountType.GUEST,
         fullName: 'Robert Anderson',
-        company: 'Tech Solutions Inc',
-        purpose: 'Business Meeting - Partnership Discussion',
+        companyId: company?.id,
         email: 'robert.anderson@techsolutions.com',
         phone: '+628123456007',
-        visitDate: new Date(),
-        validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
         identificationType: IdentificationType.KTP,
         identificationNumber: '1234567890123456',
       },
@@ -176,7 +173,7 @@ export class AccountSeeder implements Seeder {
         nfcCode: 'NFC008GST',
         accountType: AccountType.GUEST,
         fullName: 'Maria Garcia',
-        company: 'Global Consulting',
+        companyId: company?.id,
         purpose: 'Technical Consultation',
         email: 'maria.garcia@globalconsulting.com',
         phone: '+628123456008',
@@ -199,12 +196,9 @@ export class AccountSeeder implements Seeder {
       const guest = new AccountGuest();
       guest.accountId = savedAccount.id;
       guest.fullName = guestData.fullName;
-      guest.company = guestData.company;
-      guest.purpose = guestData.purpose;
+      guest.companyId = guestData.companyId as string;
       guest.email = guestData.email;
       guest.phone = guestData.phone;
-      guest.visitDate = guestData.visitDate;
-      guest.validUntil = guestData.validUntil;
       guest.identificationType = guestData.identificationType;
       guest.identificationNumber = guestData.identificationNumber;
       // Assign Sarah Johnson as host for first guest

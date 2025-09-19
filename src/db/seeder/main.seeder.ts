@@ -8,7 +8,7 @@ import RoleSeeder from '@src/modules/iam/seeders/role.seeder';
 import UserSeeder from '@src/modules/iam/seeders/user.seeder';
 import { LocationSeeder } from '@src/modules/master/locations/seeders/location.seeder';
 import { GateSeeder } from '@src/modules/master/gates/seeders/gate.seeder';
-import { AccountSeeder } from '@src/modules/identity/seeders/account.seeder';
+import { AccountSeeder } from '@src/modules/identities/seeders/account.seeder';
 import { CompanySeeder } from '@src/modules/master/companies/seeders/company.seeder';
 
 const parseArgs = () => {
