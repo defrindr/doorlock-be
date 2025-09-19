@@ -297,10 +297,16 @@ class CrudGenerator {
 
     // Check if file already exists
     if (fs.existsSync(outputPath)) {
-      console.log(
-        `⚠️  File already exists: ${path.relative(this.outputPath, outputPath)}`,
-      );
-      return false;
+      if (this.options.force) {
+        console.log(
+          `🔄 Overwriting: ${path.relative(this.outputPath, outputPath)}`,
+        );
+      } else {
+        console.log(
+          `⚠️  File already exists: ${path.relative(this.outputPath, outputPath)}`,
+        );
+        return false;
+      }
     }
 
     let content = fs.readFileSync(stubPath, 'utf8');
@@ -546,14 +552,24 @@ class CrudGenerator {
         `✅ CRUD module '${this.moduleName}' generated successfully!`,
       );
       console.log(`📁 Generated ${generatedCount} files`);
+      
+      if (this.options.force && skippedCount === 0) {
+        console.log(`🔄 Some files may have been overwritten`);
+      }
     }
-    
+
     if (skippedCount > 0) {
       console.log(`⚠️  Skipped ${skippedCount} existing files`);
+      if (!this.options.force) {
+        console.log(`💡 Use --force to overwrite existing files`);
+      }
     }
 
     if (generatedCount === 0) {
       console.log(`⚠️  No files were generated. Module may already exist.`);
+      if (!this.options.force) {
+        console.log(`💡 Use --force to overwrite existing files`);
+      }
     }
 
     console.log(`\nNext steps:`);
@@ -583,6 +599,7 @@ if (args.length === 0) {
   console.error(
     '  --new=Entity1,Entity2            Generate additional entities',
   );
+  console.error('  --force                          Overwrite existing files');
   console.error('');
   console.error(
     'Components: entity, dto, command, query, handler, controller, module',
@@ -591,12 +608,14 @@ if (args.length === 0) {
   console.error('Examples:');
   console.error('  node generate-crud.js company --specific=dto,query');
   console.error('  node generate-crud.js company --exclude=handler,controller');
+  console.error('  node generate-crud.js company --force');
   console.error(
     '  node generate-crud.js company --new=CompanyCategory,CompanyType',
   );
   console.error(
     '  node generate-crud.js company --exclude=module --new=CompanyCategory',
   );
+  console.error('  node generate-crud.js company --specific=dto --force');
   process.exit(1);
 }
 
@@ -612,6 +631,8 @@ for (let i = 1; i < args.length; i++) {
     options.exclude = arg.split('=')[1];
   } else if (arg.startsWith('--new=')) {
     options.new = arg.split('=')[1];
+  } else if (arg === '--force') {
+    options.force = true;
   }
 }
 
