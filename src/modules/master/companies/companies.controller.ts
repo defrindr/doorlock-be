@@ -31,7 +31,7 @@ import { GetCompanyQuery } from './queries/imp/get-company.query';
 import { GetCompaniesQuery } from './queries/imp/get-companies.query';
 
 @Controller('master/companies')
-@ApiTags('companies')
+@ApiTags('Companies')
 @ApiBearerAuth()
 export class CompaniesController {
   constructor(
@@ -40,7 +40,11 @@ export class CompaniesController {
   ) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new company' })
+  @ApiOperation({
+    summary: 'Create a new company',
+    description:
+      'Create a new company record in the system with provided details including name, address, and contact information',
+  })
   @ApiSingleResponse(CompanyDto, 'Company created successfully')
   @ApiCommonErrors()
   async create(
@@ -50,7 +54,11 @@ export class CompaniesController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all companies with pagination' })
+  @ApiOperation({
+    summary: 'Get all companies with pagination',
+    description:
+      'Retrieve a paginated list of all companies in the system with sorting and filtering capabilities',
+  })
   @ApiOkResponse({
     description: 'Companies retrieved successfully',
     type: PageCompanyDto,
@@ -63,7 +71,11 @@ export class CompaniesController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get company by ID' })
+  @ApiOperation({
+    summary: 'Get company by ID',
+    description:
+      'Retrieve detailed information of a specific company using its unique identifier',
+  })
   @ApiSingleResponse(CompanyDto, 'Company retrieved successfully')
   @ApiCommonErrors()
   async findOne(
@@ -73,7 +85,11 @@ export class CompaniesController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Update company by ID' })
+  @ApiOperation({
+    summary: 'Update company by ID',
+    description:
+      'Update existing company information including name, address, contact details, and other business information',
+  })
   @ApiSingleResponse(CompanyDto, 'Company updated successfully')
   @ApiCommonErrors()
   async update(
@@ -86,7 +102,11 @@ export class CompaniesController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete company by ID' })
+  @ApiOperation({
+    summary: 'Delete company by ID',
+    description:
+      'Permanently remove a company from the system. This action cannot be undone and will also remove all associated data',
+  })
   @ApiOkResponse({
     description: 'Company deleted successfully',
     type: String,

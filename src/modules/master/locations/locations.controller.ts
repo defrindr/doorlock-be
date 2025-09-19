@@ -43,8 +43,12 @@ export class LocationsController {
   ) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new location' })
-  @ApiSingleResponse(LocationDto, 'Data berhasil ditambahkan', 201)
+  @ApiOperation({
+    summary: 'Create a new location',
+    description:
+      'Create a new location in the system with specified name, type, address, and other location details',
+  })
+  @ApiSingleResponse(LocationDto, 'Location created successfully', 201)
   @ApiCommonErrors()
   async create(
     @Body() createLocationDto: CreateLocationDto,
@@ -55,7 +59,11 @@ export class LocationsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all locations with pagination' })
+  @ApiOperation({
+    summary: 'Get all locations with pagination',
+    description:
+      'Retrieve a paginated list of all locations in the system with optional search functionality by name or address',
+  })
   @ApiSingleResponse(LocationDto, 'Locations retrieved successfully', 200)
   @ApiCommonErrors()
   async findAll(
@@ -66,7 +74,11 @@ export class LocationsController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get location by ID' })
+  @ApiOperation({
+    summary: 'Get location by ID',
+    description:
+      'Retrieve detailed information of a specific location using its unique identifier including associated gates',
+  })
   @ApiSingleResponse(LocationDto, 'Location retrieved successfully', 200)
   @ApiCommonErrors()
   async findOne(
@@ -76,7 +88,11 @@ export class LocationsController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Update location by ID' })
+  @ApiOperation({
+    summary: 'Update location by ID',
+    description:
+      'Update existing location information including name, type, address, and other location-related details',
+  })
   @ApiSingleResponse(LocationDto, 'Location updated successfully', 200)
   @ApiCommonErrors()
   async update(
@@ -89,6 +105,11 @@ export class LocationsController {
   }
 
   @Delete(':id')
+  @ApiOperation({
+    summary: 'Delete location by ID',
+    description:
+      'Permanently remove a location from the system. This will also affect all associated gates and access configurations',
+  })
   @ApiOkResponse({
     description: 'Location deleted successfully',
     type: ApiResponseDto,

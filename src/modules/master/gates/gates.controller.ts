@@ -27,7 +27,7 @@ import { UpdateGateCommand } from './commands/imp/update-gate.command';
 import { GetGateQuery } from './queries/imp/get-gate.query';
 import { GetGatesQuery } from './queries/imp/get-gates.query';
 
-@ApiTags('gates')
+@ApiTags('Gates')
 @Controller('master/gates')
 export class GatesController {
   constructor(
@@ -36,7 +36,11 @@ export class GatesController {
   ) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new gate' })
+  @ApiOperation({
+    summary: 'Create a new gate',
+    description:
+      'Create a new gate entry in the system with specified type, location, and access control configurations',
+  })
   @ApiSingleResponse(GateDto, 'Gate created successfully', 201)
   @ApiCommonErrors()
   async create(
@@ -47,7 +51,11 @@ export class GatesController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all gates with pagination' })
+  @ApiOperation({
+    summary: 'Get all gates with pagination',
+    description:
+      'Retrieve a paginated list of all gates in the system including their location, type, and access control settings',
+  })
   @ApiSingleResponse(GateDto, 'Gates retrieved successfully', 200)
   @ApiCommonErrors()
   async findAll(
@@ -58,7 +66,11 @@ export class GatesController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get gate by ID' })
+  @ApiOperation({
+    summary: 'Get gate by ID',
+    description:
+      'Retrieve detailed information of a specific gate including its configuration, location, and access control rules',
+  })
   @ApiSingleResponse(GateDto, 'Gate retrieved successfully', 200)
   @ApiCommonErrors()
   async findOne(
@@ -69,7 +81,11 @@ export class GatesController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update gate by ID' })
+  @ApiOperation({
+    summary: 'Update gate by ID',
+    description:
+      'Update existing gate configuration including name, type, location assignment, and access control settings',
+  })
   @ApiSingleResponse(GateDto, 'Gate updated successfully', 200)
   @ApiCommonErrors()
   async update(
@@ -81,7 +97,11 @@ export class GatesController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete gate by ID' })
+  @ApiOperation({
+    summary: 'Delete gate by ID',
+    description:
+      'Permanently remove a gate from the system. This will also remove all associated access logs and configurations',
+  })
   @ApiOkResponse({
     description: 'Gate deleted successfully',
     type: ApiResponseDto,
