@@ -34,8 +34,8 @@ export class GetGuestsHandler
 
     queryBuilder = applyPaginationFilters(queryBuilder, {
       alias: 'guest',
-      allowedSort: ['id', 'company.name', 'status', 'createdAt'],
-      allowedSearch: ['company.name'],
+      allowedSort: ['id', 'fullName', 'company.name', 'status', 'createdAt'],
+      allowedSearch: ['fullName', 'company.name'],
       allowedFilter: ['id', 'status'],
       pageOptions: pageOptionsDto,
     });
