@@ -58,7 +58,7 @@ export class {{PLURAL_PASCAL}}Controller {
   @ApiCommonErrors()
   async findAll(
     @Query() pageOptionsDto: PageOptionsDto,
-  ): Promise<ApiResponseDto<Page{{SINGULAR_PASCAL}}Dto>> {
+  ): Promise<Page{{SINGULAR_PASCAL}}Dto> {
     return this.queryBus.execute(new Get{{PLURAL_PASCAL}}Query(pageOptionsDto));
   }
 
@@ -92,7 +92,7 @@ export class {{PLURAL_PASCAL}}Controller {
   @ApiCommonErrors()
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<ApiResponseDto<string>> {
+  ): Promise<ApiResponseDto<null>> {
     return this.commandBus.execute(new Delete{{SINGULAR_PASCAL}}Command(id));
   }
 }
