@@ -9,7 +9,13 @@ import {
   Query,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.decorator';
 import { ApiPaginatedResponse } from '@src/shared/core/decorators/api-paginated-response.decorator';
 import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-response.decorator';
@@ -35,6 +41,11 @@ export class UsersController {
   ) {}
 
   @Post('')
+  @ApiOperation({
+    summary: 'Create new User',
+    description:
+      'Creates a new user account with provided credentials and profile information. The user will be created with default active status and assigned basic permissions.',
+  })
   @ApiSingleResponse(UserDto, 'Data berhasil ditambahkan', 201)
   @ApiCommonErrors()
   create(@Body() createUserDto: CreateUserDto) {
@@ -42,6 +53,12 @@ export class UsersController {
   }
 
   @Get('')
+  @ApiOperation({
+    summary: 'Fetch all Users with pagination',
+    description:
+      'Retrieves a paginated list of all users in the system. Supports filtering, sorting, and searching capabilities through query parameters.',
+  })
+  @ApiExtraModels(PageUserDto)
   @ApiPaginatedResponse(PageUserDto)
   @ApiCommonErrors()
   async findAll(@Query() pageOptionsDto: PageOptionsDto) {
@@ -49,6 +66,11 @@ export class UsersController {
   }
 
   @Get(':id')
+  @ApiOperation({
+    summary: 'Find specific user',
+    description:
+      'Retrieves detailed information about a specific user by their unique identifier. Returns complete user profile including roles and permissions.',
+  })
   @ApiSingleResponse(UserDto, 'Data berhasil didapatkan', 200)
   @ApiCommonErrors()
   findOne(@Param('id') id: string) {
@@ -56,6 +78,11 @@ export class UsersController {
   }
 
   @Put(':id')
+  @ApiOperation({
+    summary: 'Update existing User',
+    description:
+      'Updates an existing user account with new information. Supports partial updates - only provided fields will be modified while preserving existing data.',
+  })
   @ApiSingleResponse(UserDto, 'Data berhasil diubah', 200)
   @ApiCommonErrors()
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
@@ -63,6 +90,11 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @ApiOperation({
+    summary: 'Delete User',
+    description:
+      'Permanently removes a user account from the system. This action cannot be undone. All associated data and permissions will be revoked.',
+  })
   @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
   @ApiCommonErrors()
   remove(@Param('id') id: string) {
