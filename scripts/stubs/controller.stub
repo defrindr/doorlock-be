@@ -40,7 +40,7 @@ export class {{PLURAL_PASCAL}}Controller {
   ) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new {{SINGULAR_CAMEL}}' })
+  @ApiOperation({ summary: 'Create a new {{SINGULAR_CAMEL}}', description: '' })
   @ApiSingleResponse({{SINGULAR_PASCAL}}Dto, '{{SINGULAR_PASCAL}} created successfully')
   @ApiCommonErrors()
   async create(
@@ -50,7 +50,7 @@ export class {{PLURAL_PASCAL}}Controller {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all {{PLURAL_CAMEL}} with pagination' })
+  @ApiOperation({ summary: 'Get all {{PLURAL_CAMEL}} with pagination', description: '' })
   @ApiOkResponse({
     description: '{{PLURAL_PASCAL}} retrieved successfully',
     type: Page{{SINGULAR_PASCAL}}Dto,
@@ -63,7 +63,7 @@ export class {{PLURAL_PASCAL}}Controller {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get {{SINGULAR_CAMEL}} by ID' })
+  @ApiOperation({ summary: 'Get {{SINGULAR_CAMEL}} by ID', description: '' })
   @ApiSingleResponse({{SINGULAR_PASCAL}}Dto, '{{SINGULAR_PASCAL}} retrieved successfully')
   @ApiCommonErrors()
   async findOne(
@@ -73,7 +73,7 @@ export class {{PLURAL_PASCAL}}Controller {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Update {{SINGULAR_CAMEL}} by ID' })
+  @ApiOperation({ summary: 'Update {{SINGULAR_CAMEL}} by ID', description: '' })
   @ApiSingleResponse({{SINGULAR_PASCAL}}Dto, '{{SINGULAR_PASCAL}} updated successfully')
   @ApiCommonErrors()
   async update(
@@ -84,8 +84,8 @@ export class {{PLURAL_PASCAL}}Controller {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete {{SINGULAR_CAMEL}} by ID' })
-  @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
+  @ApiOperation({ summary: 'Delete {{SINGULAR_CAMEL}} by ID', description: '' })
+  @ApiOkResponse({ description: '{{SINGULAR_CAMEL}} deleted successfully', type: ApiResponseDto })
   @ApiCommonErrors()
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
