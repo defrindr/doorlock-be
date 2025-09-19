@@ -9,6 +9,7 @@ import UserSeeder from '@src/modules/iam/seeders/user.seeder';
 import { LocationSeeder } from '@src/modules/locations/seeders/location.seeder';
 import { GateSeeder } from '@src/modules/gates/seeders/gate.seeder';
 import { AccountSeeder } from '@src/modules/identity/seeders/account.seeder';
+import { CompanySeeder } from '@src/modules/companies/seeders/company.seeder';
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -48,6 +49,8 @@ async function clearDatabase(ds: DataSource) {
   console.log('   - Cleared table: account_employees');
   await ds.query('DELETE FROM accounts');
   console.log('   - Cleared table: accounts');
+  await ds.query('DELETE FROM companies');
+  console.log('   - Cleared table: companies');
 
   // 3. Hapus tabel gates dan locations
   await ds.query('DELETE FROM gates');
@@ -79,6 +82,7 @@ async function bootstrap() {
     location: LocationSeeder,
     gate: GateSeeder,
     account: AccountSeeder,
+    company: CompanySeeder,
   };
 
   await dataSource.initialize();
@@ -104,6 +108,7 @@ async function bootstrap() {
     await runSeeder(dataSource, LocationSeeder);
     await runSeeder(dataSource, GateSeeder);
     await runSeeder(dataSource, AccountSeeder);
+    await runSeeder(dataSource, CompanySeeder);
     // IAM
     await runSeeder(dataSource, PermissionSeeder);
     await runSeeder(dataSource, RoleSeeder);
