@@ -33,7 +33,11 @@ export class AuthController {
     private readonly svc: AuthService,
   ) {}
 
-  @ApiOperation({ summary: 'Mendapatkan token untuk authentication' })
+  @ApiOperation({
+    summary: 'User Login',
+    description:
+      'Authenticate user credentials and return JWT access token and refresh token for API access',
+  })
   @Post('login')
   @ApiSingleResponse(LoginResponseDto, 'Login successful')
   @ApiCommonErrors()
@@ -43,9 +47,11 @@ export class AuthController {
 
   @Get('profile')
   @ApiOperation({
-    summary: 'get detail current logged in user',
+    summary: 'Get User Profile',
+    description:
+      'Retrieve detailed information of the currently authenticated user including roles and permissions',
   })
-  @ApiSingleResponse(UserDto, 'Successful get profile')
+  @ApiSingleResponse(UserDto, 'Successfully retrieved user profile')
   @PermissionAccess()
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiCommonErrors()
@@ -53,9 +59,13 @@ export class AuthController {
     return this.queryBus.execute(new GetProfileQuery(user));
   }
 
-  @ApiOperation({ summary: 'Refresh token for authentication' })
+  @ApiOperation({
+    summary: 'Refresh Authentication Token',
+    description:
+      'Generate new access token using valid refresh token to maintain authenticated session',
+  })
   @Post('refresh-token')
-  @ApiSingleResponse(LoginResponseDto, 'Refresh token successful')
+  @ApiSingleResponse(LoginResponseDto, 'Token refreshed successfully')
   @ApiCommonErrors()
   async refreshToken(@Body() payload: RefreshTokenDto): Promise<any> {
     return this.commandBus.execute(new RefreshTokenCommand(payload));
