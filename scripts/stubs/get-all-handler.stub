@@ -27,7 +27,7 @@ export class Get{{PLURAL_PASCAL}}Handler
   async handle(query: Get{{PLURAL_PASCAL}}Query): Promise<Page{{SINGULAR_PASCAL}}Dto> {
     const { pageOptionsDto } = query;
 
-    const queryBuilder = this.{{SINGULAR_CAMEL}}Repository.createQueryBuilder('{{SINGULAR_CAMEL}}');
+    let queryBuilder = this.{{SINGULAR_CAMEL}}Repository.createQueryBuilder('{{SINGULAR_CAMEL}}');
 
     queryBuilder = applyPaginationFilters(queryBuilder, {
       alias: '{{SINGULAR_CAMEL}}',
