@@ -10,7 +10,13 @@ import {
   Query,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.decorator';
 import { ApiPaginatedResponse } from '@src/shared/core/decorators/api-paginated-response.decorator';
 import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-response.decorator';
@@ -36,6 +42,11 @@ export class RoleController {
   ) {}
 
   @Post('/')
+  @ApiOperation({
+    summary: 'Create new Role',
+    description:
+      'Creates a new role in the system with specified permissions and attributes. Roles define what actions users can perform within the application.',
+  })
   @ApiSingleResponse(RoleDto, 'Data berhasil ditambahkan', 201)
   @ApiCommonErrors()
   create(@Body() createRoleDto: CreateRoleDto) {
@@ -43,6 +54,12 @@ export class RoleController {
   }
 
   @Get('/')
+  @ApiOperation({
+    summary: 'Fetch all Roles with pagination',
+    description:
+      'Retrieves a paginated list of all roles in the system. Supports filtering, sorting, and searching capabilities through query parameters.',
+  })
+  @ApiExtraModels(PageRoleDto)
   @ApiPaginatedResponse(PageRoleDto)
   @ApiCommonErrors()
   @HttpCode(200)
@@ -51,6 +68,11 @@ export class RoleController {
   }
 
   @Get('/:id')
+  @ApiOperation({
+    summary: 'Find specific role',
+    description:
+      'Retrieves detailed information about a specific role by its unique identifier. Returns complete role data including associated permissions.',
+  })
   @ApiSingleResponse(RoleDto, 'Data berhasil didapatkan', 200)
   @ApiCommonErrors()
   @HttpCode(200)
@@ -59,6 +81,11 @@ export class RoleController {
   }
 
   @Put('/:id')
+  @ApiOperation({
+    summary: 'Update existing Role',
+    description:
+      'Updates an existing role with new information. Supports partial updates - only provided fields will be modified while preserving existing data and permissions.',
+  })
   @ApiSingleResponse(RoleDto, 'Data berhasil diubah', 200)
   @ApiCommonErrors()
   update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
@@ -66,6 +93,11 @@ export class RoleController {
   }
 
   @Delete('/:id')
+  @ApiOperation({
+    summary: 'Delete Role',
+    description:
+      'Permanently removes a role from the system. This action cannot be undone. Users assigned to this role will lose the associated permissions.',
+  })
   @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
   @ApiCommonErrors()
   remove(@Param('id') id: string) {
