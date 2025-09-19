@@ -81,8 +81,8 @@ async function bootstrap() {
     user: UserSeeder,
     location: LocationSeeder,
     gate: GateSeeder,
-    account: AccountSeeder,
     company: CompanySeeder,
+    account: AccountSeeder,
   };
 
   await dataSource.initialize();
@@ -107,8 +107,8 @@ async function bootstrap() {
     // Data master
     await runSeeder(dataSource, LocationSeeder);
     await runSeeder(dataSource, GateSeeder);
-    await runSeeder(dataSource, AccountSeeder);
     await runSeeder(dataSource, CompanySeeder);
+    await runSeeder(dataSource, AccountSeeder);
     // IAM
     await runSeeder(dataSource, PermissionSeeder);
     await runSeeder(dataSource, RoleSeeder);
