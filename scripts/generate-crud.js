@@ -5,8 +5,9 @@ const fs = require('fs');
 const path = require('path');
 
 class CrudGenerator {
-  constructor(moduleName) {
+  constructor(moduleName, options = {}) {
     this.moduleName = moduleName;
+    this.options = options;
     this.setupVariables();
     this.stubsPath = path.join(__dirname, 'stubs');
     this.outputPath = path.join(
@@ -16,6 +17,11 @@ class CrudGenerator {
       'modules',
       this.pluralKebab,
     );
+    
+    // Parse specific components to generate
+    this.specificComponents = this.parseSpecificComponents();
+    this.excludedComponents = this.parseExcludedComponents();
+    this.additionalEntities = this.parseAdditionalEntities();
   }
 
   setupVariables() {
@@ -35,6 +41,165 @@ class CrudGenerator {
     this.pluralUpper = this.pluralSnake.toUpperCase();
 
     this.timestamp = Date.now();
+  }
+
+  // Parse specific components from options
+  parseSpecificComponents() {
+    if (!this.options.specific) {
+      return null; // Generate all components
+    }
+
+    const validComponents = [
+      'entity',
+      'dto',
+      'command',
+      'query',
+      'handler',
+      'controller',
+      'module',
+    ];
+
+    const components = this.options.specific
+      .split(',')
+      .map((c) => c.trim().toLowerCase());
+
+    // Validate components
+    for (const component of components) {
+      if (!validComponents.includes(component)) {
+        console.error(`❌ Invalid component: ${component}`);
+        console.error(`Valid components: ${validComponents.join(', ')}`);
+        process.exit(1);
+      }
+    }
+
+    return components;
+  }
+
+  // Parse excluded components from options
+  parseExcludedComponents() {
+    if (!this.options.exclude) {
+      return [];
+    }
+
+    const validComponents = [
+      'entity',
+      'dto',
+      'command',
+      'query',
+      'handler',
+      'controller',
+      'module',
+    ];
+
+    const components = this.options.exclude
+      .split(',')
+      .map((c) => c.trim().toLowerCase());
+
+    // Validate components
+    for (const component of components) {
+      if (!validComponents.includes(component)) {
+        console.error(`❌ Invalid excluded component: ${component}`);
+        console.error(`Valid components: ${validComponents.join(', ')}`);
+        process.exit(1);
+      }
+    }
+
+    return components;
+  }
+
+  // Parse additional entities from options
+  parseAdditionalEntities() {
+    if (!this.options.new) {
+      return [];
+    }
+
+    return this.options.new.split(',').map((entity) => entity.trim());
+  }
+
+  // Check if component should be generated
+  shouldGenerate(componentType) {
+    // Check if component is excluded
+    if (this.excludedComponents.includes(componentType)) {
+      return false;
+    }
+
+    // If specific components are defined, only generate those
+    if (this.specificComponents) {
+      return this.specificComponents.includes(componentType);
+    }
+
+    // Generate all by default (unless excluded)
+    return true;
+  }
+
+  // Generate additional entities
+  generateAdditionalEntity(entityName) {
+    console.log(`\nGenerating additional entity: ${entityName}`);
+    
+    // Create a temporary generator for the additional entity
+    const tempGenerator = new CrudGenerator(entityName, this.options);
+    tempGenerator.outputPath = this.outputPath; // Use same module directory
+    
+    let localGeneratedCount = 0;
+    let localSkippedCount = 0;
+
+    const generateAndTrackLocal = (stubName, outputPath) => {
+      const result = tempGenerator.generateFile(stubName, outputPath);
+      if (result) {
+        localGeneratedCount++;
+      } else {
+        localSkippedCount++;
+      }
+    };
+
+    // Generate only entity and DTOs for additional entities
+    if (this.shouldGenerate('entity')) {
+      generateAndTrackLocal(
+        'entity',
+        path.join(
+          this.outputPath,
+          'entities',
+          `${tempGenerator.singularKebab}.entity.ts`,
+        ),
+      );
+    }
+
+    if (this.shouldGenerate('dto')) {
+      generateAndTrackLocal(
+        'create-dto',
+        path.join(
+          this.outputPath,
+          'dto',
+          `create-${tempGenerator.singularKebab}.dto.ts`,
+        ),
+      );
+      generateAndTrackLocal(
+        'update-dto',
+        path.join(
+          this.outputPath,
+          'dto',
+          `update-${tempGenerator.singularKebab}.dto.ts`,
+        ),
+      );
+      generateAndTrackLocal(
+        'dto',
+        path.join(
+          this.outputPath,
+          'dto',
+          `${tempGenerator.singularKebab}.dto.ts`,
+        ),
+      );
+      generateAndTrackLocal(
+        'page-dto',
+        path.join(
+          this.outputPath,
+          'dto',
+          `page-${tempGenerator.singularKebab}.dto.ts`,
+        ),
+      );
+    }
+
+    return { generated: localGeneratedCount, skipped: localSkippedCount };
   }
 
   // Case conversion utilities
@@ -127,7 +292,15 @@ class CrudGenerator {
 
     if (!fs.existsSync(stubPath)) {
       console.error(`Stub file not found: ${stubPath}`);
-      return;
+      return false;
+    }
+
+    // Check if file already exists
+    if (fs.existsSync(outputPath)) {
+      console.log(
+        `⚠️  File already exists: ${path.relative(this.outputPath, outputPath)}`,
+      );
+      return false;
     }
 
     let content = fs.readFileSync(stubPath, 'utf8');
@@ -142,13 +315,26 @@ class CrudGenerator {
 
     this.ensureDirectoryExists(path.dirname(outputPath));
     fs.writeFileSync(outputPath, content);
-    // console.log(`Generated: ${outputPath}`);
+    console.log(`✅ Generated: ${path.relative(this.outputPath, outputPath)}`);
+    return true;
   }
 
   // Generate all CRUD files
   generate() {
     console.log(`Generating CRUD module: ${this.moduleName}`);
     console.log(`Output directory: ${this.outputPath}`);
+
+    // Validate conflicting options
+    if (this.specificComponents && this.excludedComponents.length > 0) {
+      console.error(
+        '❌ Cannot use both --specific and --exclude options together',
+      );
+      process.exit(1);
+    }
+
+    // Track generation results
+    let generatedCount = 0;
+    let skippedCount = 0;
 
     // Create main directories
     this.ensureDirectoryExists(this.outputPath);
@@ -163,139 +349,184 @@ class CrudGenerator {
       path.join(this.outputPath, 'queries', 'handlers'),
     );
 
+    // Helper function to track file generation
+    const generateAndTrack = (stubName, outputPath) => {
+      const result = this.generateFile(stubName, outputPath);
+      if (result) {
+        generatedCount++;
+      } else {
+        skippedCount++;
+      }
+    };
+
     // Generate entity
-    this.generateFile(
-      'entity',
-      path.join(this.outputPath, 'entities', `${this.singularKebab}.entity.ts`),
-    );
+    if (this.shouldGenerate('entity')) {
+      generateAndTrack(
+        'entity',
+        path.join(
+          this.outputPath,
+          'entities',
+          `${this.singularKebab}.entity.ts`,
+        ),
+      );
+    }
 
     // Generate DTOs
-    this.generateFile(
-      'create-dto',
-      path.join(this.outputPath, 'dto', `create-${this.singularKebab}.dto.ts`),
-    );
-    this.generateFile(
-      'update-dto',
-      path.join(this.outputPath, 'dto', `update-${this.singularKebab}.dto.ts`),
-    );
-    this.generateFile(
-      'dto',
-      path.join(this.outputPath, 'dto', `${this.singularKebab}.dto.ts`),
-    );
-    this.generateFile(
-      'page-dto',
-      path.join(this.outputPath, 'dto', `page-${this.singularKebab}.dto.ts`),
-    );
+    if (this.shouldGenerate('dto')) {
+      generateAndTrack(
+        'create-dto',
+        path.join(
+          this.outputPath,
+          'dto',
+          `create-${this.singularKebab}.dto.ts`,
+        ),
+      );
+      generateAndTrack(
+        'update-dto',
+        path.join(
+          this.outputPath,
+          'dto',
+          `update-${this.singularKebab}.dto.ts`,
+        ),
+      );
+      generateAndTrack(
+        'dto',
+        path.join(this.outputPath, 'dto', `${this.singularKebab}.dto.ts`),
+      );
+      generateAndTrack(
+        'page-dto',
+        path.join(this.outputPath, 'dto', `page-${this.singularKebab}.dto.ts`),
+      );
+    }
 
     // Generate commands
-    this.generateFile(
-      'create-command',
-      path.join(
-        this.outputPath,
-        'commands',
-        'imp',
-        `create-${this.singularKebab}.command.ts`,
-      ),
-    );
-    this.generateFile(
-      'update-command',
-      path.join(
-        this.outputPath,
-        'commands',
-        'imp',
-        `update-${this.singularKebab}.command.ts`,
-      ),
-    );
-    this.generateFile(
-      'delete-command',
-      path.join(
-        this.outputPath,
-        'commands',
-        'imp',
-        `delete-${this.singularKebab}.command.ts`,
-      ),
-    );
+    if (this.shouldGenerate('command')) {
+      generateAndTrack(
+        'create-command',
+        path.join(
+          this.outputPath,
+          'commands',
+          'imp',
+          `create-${this.singularKebab}.command.ts`,
+        ),
+      );
+      generateAndTrack(
+        'update-command',
+        path.join(
+          this.outputPath,
+          'commands',
+          'imp',
+          `update-${this.singularKebab}.command.ts`,
+        ),
+      );
+      generateAndTrack(
+        'delete-command',
+        path.join(
+          this.outputPath,
+          'commands',
+          'imp',
+          `delete-${this.singularKebab}.command.ts`,
+        ),
+      );
+    }
 
     // Generate command handlers
-    this.generateFile(
-      'create-handler',
-      path.join(
-        this.outputPath,
-        'commands',
-        'handlers',
-        `create-${this.singularKebab}.handler.ts`,
-      ),
-    );
-    this.generateFile(
-      'update-handler',
-      path.join(
-        this.outputPath,
-        'commands',
-        'handlers',
-        `update-${this.singularKebab}.handler.ts`,
-      ),
-    );
-    this.generateFile(
-      'delete-handler',
-      path.join(
-        this.outputPath,
-        'commands',
-        'handlers',
-        `delete-${this.singularKebab}.handler.ts`,
-      ),
-    );
+    if (this.shouldGenerate('handler')) {
+      generateAndTrack(
+        'create-handler',
+        path.join(
+          this.outputPath,
+          'commands',
+          'handlers',
+          `create-${this.singularKebab}.handler.ts`,
+        ),
+      );
+      generateAndTrack(
+        'update-handler',
+        path.join(
+          this.outputPath,
+          'commands',
+          'handlers',
+          `update-${this.singularKebab}.handler.ts`,
+        ),
+      );
+      generateAndTrack(
+        'delete-handler',
+        path.join(
+          this.outputPath,
+          'commands',
+          'handlers',
+          `delete-${this.singularKebab}.handler.ts`,
+        ),
+      );
+    }
 
     // Generate queries
-    this.generateFile(
-      'get-all-query',
-      path.join(
-        this.outputPath,
-        'queries',
-        'imp',
-        `get-${this.pluralKebab}.query.ts`,
-      ),
-    );
-    this.generateFile(
-      'get-one-query',
-      path.join(
-        this.outputPath,
-        'queries',
-        'imp',
-        `get-${this.singularKebab}.query.ts`,
-      ),
-    );
+    if (this.shouldGenerate('query')) {
+      generateAndTrack(
+        'get-all-query',
+        path.join(
+          this.outputPath,
+          'queries',
+          'imp',
+          `get-${this.pluralKebab}.query.ts`,
+        ),
+      );
+      generateAndTrack(
+        'get-one-query',
+        path.join(
+          this.outputPath,
+          'queries',
+          'imp',
+          `get-${this.singularKebab}.query.ts`,
+        ),
+      );
+    }
 
     // Generate query handlers
-    this.generateFile(
-      'get-all-handler',
-      path.join(
-        this.outputPath,
-        'queries',
-        'handlers',
-        `get-${this.pluralKebab}.handler.ts`,
-      ),
-    );
-    this.generateFile(
-      'get-one-handler',
-      path.join(
-        this.outputPath,
-        'queries',
-        'handlers',
-        `get-${this.singularKebab}.handler.ts`,
-      ),
-    );
+    if (this.shouldGenerate('handler')) {
+      generateAndTrack(
+        'get-all-handler',
+        path.join(
+          this.outputPath,
+          'queries',
+          'handlers',
+          `get-${this.pluralKebab}.handler.ts`,
+        ),
+      );
+      generateAndTrack(
+        'get-one-handler',
+        path.join(
+          this.outputPath,
+          'queries',
+          'handlers',
+          `get-${this.singularKebab}.handler.ts`,
+        ),
+      );
+    }
 
     // Generate controller
-    this.generateFile(
-      'controller',
-      path.join(this.outputPath, `${this.pluralKebab}.controller.ts`),
-    );
+    if (this.shouldGenerate('controller')) {
+      generateAndTrack(
+        'controller',
+        path.join(this.outputPath, `${this.pluralKebab}.controller.ts`),
+      );
+    }
 
     // Generate module
-    this.generateFile(
-      'module',
-      path.join(this.outputPath, `${this.pluralKebab}.module.ts`),
-    );
+    if (this.shouldGenerate('module')) {
+      generateAndTrack(
+        'module',
+        path.join(this.outputPath, `${this.pluralKebab}.module.ts`),
+      );
+    }
+
+    // Generate additional entities
+    for (const entityName of this.additionalEntities) {
+      const result = this.generateAdditionalEntity(entityName);
+      generatedCount += result.generated;
+      skippedCount += result.skipped;
+    }
 
     // Generate migration
     // const migrationPath = path.join(
@@ -306,11 +537,25 @@ class CrudGenerator {
     //   'migrations',
     //   `${this.timestamp}-create-${this.pluralKebab}-table.ts`,
     // );
-    // this.generateFile('migration', migrationPath);
+    // generateAndTrack('migration', migrationPath);
 
-    console.log(
-      `\n✅ CRUD module '${this.moduleName}' generated successfully!`,
-    );
+    // Summary
+    console.log('\n' + '='.repeat(50));
+    if (generatedCount > 0) {
+      console.log(
+        `✅ CRUD module '${this.moduleName}' generated successfully!`,
+      );
+      console.log(`📁 Generated ${generatedCount} files`);
+    }
+    
+    if (skippedCount > 0) {
+      console.log(`⚠️  Skipped ${skippedCount} existing files`);
+    }
+
+    if (generatedCount === 0) {
+      console.log(`⚠️  No files were generated. Module may already exist.`);
+    }
+
     console.log(`\nNext steps:`);
     console.log(
       `1. Add ${this.pluralPascal}Module to your app.module.ts imports`,
@@ -325,11 +570,50 @@ class CrudGenerator {
 // CLI usage
 const args = process.argv.slice(2);
 if (args.length === 0) {
-  console.error('Usage: node generate-crud.js <module-name>');
+  console.error('Usage: node generate-crud.js <module-name> [options]');
   console.error('Example: node generate-crud.js companies');
+  console.error('');
+  console.error('Options:');
+  console.error(
+    '  --specific=component1,component2  Generate only specific components',
+  );
+  console.error(
+    '  --exclude=component1,component2   Exclude specific components',
+  );
+  console.error(
+    '  --new=Entity1,Entity2            Generate additional entities',
+  );
+  console.error('');
+  console.error(
+    'Components: entity, dto, command, query, handler, controller, module',
+  );
+  console.error('');
+  console.error('Examples:');
+  console.error('  node generate-crud.js company --specific=dto,query');
+  console.error('  node generate-crud.js company --exclude=handler,controller');
+  console.error(
+    '  node generate-crud.js company --new=CompanyCategory,CompanyType',
+  );
+  console.error(
+    '  node generate-crud.js company --exclude=module --new=CompanyCategory',
+  );
   process.exit(1);
 }
 
+// Parse arguments
 const moduleName = args[0];
-const generator = new CrudGenerator(moduleName);
+const options = {};
+
+for (let i = 1; i < args.length; i++) {
+  const arg = args[i];
+  if (arg.startsWith('--specific=')) {
+    options.specific = arg.split('=')[1];
+  } else if (arg.startsWith('--exclude=')) {
+    options.exclude = arg.split('=')[1];
+  } else if (arg.startsWith('--new=')) {
+    options.new = arg.split('=')[1];
+  }
+}
+
+const generator = new CrudGenerator(moduleName, options);
 generator.generate();

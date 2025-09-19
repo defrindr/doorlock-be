@@ -43,6 +43,6 @@ export class Create{{SINGULAR_PASCAL}}Handler
       excludeExtraneousValues: false,
     });
 
-    return CreatedResponse([{{SINGULAR_CAMEL}}Dto], '{{SINGULAR_PASCAL}} created successfully');
+    return CreatedResponse({{SINGULAR_CAMEL}}Dto, '{{SINGULAR_PASCAL}} created successfully');
   }
 }

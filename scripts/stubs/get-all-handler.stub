@@ -3,8 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { BaseHandler } from '@src/shared/core/handlers/base.handler';
-import { OkResponse } from '@src/shared/core/handlers/response.handler';
-import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { PageMetaDto } from '@src/shared/paginations/dto';
 import { plainToInstance } from 'class-transformer';
 
@@ -15,8 +13,8 @@ import { Get{{PLURAL_PASCAL}}Query } from '../imp/get-{{PLURAL_KEBAB}}.query';
 
 @QueryHandler(Get{{PLURAL_PASCAL}}Query)
 export class Get{{PLURAL_PASCAL}}Handler
-  extends BaseHandler<Get{{PLURAL_PASCAL}}Query, ApiResponseDto<Page{{SINGULAR_PASCAL}}Dto>>
-  implements IQueryHandler<Get{{PLURAL_PASCAL}}Query, ApiResponseDto<Page{{SINGULAR_PASCAL}}Dto>>
+  extends BaseHandler<Get{{PLURAL_PASCAL}}Query, Page{{SINGULAR_PASCAL}}Dto>
+  implements IQueryHandler<Get{{PLURAL_PASCAL}}Query, Page{{SINGULAR_PASCAL}}Dto>
 {
   constructor(
     @InjectRepository({{SINGULAR_PASCAL}})
@@ -25,7 +23,7 @@ export class Get{{PLURAL_PASCAL}}Handler
     super();
   }
 
-  async handle(query: Get{{PLURAL_PASCAL}}Query): Promise<ApiResponseDto<Page{{SINGULAR_PASCAL}}Dto>> {
+  async handle(query: Get{{PLURAL_PASCAL}}Query): Promise<Page{{SINGULAR_PASCAL}}Dto> {
     const { pageOptionsDto } = query;
 
     const queryBuilder = this.{{SINGULAR_CAMEL}}Repository.createQueryBuilder('{{SINGULAR_CAMEL}}');
@@ -44,8 +42,6 @@ export class Get{{PLURAL_PASCAL}}Handler
       excludeExtraneousValues: false,
     });
 
-    const page{{SINGULAR_PASCAL}}Dto = new Page{{SINGULAR_PASCAL}}Dto({{SINGULAR_CAMEL}}Dtos, pageMetaDto);
-
-    return OkResponse(page{{SINGULAR_PASCAL}}Dto, '{{PLURAL_PASCAL}} retrieved successfully');
+    return new Page{{SINGULAR_PASCAL}}Dto({{SINGULAR_CAMEL}}Dtos, pageMetaDto);
   }
 }
