@@ -10,14 +10,16 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AppConfig } from './config/index';
-import { createValidationException } from './shared/core/factories/validation-exception.factory';
-import * as qs from 'qs';
 import {
   NestjsRedoxModule,
   NestJSRedoxOptions,
   RedocOptions,
 } from 'nestjs-redox';
+import * as qs from 'qs';
+import { AppConfig } from './config/index';
+import { createValidationException } from './shared/core/factories/validation-exception.factory';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const fastifyMultipart = require('@fastify/multipart');
 
 async function bootstrap() {
   let port = AppConfig.port;
@@ -27,17 +29,22 @@ async function bootstrap() {
     port = parseInt(process.argv[process.argv.indexOf('--port') + 1]);
   }
 
+  const fastifyAdapter = new FastifyAdapter({
+    querystringParser(str) {
+      return qs.parse(str);
+    },
+  });
+
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter({
-      querystringParser(str) {
-        return qs.parse(str);
-      },
-    }),
+    fastifyAdapter,
     {
       logger: ['warn', 'error', 'log'],
     },
   );
+
+  // Register multipart plugin for file uploads
+  app.register(fastifyMultipart);
 
   app.enableCors({
     origin: '*', // allow your frontend
@@ -63,6 +70,7 @@ async function bootstrap() {
       exceptionFactory: createValidationException,
     }),
   );
+  // app.useGlobalFilters(new AllExceptionsFilter());
 
   const config = new DocumentBuilder()
     .setTitle(env.APP_NAME ?? 'Nest App')
