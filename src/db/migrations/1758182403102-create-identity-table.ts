@@ -321,7 +321,7 @@ export class CreateIdentityTable1758182403102 implements MigrationInterface {
         columnNames: ['company_id'],
         referencedTableName: 'companies',
         referencedColumnNames: ['id'],
-        onDelete: 'RESTRICT',
+        onDelete: 'NO ACTION',
       }),
     ]);
 
