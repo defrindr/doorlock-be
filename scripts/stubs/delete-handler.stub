@@ -12,8 +12,8 @@ import { Delete{{SINGULAR_PASCAL}}Command } from '../imp/delete-{{SINGULAR_KEBAB
 
 @CommandHandler(Delete{{SINGULAR_PASCAL}}Command)
 export class Delete{{SINGULAR_PASCAL}}Handler
-  extends BaseHandler<Delete{{SINGULAR_PASCAL}}Command, ApiResponseDto<string>>
-  implements ICommandHandler<Delete{{SINGULAR_PASCAL}}Command, ApiResponseDto<string>>
+  extends BaseHandler<Delete{{SINGULAR_PASCAL}}Command, ApiResponseDto<null>>
+  implements ICommandHandler<Delete{{SINGULAR_PASCAL}}Command, ApiResponseDto<null>>
 {
   constructor(
     @InjectRepository({{SINGULAR_PASCAL}})
@@ -22,7 +22,7 @@ export class Delete{{SINGULAR_PASCAL}}Handler
     super();
   }
 
-  async handle(command: Delete{{SINGULAR_PASCAL}}Command): Promise<ApiResponseDto<string>> {
+  async handle(command: Delete{{SINGULAR_PASCAL}}Command): Promise<ApiResponseDto<null>> {
     const { id } = command;
 
     const {{SINGULAR_CAMEL}} = await this.{{SINGULAR_CAMEL}}Repository.findOne({
@@ -36,7 +36,7 @@ export class Delete{{SINGULAR_PASCAL}}Handler
     await this.{{SINGULAR_CAMEL}}Repository.softDelete(id);
 
     return OkResponse(
-      '{{SINGULAR_PASCAL}} deleted successfully',
+      null,
       '{{SINGULAR_PASCAL}} deleted successfully',
     );
   }
