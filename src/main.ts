@@ -13,6 +13,11 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppConfig } from './config/index';
 import { createValidationException } from './shared/core/factories/validation-exception.factory';
 import * as qs from 'qs';
+import {
+  NestjsRedoxModule,
+  NestJSRedoxOptions,
+  RedocOptions,
+} from 'nestjs-redox';
 
 async function bootstrap() {
   let port = AppConfig.port;
@@ -66,7 +71,31 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('docs-swagger', app, document);
+
+  const redocOptions: RedocOptions = {
+    requiredPropsFirst: true,
+    theme: {
+      sidebar: {
+        width: '222px',
+      },
+    },
+  };
+
+  const redoxOptions: NestJSRedoxOptions = {
+    useGlobalPrefix: true,
+    disableGoogleFont: true,
+    standalone: true,
+  };
+
+  // Instead of using SwaggerModule.setup() you call this module
+  await NestjsRedoxModule.setup(
+    '/docs',
+    app,
+    document,
+    redoxOptions,
+    redocOptions,
+  );
 
   await app.listen(port, AppConfig.host);
 
