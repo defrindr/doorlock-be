@@ -174,11 +174,8 @@ export class AccountSeeder implements Seeder {
         accountType: AccountType.GUEST,
         fullName: 'Maria Garcia',
         companyId: company?.id,
-        purpose: 'Technical Consultation',
         email: 'maria.garcia@globalconsulting.com',
         phone: '+628123456008',
-        visitDate: new Date(),
-        validUntil: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days from now
         identificationType: IdentificationType.PASSPORT,
         identificationNumber: 'A12345678',
       },
@@ -201,13 +198,6 @@ export class AccountSeeder implements Seeder {
       guest.phone = guestData.phone;
       guest.identificationType = guestData.identificationType;
       guest.identificationNumber = guestData.identificationNumber;
-      // Assign Sarah Johnson as host for first guest
-      if (
-        guestData.fullName === 'Robert Anderson' &&
-        createdEmployees.length > 1
-      ) {
-        guest.hostEmployeeId = createdEmployees[1].id;
-      }
       await guestRepository.save(guest);
     }
 

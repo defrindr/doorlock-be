@@ -14,8 +14,8 @@ import { AccountIntern } from './entities/account-intern.entity';
       AccountIntern,
       AccountGuest,
     ]),
+    GuestsModule,
   ],
   controllers: [],
-  providers: [GuestsModule],
 })
 export class IdentitiesModule {}

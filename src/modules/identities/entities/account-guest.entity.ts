@@ -1,17 +1,17 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
   DeleteDateColumn,
-  OneToOne,
+  Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { Account } from './account.entity';
-import { AccountEmployee } from './account-employee.entity';
 import { IdentificationType } from './account-type.enum';
+import { Account } from './account.entity';
+import { Company } from '@src/modules/master/companies/entities/company.entity';
 
 @Entity('account_guests')
 export class AccountGuest {
@@ -27,23 +27,11 @@ export class AccountGuest {
   @Column({ type: 'uuid', name: 'company_id', unique: true })
   companyId: string;
 
-  @Column({ type: 'nvarchar', length: 500, nullable: true })
-  purpose: string;
-
   @Column({ type: 'varchar', length: 255, nullable: true })
   email: string;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
   phone: string;
-
-  @Column({ type: 'date', nullable: true, name: 'visit_date' })
-  visitDate: Date;
-
-  @Column({ type: 'date', nullable: true, name: 'valid_until' })
-  validUntil: Date;
-
-  @Column({ type: 'uuid', nullable: true, name: 'host_employee_id' })
-  hostEmployeeId: string;
 
   @Column({
     type: 'varchar',
@@ -71,13 +59,12 @@ export class AccountGuest {
   deletedAt: Date;
 
   // Relations
-  @OneToOne(() => Account, (account) => account.guest)
+  @OneToOne(() => Account)
   @JoinColumn({ name: 'account_id' })
   account: Account;
 
-  @ManyToOne(() => AccountEmployee, (employee) => employee.id, {
-    nullable: true,
-  })
-  @JoinColumn({ name: 'host_employee_id' })
-  hostEmployee: AccountEmployee;
+  // Relations
+  @ManyToOne(() => Company)
+  @JoinColumn({ name: 'company_id' })
+  company: Company;
 }
