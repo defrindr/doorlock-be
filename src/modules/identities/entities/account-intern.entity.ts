@@ -32,9 +32,6 @@ export class AccountIntern {
   @Column({ type: 'nvarchar', length: 100, nullable: true })
   major: string;
 
-  @Column({ type: 'int', nullable: true })
-  semester: number;
-
   @Column({ type: 'varchar', length: 255, nullable: true })
   email: string;
 
