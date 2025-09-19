@@ -3,25 +3,24 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
-  HttpCode,
   Post,
   UseInterceptors,
 } from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.decorator';
+import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-response.decorator';
 import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
 import { User } from '@src/shared/core/decorators/user.decorator';
 import { IUser } from '@src/shared/storage/user.storage';
+import { UserDto } from '../users/dto/user.dto';
 import { AuthService } from './auth.service';
+import { LoginCommand } from './command/imp/login.command';
+import { RefreshTokenCommand } from './command/imp/refresh-token.command';
+import { LoginResponseDto } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token';
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { LoginCommand } from './command/imp/login.command';
-import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-response.decorator';
-import { LoginResponseDto } from './dto/login-response.dto';
-import { RefreshTokenCommand } from './command/imp/refresh-token.command';
 import { GetProfileQuery } from './query/imp/get-profile.query';
-import { UserDto } from '../users/dto/user.dto';
-import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
