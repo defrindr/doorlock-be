@@ -13,6 +13,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiOkResponse,
+  ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.decorator';
@@ -40,6 +41,11 @@ export class PermissionController {
   ) {}
 
   @Post('/')
+  @ApiOperation({
+    summary: 'Create new Permission',
+    description:
+      'Creates a new permission in the system. Permissions define granular access controls and specific actions that can be assigned to roles or users.',
+  })
   @ApiSingleResponse(ResponsePermissionDto, 'Data berhasil ditambahkan')
   @ApiCommonErrors()
   create(@Body() payload: CreatePermissionDto) {
@@ -47,6 +53,11 @@ export class PermissionController {
   }
 
   @Get('/')
+  @ApiOperation({
+    summary: 'Fetch all Permissions with pagination',
+    description:
+      'Retrieves a paginated list of all permissions in the system. Supports filtering, sorting, and searching capabilities through query parameters.',
+  })
   @ApiPaginatedResponse(ResponsePermissionDto)
   @ApiCommonErrors()
   findAll(@Query() pageOptionsDto: PageOptionsDto): Promise<PagePermissionDto> {
@@ -54,6 +65,11 @@ export class PermissionController {
   }
 
   @Get('/:id')
+  @ApiOperation({
+    summary: 'Find specific permission',
+    description:
+      'Retrieves detailed information about a specific permission by its unique identifier. Returns complete permission data including access scope and actions.',
+  })
   @ApiSingleResponse(ResponsePermissionDto, 'Data berhasil didapatkan')
   @ApiCommonErrors()
   findOne(@Param('id') id: string) {
@@ -61,6 +77,11 @@ export class PermissionController {
   }
 
   @Put('/:id')
+  @ApiOperation({
+    summary: 'Update existing Permission',
+    description:
+      'Updates an existing permission with new information. Supports partial updates - only provided fields will be modified while preserving existing access controls.',
+  })
   @ApiSingleResponse(ResponsePermissionDto, 'Data berhasil diubah')
   @ApiCommonErrors()
   @ApiBody({ type: UpdatePermissionDto })
@@ -74,6 +95,11 @@ export class PermissionController {
   }
 
   @Delete('/:id')
+  @ApiOperation({
+    summary: 'Delete Permission',
+    description:
+      'Permanently removes a permission from the system. This action cannot be undone. Roles and users with this permission will lose the associated access rights.',
+  })
   @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
   @ApiCommonErrors()
   remove(@Param('id') id: string) {
