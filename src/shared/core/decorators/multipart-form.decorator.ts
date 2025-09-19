@@ -1,43 +1,57 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import {
+  BadRequestException,
+  createParamDecorator,
+  ExecutionContext,
+} from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 import { FastifyRequest } from 'fastify';
+import { createValidationException } from '../factories/validation-exception.factory';
 
-// Extend FastifyRequest to include multipart methods
 interface MultipartRequest extends FastifyRequest {
   isMultipart(): boolean;
   parts(): AsyncIterableIterator<any>;
 }
 
 export const MultipartForm = createParamDecorator(
-  async (data: unknown, ctx: ExecutionContext) => {
+  async (dtoClass: any, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<MultipartRequest>();
 
-    // Check if request has multipart content
     if (!request.isMultipart()) {
-      throw new Error('Request is not multipart');
+      throw new BadRequestException('Request is not multipart/form-data');
     }
 
-    const formData: any = {};
-    let fileData: any = null;
-
-    // Process multipart data
+    const formData: Record<string, any> = {};
     const parts = request.parts();
 
     for await (const part of parts) {
       if (part.file) {
-        // Handle file upload
         const buffer = await part.toBuffer();
-        fileData = {
+        formData[part.fieldname] = {
           filename: part.filename,
           mimetype: part.mimetype,
-          buffer: buffer,
+          buffer,
         };
-        formData[part.fieldname] = fileData;
       } else {
-        // Handle regular form fields
         formData[part.fieldname] = part.value;
       }
     }
 
-    return formData;
+    // If no DTO class is passed → return raw
+    if (!dtoClass) return formData;
+
+    // Transform raw → DTO
+    const dtoInstance = plainToInstance(dtoClass, formData, {
+      enableImplicitConversion: true,
+    });
+
+    // Validate DTO
+    const errors = await validate(dtoInstance as object);
+
+    if (errors.length > 0) {
+      throw createValidationException(errors);
+    }
+
+    return dtoInstance;
   },
 );

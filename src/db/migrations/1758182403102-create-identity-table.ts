@@ -59,7 +59,6 @@ export class CreateIdentityTable1758182403102 implements MigrationInterface {
             expression: "[account_type] IN ('employee','intern','guest')",
           }),
         ],
-        uniques: [{ columnNames: ['nfc_code'] }],
         indices: [
           { name: 'IDX_accounts_nfc_code', columnNames: ['nfc_code'] },
           { name: 'IDX_accounts_account_type', columnNames: ['account_type'] },
@@ -221,6 +220,14 @@ export class CreateIdentityTable1758182403102 implements MigrationInterface {
           }),
         ],
         indices: [
+          {
+            name: 'IDX_account_guests_identificationType',
+            columnNames: ['identification_type'],
+          },
+          {
+            name: 'IDX_account_guests_identificationNumber',
+            columnNames: ['identification_number'],
+          },
           { name: 'IDX_account_guests_deletedAt', columnNames: ['deletedAt'] },
         ],
       }),
@@ -348,9 +355,19 @@ export class CreateIdentityTable1758182403102 implements MigrationInterface {
         onDelete: 'CASCADE',
       }),
     ]);
+
+    // Add filtered unique index manually
+    await queryRunner.query(`
+      CREATE UNIQUE INDEX UQ_account_nfc_code
+      ON accounts(nfc_code)
+      WHERE nfc_code IS NOT NULL
+    `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
+      DROP INDEX UQ_account_nfc_code ON accounts
+    `);
     await queryRunner.dropTable('visit_participants');
     await queryRunner.dropTable('visits');
     await queryRunner.dropTable('account_guests');

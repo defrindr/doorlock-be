@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 
 import { ValidationPipe } from '@nestjs/common';
 import { env } from 'process';
+import { join } from 'path';
 import { AppModule } from './app.module';
 
 import {
@@ -20,6 +21,8 @@ import { AppConfig } from './config/index';
 import { createValidationException } from './shared/core/factories/validation-exception.factory';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const fastifyMultipart = require('@fastify/multipart');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const fastifyStatic = require('@fastify/static');
 
 async function bootstrap() {
   let port = AppConfig.port;
@@ -44,7 +47,15 @@ async function bootstrap() {
   );
 
   // Register multipart plugin for file uploads
-  app.register(fastifyMultipart);
+  app.register(fastifyMultipart, {
+    limits: { fileSize: AppConfig.maxFileSize }, // 10MB
+  });
+
+  // Register static file serving for uploads
+  app.register(fastifyStatic, {
+    root: join(process.cwd(), 'public'),
+    prefix: '/static/',
+  });
 
   app.enableCors({
     origin: '*', // allow your frontend

@@ -40,8 +40,6 @@ export abstract class BaseHandler<TCommand extends ICommand, TResult = any>
         throw error;
       }
 
-      console.log(error);
-
       if (error.code === 'EREQUEST') {
         if (error.message.includes('Violation of UNIQUE KEY')) {
           throw new ConflictHttpException(error.message);
