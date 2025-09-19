@@ -17,7 +17,7 @@ class CrudGenerator {
       'modules',
       this.pluralKebab,
     );
-    
+
     // Parse specific components to generate
     this.specificComponents = this.parseSpecificComponents();
     this.excludedComponents = this.parseExcludedComponents();
@@ -135,11 +135,11 @@ class CrudGenerator {
   // Generate additional entities
   generateAdditionalEntity(entityName) {
     console.log(`\nGenerating additional entity: ${entityName}`);
-    
+
     // Create a temporary generator for the additional entity
     const tempGenerator = new CrudGenerator(entityName, this.options);
     tempGenerator.outputPath = this.outputPath; // Use same module directory
-    
+
     let localGeneratedCount = 0;
     let localSkippedCount = 0;
 
@@ -552,7 +552,6 @@ class CrudGenerator {
         `✅ CRUD module '${this.moduleName}' generated successfully!`,
       );
       console.log(`📁 Generated ${generatedCount} files`);
-      
       if (this.options.force && skippedCount === 0) {
         console.log(`🔄 Some files may have been overwritten`);
       }
