@@ -1,13 +1,16 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 
 import { BaseHandler } from '@src/shared/core/handlers/base.handler';
 import { OkResponse } from '@src/shared/core/handlers/response.handler';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { plainToInstance } from 'class-transformer';
 
-import { NotFoundHttpException } from '@src/shared/core/exceptions/exception';
+import {
+  ConflictHttpException,
+  NotFoundHttpException,
+} from '@src/shared/core/exceptions/exception';
 import { {{SINGULAR_PASCAL}}Dto } from '../../dto/{{SINGULAR_KEBAB}}.dto';
 import { {{SINGULAR_PASCAL}} } from '../../entities/{{SINGULAR_KEBAB}}.entity';
 import { Update{{SINGULAR_PASCAL}}Command } from '../imp/update-{{SINGULAR_KEBAB}}.command';
@@ -27,12 +30,20 @@ export class Update{{SINGULAR_PASCAL}}Handler
   async handle(command: Update{{SINGULAR_PASCAL}}Command): Promise<ApiResponseDto<{{SINGULAR_PASCAL}}Dto>> {
     const { id, update{{SINGULAR_PASCAL}}Dto } = command;
 
-    const {{SINGULAR_CAMEL}} = await this.{{SINGULAR_CAMEL}}Repository.findOne({
-      where: { id },
-    });
+
+    const [{{SINGULAR_CAMEL}}, {{SINGULAR_CAMEL}}Exist] = await Promise.all([
+      this.{{SINGULAR_CAMEL}}Repository.findOne({ where: { id } }),
+      this.{{SINGULAR_CAMEL}}Repository.findOne({
+        where: { name: update{{SINGULAR_PASCAL}}Dto.name, id: Not(id) },
+      }),
+    ]);
 
     if (!{{SINGULAR_CAMEL}}) {
       throw new NotFoundHttpException('{{SINGULAR_PASCAL}} not found');
+    }
+
+    if ({{SINGULAR_CAMEL}}Exist) {
+      throw new ConflictHttpException('{{SINGULAR_PASCAL}} with this name already exists');
     }
 
     await this.{{SINGULAR_CAMEL}}Repository.update(id, update{{SINGULAR_PASCAL}}Dto);
@@ -42,7 +53,7 @@ export class Update{{SINGULAR_PASCAL}}Handler
     });
 
     const {{SINGULAR_CAMEL}}Dto = plainToInstance({{SINGULAR_PASCAL}}Dto, updated{{SINGULAR_PASCAL}}, {
-      excludeExtraneousValues: false,
+      excludeExtraneousValues: true,
     });
 
     return OkResponse({{SINGULAR_CAMEL}}Dto, '{{SINGULAR_PASCAL}} updated successfully');

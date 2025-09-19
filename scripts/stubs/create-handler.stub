@@ -40,7 +40,7 @@ export class Create{{SINGULAR_PASCAL}}Handler
     const saved{{SINGULAR_PASCAL}} = await this.{{SINGULAR_CAMEL}}Repository.save({{SINGULAR_CAMEL}});
 
     const {{SINGULAR_CAMEL}}Dto = plainToInstance({{SINGULAR_PASCAL}}Dto, saved{{SINGULAR_PASCAL}}, {
-      excludeExtraneousValues: false,
+      excludeExtraneousValues: true,
     });
 
     return CreatedResponse({{SINGULAR_CAMEL}}Dto, '{{SINGULAR_PASCAL}} created successfully');

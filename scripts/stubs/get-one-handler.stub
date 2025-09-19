@@ -36,7 +36,7 @@ export class Get{{SINGULAR_PASCAL}}Handler
     }
 
     const {{SINGULAR_CAMEL}}Dto = plainToInstance({{SINGULAR_PASCAL}}Dto, {{SINGULAR_CAMEL}}, {
-      excludeExtraneousValues: false,
+      excludeExtraneousValues: true,
     });
 
     return OkResponse({{SINGULAR_CAMEL}}Dto, '{{SINGULAR_PASCAL}} retrieved successfully');

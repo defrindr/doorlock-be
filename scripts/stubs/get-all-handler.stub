@@ -10,6 +10,7 @@ import { {{SINGULAR_PASCAL}}Dto } from '../../dto/{{SINGULAR_KEBAB}}.dto';
 import { Page{{SINGULAR_PASCAL}}Dto } from '../../dto/page-{{SINGULAR_KEBAB}}.dto';
 import { {{SINGULAR_PASCAL}} } from '../../entities/{{SINGULAR_KEBAB}}.entity';
 import { Get{{PLURAL_PASCAL}}Query } from '../imp/get-{{PLURAL_KEBAB}}.query';
+import { applyPaginationFilters } from '@src/shared/paginations/apply-pagination-filter';
 
 @QueryHandler(Get{{PLURAL_PASCAL}}Query)
 export class Get{{PLURAL_PASCAL}}Handler
@@ -28,18 +29,20 @@ export class Get{{PLURAL_PASCAL}}Handler
 
     const queryBuilder = this.{{SINGULAR_CAMEL}}Repository.createQueryBuilder('{{SINGULAR_CAMEL}}');
 
-    queryBuilder
-      .orderBy('{{SINGULAR_CAMEL}}.createdAt', 'DESC')
-      .skip(pageOptionsDto.skip)
-      .take(pageOptionsDto.take);
+    queryBuilder = applyPaginationFilters(queryBuilder, {
+      alias: '{{SINGULAR_CAMEL}}',
+      allowedSort: ['id', 'name', 'status', 'createdAt'],
+      allowedSearch: ['name'],
+      allowedFilter: ['id', 'status'],
+      pageOptions: pageOptionsDto,
+    });
 
-    const itemCount = await queryBuilder.getCount();
-    const { entities } = await queryBuilder.getRawAndEntities();
+    const [entities, itemCount] = await queryBuilder.getManyAndCount();
 
     const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
 
     const {{SINGULAR_CAMEL}}Dtos = plainToInstance({{SINGULAR_PASCAL}}Dto, entities, {
-      excludeExtraneousValues: false,
+      excludeExtraneousValues: true,
     });
 
     return new Page{{SINGULAR_PASCAL}}Dto({{SINGULAR_CAMEL}}Dtos, pageMetaDto);

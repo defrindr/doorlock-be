@@ -1,16 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
 
 export class {{SINGULAR_PASCAL}}Dto {
   @ApiProperty({ description: '{{SINGULAR_PASCAL}} ID' })
+  @Expose()
   id: string;
 
   @ApiProperty({ description: '{{SINGULAR_PASCAL}} name' })
+  @Expose()
   name: string;
 
   @ApiProperty({ description: '{{SINGULAR_PASCAL}} description', nullable: true })
+  @Expose()
   description?: string;
 
   @ApiProperty({ description: '{{SINGULAR_PASCAL}} status' })
+  @Expose()
   status: number;
 
   @ApiProperty({ description: 'Creation date' })

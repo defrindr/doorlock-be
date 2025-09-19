@@ -1,4 +1,33 @@
 import { PartialType } from '@nestjs/swagger';
-import { Create{{SINGULAR_PASCAL}}Dto } from './create-{{SINGULAR_KEBAB}}.dto';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
-export class Update{{SINGULAR_PASCAL}}Dto extends PartialType(Create{{SINGULAR_PASCAL}}Dto) {}
+export class Update{{SINGULAR_PASCAL}}Dto {
+  @ApiPropertyOptional({ description: '{{SINGULAR_PASCAL}} name', example: 'Example {{SINGULAR_PASCAL}}' })
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(255)
+  name: string;
+
+  @ApiPropertyOptional({
+    description: '{{SINGULAR_PASCAL}} description',
+    example: 'Description for {{SINGULAR_PASCAL}}',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @ApiPropertyOptional({ description: '{{SINGULAR_PASCAL}} status', example: 1, required: false })
+  @IsOptional()
+  @Transform(({ value }) => parseInt(value))
+  @IsNumber()
+  status?: number = 1;
+}
