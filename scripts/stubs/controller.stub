@@ -85,10 +85,6 @@ export class {{PLURAL_PASCAL}}Controller {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete {{SINGULAR_CAMEL}} by ID' })
-  @ApiOkResponse({
-    description: '{{SINGULAR_PASCAL}} deleted successfully',
-    type: String,
-  })
   @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
   @ApiCommonErrors()
   async remove(
