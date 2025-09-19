@@ -65,4 +65,11 @@ export class CreateGuestDto {
   })
   // @ValidateIf(() => false)
   photo: any;
+
+  @ApiProperty({
+    description: 'Guest account status',
+    enum: [0, 1],
+  })
+  @IsNotEmpty()
+  status?: number;
 }

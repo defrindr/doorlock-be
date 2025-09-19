@@ -9,6 +9,7 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { IdentificationType } from '../../entities/account-type.enum';
+import { Transform } from 'class-transformer';
 
 export class UpdateGuestDto {
   @ApiPropertyOptional({
@@ -44,8 +45,10 @@ export class UpdateGuestDto {
 
   @ApiPropertyOptional({
     description: 'Guest identification type',
-    example: 'KTP',
+    enum: IdentificationType,
+    example: IdentificationType.KTP, // → "ktp"
   })
+  @Transform(({ value }) => value?.toLowerCase())
   @IsEnum(IdentificationType, {
     message: `identification_type must be one of: ${Object.values(IdentificationType).join(', ')}`,
   })
@@ -66,4 +69,11 @@ export class UpdateGuestDto {
   })
   @ValidateIf(() => false)
   photo: any;
+
+  @ApiPropertyOptional({
+    description: 'Guest account status',
+    enum: [0, 1],
+  })
+  @IsNotEmpty()
+  status?: number;
 }

@@ -53,12 +53,18 @@ export class UpdateGuestHandler
       updateGuestDto.photo,
       account.photo,
     );
+    const status = updateGuestDto.status;
 
     delete updateGuestDto.photo;
+    delete updateGuestDto.status;
     // Update Data
     await Promise.all([
       // Update Guest
       this.guestRepository.update(id, updateGuestDto),
+      // Update Account
+      this.accountRepository.update(guest.accountId, {
+        status: status,
+      }),
       // Update Account photo if new photo was uploaded
       this.guestImageService.updateAccountPhoto(guest.accountId, photoPath),
     ]);

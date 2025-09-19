@@ -13,6 +13,8 @@ export abstract class BaseHandler<TCommand extends ICommand, TResult = any>
 {
   protected readonly logger: Logger;
 
+  protected start: number;
+
   constructor() {
     this.logger = new Logger(this.constructor.name);
   }
@@ -78,6 +80,7 @@ export abstract class BaseHandler<TCommand extends ICommand, TResult = any>
   protected async beforeRun(command: TCommand): Promise<void> {
     this.logger.log(`Executing command: ${command.constructor.name}`);
     this.logger.debug(`With payload:`, { command });
+    this.start = Date.now();
   }
 
   /**
@@ -87,7 +90,7 @@ export abstract class BaseHandler<TCommand extends ICommand, TResult = any>
    */
   protected async afterRun(result: TResult, command: TCommand): Promise<void> {
     this.logger.log(
-      `Successfully executed command: ${command.constructor.name}`,
+      `Successfully executed command: ${command.constructor.name} in ${Date.now() - this.start} ms`,
     );
     // this.logger.debug(`With result:`, { result });
   }

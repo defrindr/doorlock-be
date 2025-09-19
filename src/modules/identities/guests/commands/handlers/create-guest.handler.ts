@@ -71,9 +71,12 @@ export class CreateGuestHandler
     );
 
     // Create Account
+    const status = createGuestDto.status;
+    delete createGuestDto.status;
     const account = this.accountRepository.create({
       accountType: AccountType.GUEST,
       photo: photoPath,
+      status: status,
     });
     const savedAccount = await this.accountRepository.save(account);
 
