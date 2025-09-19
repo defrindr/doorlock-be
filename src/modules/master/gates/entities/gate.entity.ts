@@ -8,7 +8,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Location } from '@src/modules/locations/entities/location.entity';
+import { Location } from '@src/modules/master/locations/entities/location.entity';
 import { GateType } from './gate-type.enum';
 
 @Entity('gates')

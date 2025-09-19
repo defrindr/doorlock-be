@@ -30,7 +30,7 @@ import { UpdateCompanyDto } from './dto/update-company.dto';
 import { GetCompanyQuery } from './queries/imp/get-company.query';
 import { GetCompaniesQuery } from './queries/imp/get-companies.query';
 
-@Controller('companies')
+@Controller('master/companies')
 @ApiTags('companies')
 @ApiBearerAuth()
 export class CompaniesController {

@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { Gate } from '../entities/gate.entity';
-import { Location } from '@src/modules/locations/entities/location.entity';
+import { Location } from '@src/modules/master/locations/entities/location.entity';
 import { GateType } from '../entities/gate-type.enum';
 
 export class GateSeeder implements Seeder {

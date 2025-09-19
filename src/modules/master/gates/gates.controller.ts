@@ -28,7 +28,7 @@ import { GetGateQuery } from './queries/imp/get-gate.query';
 import { GetGatesQuery } from './queries/imp/get-gates.query';
 
 @ApiTags('gates')
-@Controller('gates')
+@Controller('master/gates')
 export class GatesController {
   constructor(
     private readonly commandBus: CommandBus,

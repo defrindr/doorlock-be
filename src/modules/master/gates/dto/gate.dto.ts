@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
 import { GateType } from '../entities/gate-type.enum';
-import { LocationDto } from '@src/modules/locations/dto/location.dto';
+import { LocationDto } from '@src/modules/master/locations/dto/location.dto';
 
 export class GateDto {
   @ApiProperty({

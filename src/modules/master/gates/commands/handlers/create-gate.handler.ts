@@ -10,7 +10,7 @@ import { plainToInstance } from 'class-transformer';
 import { Gate } from '../../entities/gate.entity';
 import { GateDto } from '../../dto/gate.dto';
 import { CreateGateCommand } from '../imp/create-gate.command';
-import { Location } from '@src/modules/locations/entities/location.entity';
+import { Location } from '@src/modules/master/locations/entities/location.entity';
 import {
   ConflictHttpException,
   NotFoundHttpException,

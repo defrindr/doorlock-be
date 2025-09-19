@@ -32,7 +32,7 @@ import { GetLocationsQuery } from './queries/imp/get-locations.query';
 
 @ApiTags('Locations')
 @Controller({
-  path: 'locations',
+  path: 'master/locations',
   version: '1',
 })
 @ApiBearerAuth()

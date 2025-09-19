@@ -7,7 +7,7 @@ import { OkResponse } from '@src/shared/core/handlers/response.handler';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { plainToInstance } from 'class-transformer';
 
-import { Location } from '@src/modules/locations/entities/location.entity';
+import { Location } from '@src/modules/master/locations/entities/location.entity';
 import {
   ConflictHttpException,
   NotFoundHttpException,

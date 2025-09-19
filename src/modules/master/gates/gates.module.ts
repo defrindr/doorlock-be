@@ -3,7 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GatesController } from './gates.controller';
 import { Gate } from './entities/gate.entity';
-import { Location } from '@src/modules/locations/entities/location.entity';
+import { Location } from '@src/modules/master/locations/entities/location.entity';
 
 // Command Handlers
 import { CreateGateHandler } from './commands/handlers/create-gate.handler';
