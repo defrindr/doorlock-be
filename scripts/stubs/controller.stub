@@ -89,6 +89,7 @@ export class {{PLURAL_PASCAL}}Controller {
     description: '{{SINGULAR_PASCAL}} deleted successfully',
     type: String,
   })
+  @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
   @ApiCommonErrors()
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
