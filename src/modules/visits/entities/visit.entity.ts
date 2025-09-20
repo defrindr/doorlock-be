@@ -4,6 +4,7 @@ import { Company } from '@src/modules/master/companies/entities/company.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   JoinTable,
@@ -40,6 +41,9 @@ export class Visit {
     default: () => 'getdate()',
   })
   createdAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 
   // Relations
   @ManyToOne(() => AccountEmployee, { nullable: true })
