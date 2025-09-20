@@ -5,8 +5,11 @@ import { NfcWriteService } from './services/nfc-write.service';
 import { NfcRemoveService } from './services/nfc-remove.service';
 import { NfcGateway } from './nfc.gateway';
 import { NfcService } from './nfc.service';
+import { PrepareDataService } from './services/prepare-data.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([])],
   providers: [
     NfcGateway,
     NfcService,
@@ -14,6 +17,7 @@ import { NfcService } from './nfc.service';
     NfcReadService,
     NfcWriteService,
     NfcRemoveService,
+    PrepareDataService,
   ],
   exports: [NfcService, NfcOperationsService],
 })

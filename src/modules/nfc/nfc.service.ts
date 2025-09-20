@@ -7,6 +7,7 @@ import {
 import { NFC } from 'nfc-pcsc';
 import { NfcOperationsService } from './services/nfc-operations.service';
 import { NfcGateway } from './nfc.gateway';
+import { PrepareDataService } from './services/prepare-data.service';
 
 @Injectable()
 export class NfcService implements OnModuleInit, OnModuleDestroy {
@@ -16,6 +17,7 @@ export class NfcService implements OnModuleInit, OnModuleDestroy {
   constructor(
     private readonly gateway: NfcGateway,
     private readonly nfcOperations: NfcOperationsService,
+    private readonly prepareDataService: PrepareDataService,
   ) {}
 
   onModuleInit() {
@@ -87,20 +89,8 @@ export class NfcService implements OnModuleInit, OnModuleDestroy {
         }
 
         if (data?.type === 'WRITE_NDEF') {
-          const accountId = data.payload.id;
-          const payload = JSON.stringify({
-            nip: 'tamu003',
-            nama: 'Sutejo Kawulo',
-            foto: 'ExamplePR060511-1-1.jpg',
-            perusahaan: 'PT. Maju Mundur Asik',
-            jabatan: 'Marketing',
-            status_kartu: 'Tamu',
-            poin: '5',
-            aktif_mulai: '09-09-2025 00:00:01',
-            aktif_selesai: '19-09-2025 21:00:00',
-            access: '1',
-          });
-          console.log(accountId);
+          const payload = await this.prepareDataService.prepare(data.payload);
+          console.log('payload', payload);
           try {
             await this.nfcOperations.remove({ reader });
             await new Promise((res) => setTimeout(res, 50));

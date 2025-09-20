@@ -41,6 +41,7 @@ declare module 'nfc-pcsc' {
     constructor(options?: any);
     on(event: 'reader', listener: (reader: Reader) => void): void;
     on(event: 'error', listener: (err: Error) => void): void;
+    close(): void;
   }
 
   export default NFC;
