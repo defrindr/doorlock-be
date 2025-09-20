@@ -63,4 +63,15 @@ export class UpdateVisitDto {
   @IsUUID('all', { each: true })
   @IsNotEmpty({ each: true })
   visitParticipants: string[];
+
+  @ApiPropertyOptional({
+    description: 'List of gate/door can accessed by guest',
+    example: [
+      'A1E2C3D4-5678-90AB-CDEF-1234567890AB',
+      'B1E2C3D4-5678-90AB-CDEF-1234567890AB',
+    ],
+  })
+  @IsUUID('all', { each: true })
+  @IsNotEmpty({ each: true })
+  accesses?: string[];
 }

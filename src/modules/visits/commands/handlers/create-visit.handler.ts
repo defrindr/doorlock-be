@@ -17,6 +17,8 @@ import { VisitActionResponseDto } from '../../dto/visit-action-response.dto';
 import { VisitParticipant } from '../../entities/visit-participant.entity';
 import { Visit } from '../../entities/visit.entity';
 import { CreateVisitCommand } from '../imp/create-visit.command';
+import { Gate } from '@src/modules/master/gates/entities/gate.entity';
+import { VisitGate } from '../../entities/visit-gate.entity';
 
 @CommandHandler(CreateVisitCommand)
 export class CreateVisitHandler
@@ -38,15 +40,16 @@ export class CreateVisitHandler
 
     try {
       // Prepare fields
-      const { visitParticipants, ...visitData } = createVisitDto;
+      const { accesses, visitParticipants, ...visitData } = createVisitDto;
       const participantIds = visitParticipants;
+      const accessIds = accesses;
 
       return await this.dataSource.transaction(
         async (manager: EntityManager) => {
           // Validate data
           console.log(visitData.hostEmployeeId);
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const [_employeeValid, _companyValid, participants] =
+          const [_employeeValid, _companyValid, participants, gates] =
             await Promise.all([
               createVisitDto.hostEmployeeId
                 ? manager
@@ -75,6 +78,7 @@ export class CreateVisitHandler
                     );
                   }
                 }),
+              // validate Participants
               participantIds
                 ? manager
                     .find(AccountGuest, { where: { id: In(participantIds) } })
@@ -89,21 +93,50 @@ export class CreateVisitHandler
                       return participants;
                     })
                 : Promise.resolve(),
+              // validate Accesses Gate
+              accessIds
+                ? manager
+                    .find(Gate, { where: { id: In(accessIds) } })
+                    .then((gate) => {
+                      const dbAccessIds = gate.map((p) => p.id);
+                      if (accessIds?.length !== dbAccessIds.length) {
+                        throw new BadRequestHttpException(
+                          `You have invalid data in list of gates`,
+                        );
+                      }
+
+                      return gate;
+                    })
+                : Promise.resolve(),
             ]);
           // Create visit data
           const visit = manager.create(Visit, visitData);
           const savedVisit = await manager.save(visit);
 
           // Create visit participant data
-          if (participantIds) {
-            const visitParticipants = participantIds.map((participantId) => {
-              return manager.create(VisitParticipant, {
-                visit: savedVisit,
-                guest: { id: participantId },
-              });
-            });
-            await manager.save(visitParticipants);
-          }
+          await Promise.all([
+            participantIds
+              ? manager.save(
+                  participantIds.map((participantId) => {
+                    return manager.create(VisitParticipant, {
+                      visit: savedVisit,
+                      guest: { id: participantId },
+                    });
+                  }),
+                )
+              : Promise.resolve(),
+
+            accessIds
+              ? manager.save(
+                  accessIds.map((gateId) => {
+                    return manager.create(VisitGate, {
+                      visit: savedVisit,
+                      gate: { id: gateId },
+                    });
+                  }),
+                )
+              : Promise.resolve(),
+          ]);
 
           const visitDto = plainToInstance(VisitActionResponseDto, savedVisit, {
             excludeExtraneousValues: true,

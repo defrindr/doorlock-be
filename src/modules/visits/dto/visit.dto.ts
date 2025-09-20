@@ -4,6 +4,7 @@ import { CompanyDto } from '@src/modules/master/companies/dto/company.dto';
 import { AccountEmployeeDto } from '@src/modules/visits/dto/employee.dto';
 import { Expose, Type } from 'class-transformer';
 import { GuestDto } from './guest.dto';
+import { GateDto } from './gate.dto';
 
 export class VisitDto {
   @ApiProperty({
@@ -79,6 +80,14 @@ export class VisitDto {
   @Type(() => GuestDto)
   @Expose()
   participants?: GuestDto[];
+
+  @ApiProperty({
+    description: 'List of participants in the visit',
+    type: () => [GateDto],
+  })
+  @Type(() => GateDto)
+  @Expose()
+  accesses?: GateDto[];
 
   @ApiProperty({ description: 'Company information' })
   @Type(() => CompanyDto)

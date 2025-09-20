@@ -14,6 +14,7 @@ import { VisitParticipant } from '../../entities/visit-participant.entity';
 import { Visit } from '../../entities/visit.entity';
 import { UpdateVisitCommand } from '../imp/update-visit.command';
 import { Company } from '@src/modules/master/companies/entities/company.entity';
+import { VisitGate } from '../../entities/visit-gate.entity';
 
 @CommandHandler(UpdateVisitCommand)
 export class UpdateVisitHandler
@@ -32,9 +33,8 @@ export class UpdateVisitHandler
     command: UpdateVisitCommand,
   ): Promise<ApiResponseDto<VisitActionResponseDto>> {
     const { id, updateVisitDto } = command;
-    // Remove visitParticipants from update payload
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { visitParticipants, ...visitData } = updateVisitDto;
+    const { accesses, visitParticipants, ...visitData } = updateVisitDto;
 
     return await this.dataSource.transaction(async (manager: EntityManager) => {
       const [visit, hostEmployee, company] = await Promise.all([
@@ -58,7 +58,6 @@ export class UpdateVisitHandler
       const updatedVisit = await manager.update(Visit, id, visitData);
 
       // Optionally update visitParticipants separately here if needed
-
       if (visitParticipants?.length) {
         // Delete old participants not in the new list
         const deletePromise = manager.delete(VisitParticipant, {
@@ -92,6 +91,40 @@ export class UpdateVisitHandler
       } else {
         // Delete all participants if the new list is empty
         await manager.delete(VisitParticipant, { visitId: id });
+      }
+
+      // Optionally update accesses separately here if needed
+      if (accesses?.length) {
+        // Delete old participants not in the new list
+        const deletePromise = manager.delete(VisitGate, {
+          visitId: id,
+          gateId: Not(In(accesses)),
+        });
+
+        // Find existing participants to avoid duplicates
+        const existingPromise = manager.find(VisitGate, {
+          where: { visitId: id, gateId: In(accesses) },
+          select: ['gateId'],
+        });
+
+        const [_, existingParticipants] = await Promise.all([
+          deletePromise,
+          existingPromise,
+        ]);
+
+        const existingIds = existingParticipants.map((p) => p.gateId);
+        const newIds = accesses.filter((pid) => !existingIds.includes(pid));
+
+        // Insert new participants
+        if (newIds.length) {
+          const insertParticipants = newIds.map((gateId) =>
+            manager.create(VisitGate, { visitId: id, gateId }),
+          );
+          await manager.save(insertParticipants);
+        }
+      } else {
+        // Delete all participants if the new list is empty
+        await manager.delete(VisitGate, { visitId: id });
       }
 
       const visitDto = plainToInstance(VisitActionResponseDto, visit, {

@@ -14,6 +14,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { VisitParticipant } from './visit-participant.entity';
+import { VisitGate } from './visit-gate.entity';
+import { Gate } from '@src/modules/master/gates/entities/gate.entity';
 
 @Entity('visits')
 export class Visit {
@@ -53,6 +55,9 @@ export class Visit {
   @OneToMany(() => VisitParticipant, (vp) => vp.visit)
   visitParticipants?: VisitParticipant[];
 
+  @OneToMany(() => VisitGate, (vg) => vg.visit)
+  visitGates?: VisitGate[];
+
   @ManyToMany(() => AccountGuest)
   @JoinTable({
     name: 'visit_participants',
@@ -60,6 +65,14 @@ export class Visit {
     inverseJoinColumn: { name: 'guestId', referencedColumnName: 'id' },
   })
   participants?: AccountGuest[];
+
+  @ManyToMany(() => Gate)
+  @JoinTable({
+    name: 'visit_gates',
+    joinColumn: { name: 'visitId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'gateId', referencedColumnName: 'id' },
+  })
+  accesses?: AccountGuest[];
 
   @ManyToOne(() => Company, { nullable: true })
   @JoinColumn({ name: 'company_id' })
