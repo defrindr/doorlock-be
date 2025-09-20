@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { VisitGate } from '@src/modules/visits/entities/visit-gate.entity';
 import { VisitParticipant } from '@src/modules/visits/entities/visit-participant.entity';
 import { DataSource, EntityManager } from 'typeorm';
 
@@ -31,6 +32,17 @@ export class PrepareDataService {
         throw new BadRequestException('Data visit not valid');
       }
 
+      const dbAccesses = await manager.find(VisitGate, {
+        where: { visitId },
+        relations: ['gate'],
+      });
+
+      const accesses = dbAccesses
+        .map((vGate) => {
+          return vGate.gate.id;
+        })
+        .join(',');
+
       return {
         id: visitAvailable.guest.account.id,
         nip: '-',
@@ -42,7 +54,7 @@ export class PrepareDataService {
         poin: '-',
         aktif_mulai: visitAvailable.visit.visitDate,
         aktif_selesai: visitAvailable.visit.validUntil,
-        access: '1,2,3',
+        access: accesses,
       };
     });
   }
