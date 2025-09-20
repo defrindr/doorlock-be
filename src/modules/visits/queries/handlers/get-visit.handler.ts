@@ -34,6 +34,7 @@ export class GetVisitHandler
         'hostEmployee',
         'visitParticipants',
         'visitParticipants.guest',
+        'visitParticipants.guest.account',
       ],
     });
 
@@ -43,7 +44,8 @@ export class GetVisitHandler
 
     const participants =
       visit?.visitParticipants?.map((item) => {
-        return item.guest;
+        const { account, ...guest } = item.guest;
+        return { ...guest, photoUrl: account.photo };
       }) || [];
     delete visit.visitParticipants;
 

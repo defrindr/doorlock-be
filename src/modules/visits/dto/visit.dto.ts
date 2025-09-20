@@ -1,9 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AccountDto } from '@src/modules/identities/dto/account.dto';
-import { GuestDto } from '@src/modules/identities/guests/dto/guest.dto';
 import { CompanyDto } from '@src/modules/master/companies/dto/company.dto';
 import { AccountEmployeeDto } from '@src/modules/visits/dto/employee.dto';
 import { Expose, Type } from 'class-transformer';
+import { GuestDto } from './guest.dto';
 
 export class VisitDto {
   @ApiProperty({
