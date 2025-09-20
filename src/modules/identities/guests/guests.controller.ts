@@ -31,6 +31,7 @@ import { PageGuestDto } from './dto/page-guest.dto';
 import { UpdateGuestDto } from './dto/update-guest.dto';
 import { GetGuestQuery } from './queries/imp/get-guest.query';
 import { GetGuestsQuery } from './queries/imp/get-guests.query';
+import { GetGuestsByCompanyQuery } from './queries/imp/get-guests-by-company.query';
 
 @Controller('identities/guests')
 @ApiTags('Guests')
@@ -75,6 +76,26 @@ export class GuestsController {
     @Query() pageOptionsDto: PageOptionsDto,
   ): Promise<PageGuestDto> {
     return this.queryBus.execute(new GetGuestsQuery(pageOptionsDto));
+  }
+
+  @Get('/by-company/:id')
+  @ApiOperation({
+    summary: 'Get all guests by company with pagination',
+    description:
+      'Retrieve a paginated list of all guest identities related with company in the system with their associated company and contact information',
+  })
+  @ApiOkResponse({
+    description: 'Guests retrieved successfully',
+    type: PageGuestDto,
+  })
+  @ApiCommonErrors()
+  async findAllByCompany(
+    @Query() pageOptionsDto: PageOptionsDto,
+    @Param('id', ParseUUIDPipe) companyId: string,
+  ): Promise<PageGuestDto> {
+    return this.queryBus.execute(
+      new GetGuestsByCompanyQuery(pageOptionsDto, companyId),
+    );
   }
 
   @Get(':id')
