@@ -1,6 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
-  IsDateString,
+  IsDate,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -36,17 +37,19 @@ export class UpdateVisitDto {
 
   @ApiPropertyOptional({
     description: 'Visit date (defaults to current date if not provided)',
-    example: '2025-09-20',
+    example: '2025-09-27T09:00:00.000Z',
   })
-  @IsDateString()
+  @Type(() => Date)
+  @IsDate()
   @IsOptional()
   visitDate?: Date;
 
   @ApiPropertyOptional({
     description: 'Valid until date/time of the visit',
-    example: '2025-09-27',
+    example: '2025-09-27T08:00:00.000Z',
   })
-  @IsDateString()
+  @Type(() => Date)
+  @IsDate()
   @IsNotEmpty()
   validUntil: Date;
 

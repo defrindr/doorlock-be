@@ -49,7 +49,7 @@ export class CreateVisitDto {
 
   @ApiPropertyOptional({
     description: 'Valid until date/time of the visit',
-    example: '2025-09-27T09:00:00Z',
+    example: '2025-09-20T09:00:00Z',
   })
   @Type(() => Date)
   @IsDate()

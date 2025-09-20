@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { AccountDto } from './account.dto';
+import { AccountDto } from '../../identities/dto/account.dto';
 
 export class AccountEmployeeDto {
   @ApiProperty({

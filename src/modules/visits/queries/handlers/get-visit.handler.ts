@@ -40,9 +40,10 @@ export class GetVisitHandler
       throw new NotFoundHttpException('Visit not found');
     }
 
-    const participants = visit.visitParticipants.map((item) => {
-      return item.guest;
-    });
+    const participants =
+      visit?.visitParticipants?.map((item) => {
+        return item.guest;
+      }) || [];
     delete visit.visitParticipants;
 
     const visitDto = plainToInstance(

@@ -8,7 +8,7 @@ import { plainToInstance } from 'class-transformer';
 
 import { applyPaginationFilters } from '@src/shared/paginations/apply-pagination-filter';
 import { PageVisitDto } from '../../dto/page-visit.dto';
-import { VisitListDto } from '../../dto/visit-list.dto ';
+import { VisitListDto } from '../../dto/visit-list.dto';
 import { Visit } from '../../entities/visit.entity';
 import { GetVisitsQuery } from '../imp/get-visits.query';
 

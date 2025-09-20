@@ -261,7 +261,10 @@ export class CreateIdentityTable1758182403102 implements MigrationInterface {
           { name: 'visit_date', type: 'datetime2', default: 'getdate()' },
           { name: 'valid_until', type: 'datetime2' },
           { name: 'createdAt', type: 'datetime2', default: 'getdate()' },
+          { name: 'updatedAt', type: 'datetime2', default: 'getdate()' },
+          { name: 'deletedAt', type: 'datetime2', isNullable: true },
         ],
+        indices: [{ name: 'IDX_visits_deletedAt', columnNames: ['deletedAt'] }],
       }),
     );
 

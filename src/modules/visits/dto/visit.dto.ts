@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AccountDto } from '@src/modules/identities/dto/account.dto';
-import { AccountEmployee } from '@src/modules/identities/entities/account-employee.entity';
 import { GuestDto } from '@src/modules/identities/guests/dto/guest.dto';
+import { AccountEmployeeDto } from '@src/modules/visits/dto/employee.dto';
 import { Expose, Type } from 'class-transformer';
 
 export class VisitDto {
@@ -30,6 +30,7 @@ export class VisitDto {
     description: 'Visit date',
     example: '2025-09-20T09:00:00Z',
   })
+  @Type(() => Date)
   @Expose()
   visitDate: Date;
 
@@ -37,6 +38,7 @@ export class VisitDto {
     description: 'Valid until date/time of the visit',
     example: '2025-09-20T17:00:00Z',
   })
+  @Type(() => Date)
   @Expose()
   validUntil: Date;
 
@@ -50,9 +52,9 @@ export class VisitDto {
   @ApiProperty({
     description: 'Host employee account information',
   })
-  @Type(() => AccountEmployee)
+  @Type(() => AccountEmployeeDto)
   @Expose()
-  hostEmployee: AccountEmployee;
+  hostEmployee: AccountEmployeeDto;
 
   @ApiProperty({
     description: 'List of participants in the visit',
