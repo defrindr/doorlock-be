@@ -1,14 +1,12 @@
+import { Logger } from '@nestjs/common';
 import {
-  WebSocketGateway,
-  WebSocketServer,
-  OnGatewayInit,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  SubscribeMessage,
-  MessageBody,
+  OnGatewayInit,
+  WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, WebSocket } from 'ws';
-import { Logger } from '@nestjs/common';
 
 @WebSocketGateway(1339, { cors: true }) // Runs on port 3001
 export class NfcGateway
