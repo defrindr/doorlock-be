@@ -246,6 +246,7 @@ export class CreateIdentityTable1758182403102 implements MigrationInterface {
             isPrimary: true,
             default: 'NEWSEQUENTIALID()',
           },
+          { name: 'company_id', type: 'uniqueidentifier' },
           {
             name: 'purpose',
             type: 'nvarchar',
@@ -332,14 +333,18 @@ export class CreateIdentityTable1758182403102 implements MigrationInterface {
       }),
     ]);
 
-    await queryRunner.createForeignKey(
-      'visits',
+    await queryRunner.createForeignKeys('visits', [
       new TableForeignKey({
         columnNames: ['host_employee_id'],
         referencedTableName: 'account_employees',
         referencedColumnNames: ['id'],
       }),
-    );
+      new TableForeignKey({
+        columnNames: ['company_id'],
+        referencedTableName: 'companies',
+        referencedColumnNames: ['id'],
+      }),
+    ]);
 
     await queryRunner.createForeignKeys('visit_participants', [
       new TableForeignKey({
