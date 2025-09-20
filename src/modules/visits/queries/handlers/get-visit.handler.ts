@@ -30,6 +30,7 @@ export class GetVisitHandler
     const visit = await this.visitRepository.findOne({
       where: { id },
       relations: [
+        'company',
         'hostEmployee',
         'visitParticipants',
         'visitParticipants.guest',

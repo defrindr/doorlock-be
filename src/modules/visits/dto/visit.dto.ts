@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AccountDto } from '@src/modules/identities/dto/account.dto';
 import { GuestDto } from '@src/modules/identities/guests/dto/guest.dto';
+import { CompanyDto } from '@src/modules/master/companies/dto/company.dto';
 import { AccountEmployeeDto } from '@src/modules/visits/dto/employee.dto';
 import { Expose, Type } from 'class-transformer';
 
@@ -25,6 +26,13 @@ export class VisitDto {
   })
   @Expose()
   hostEmployeeId?: string;
+
+  @ApiPropertyOptional({
+    description: 'Company Visitor ID',
+    example: '80DD423E-F36B-1410-88E6-00BD8D009321',
+  })
+  @Expose()
+  companyId?: string;
 
   @ApiPropertyOptional({
     description: 'Visit date',
@@ -72,6 +80,10 @@ export class VisitDto {
   @Expose()
   participants?: GuestDto[];
 
+  @ApiProperty({ description: 'Company information' })
+  @Type(() => CompanyDto)
+  @Expose()
+  company: CompanyDto;
   constructor(partial: Partial<VisitDto>) {
     Object.assign(this, partial);
   }

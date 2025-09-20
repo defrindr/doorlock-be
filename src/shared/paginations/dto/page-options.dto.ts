@@ -51,6 +51,10 @@ export class PageOptionsDto {
   @Transform(({ value }) => value || {}) // ensure object
   readonly filter?: Record<string, any>;
 
+  @ApiPropertyOptional({ description: 'The selected ID relate to entity' })
+  @IsOptional()
+  readonly selected?: any;
+
   get skip(): number {
     return ((this.page ?? 1) - 1) * (this.take ?? 20);
   }

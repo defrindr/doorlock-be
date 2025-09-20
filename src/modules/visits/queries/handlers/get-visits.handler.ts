@@ -40,8 +40,8 @@ export class GetVisitsHandler
 
     queryBuilder = applyPaginationFilters(queryBuilder, {
       alias: 'visit',
-      allowedSort: ['id', 'name', 'createdAt'],
-      allowedSearch: ['name', 'company.name', 'hostEmployee.fullName'],
+      allowedSort: ['id', 'purpose', 'createdAt'],
+      allowedSearch: ['purpose', 'company.name', 'hostEmployee.fullName'],
       allowedFilter: ['id', 'company.id', 'hostEmployee.id'],
       pageOptions: pageOptionsDto,
     });

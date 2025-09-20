@@ -11,6 +11,7 @@ export interface QueryOptions {
     sort?: Record<string, 'ASC' | 'DESC'>;
     search?: string;
     filter?: Record<string, string>;
+    selected?: string;
   };
 }
 
@@ -31,6 +32,11 @@ export function applyPaginationFilters<T extends ObjectLiteral>(
     allowedFilter = [],
     pageOptions,
   } = options;
+
+  // --- Selected ---
+  if (pageOptions.selected) {
+    qb.andWhere(`${alias}.id = :selected`, { selected: pageOptions.selected });
+  }
 
   // --- Pagination ---
   qb.skip(pageOptions.skip).take(pageOptions.take);
