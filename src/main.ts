@@ -5,6 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { env } from 'process';
 import { join } from 'path';
 import { AppModule } from './app.module';
+import { WsAdapter } from '@nestjs/platform-ws';
 
 import {
   FastifyAdapter,
@@ -42,9 +43,10 @@ async function bootstrap() {
     AppModule,
     fastifyAdapter,
     {
-      logger: ['warn', 'error', 'log'],
+      // logger: ['warn', 'error', 'log'],
     },
   );
+  app.useWebSocketAdapter(new WsAdapter(app));
 
   // Register multipart plugin for file uploads
   app.register(fastifyMultipart, {
