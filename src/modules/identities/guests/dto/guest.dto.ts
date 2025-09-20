@@ -64,7 +64,7 @@ export class GuestDto {
   @Type(() => AccountDto)
   @Type(() => AccountDto)
   @Expose()
-  account: AccountDto;
+  account?: AccountDto;
 
   constructor(partial: Partial<GuestDto>) {
     Object.assign(this, partial);

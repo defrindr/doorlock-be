@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { AccountType } from '../entities/account-type.enum';
+import { GuestDto } from '../guests/dto/guest.dto';
 
 export class AccountDto {
   @ApiProperty({
@@ -45,6 +46,24 @@ export class AccountDto {
   })
   @Expose()
   status: number;
+
+  @ApiProperty({
+    description: 'Detail account information, when accountType is guest',
+    type: () => GuestDto,
+    required: false,
+  })
+  @Type(() => GuestDto)
+  @Expose()
+  guest?: GuestDto;
+
+  @ApiProperty({
+    description: 'Detail account information, when accountType is guest',
+    type: () => GuestDto,
+    required: false,
+  })
+  @Type(() => GuestDto)
+  @Expose()
+  employee?: GuestDto;
 
   constructor(partial: Partial<AccountDto>) {
     Object.assign(this, partial);
