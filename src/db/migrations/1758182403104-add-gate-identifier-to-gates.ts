@@ -26,6 +26,6 @@ export class AddColumnGateIdentifierTable1758182403104
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropIndex('gates', 'UQ_gates_gate_identifier');
-    await queryRunner.dropColumn('gate_identifier', 'gate_identifier');
+    await queryRunner.dropColumn('gates', 'gate_identifier');
   }
 }
