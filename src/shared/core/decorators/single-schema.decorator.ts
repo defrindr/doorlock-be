@@ -13,7 +13,7 @@ export const SingleResponseSchema = (
       properties: {
         code: { type: 'number', example: code },
         message: { type: 'string', example: exampleMessage },
-        data: { $ref: getSchemaPath(dto) },
+        ...(dto && { data: { $ref: getSchemaPath(dto) } }),
       },
     },
   ],
