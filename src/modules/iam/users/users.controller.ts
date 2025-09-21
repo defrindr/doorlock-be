@@ -46,7 +46,7 @@ export class UsersController {
     description:
       'Creates a new user account with provided credentials and profile information. The user will be created with default active status and assigned basic permissions.',
   })
-  @ApiSingleResponse(UserDto, 'Data berhasil ditambahkan', 201)
+  @ApiSingleResponse(UserDto, 'User created successfully', 201)
   @ApiCommonErrors()
   create(@Body() createUserDto: CreateUserDto) {
     return this.commandBus.execute(new CreateUserCommand(createUserDto));
@@ -71,7 +71,7 @@ export class UsersController {
     description:
       'Retrieves detailed information about a specific user by their unique identifier. Returns complete user profile including roles and permissions.',
   })
-  @ApiSingleResponse(UserDto, 'Data berhasil didapatkan', 200)
+  @ApiSingleResponse(UserDto, 'User retrieved successfully', 200)
   @ApiCommonErrors()
   findOne(@Param('id') id: string) {
     return this.queryBus.execute(new GetUserQuery(id));
@@ -83,7 +83,7 @@ export class UsersController {
     description:
       'Updates an existing user account with new information. Supports partial updates - only provided fields will be modified while preserving existing data.',
   })
-  @ApiSingleResponse(UserDto, 'Data berhasil diubah', 200)
+  @ApiSingleResponse(UserDto, 'User updated successfully', 200)
   @ApiCommonErrors()
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.commandBus.execute(new UpdateUserCommand(id, updateUserDto));
@@ -95,7 +95,10 @@ export class UsersController {
     description:
       'Permanently removes a user account from the system. This action cannot be undone. All associated data and permissions will be revoked.',
   })
-  @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
+  @ApiOkResponse({
+    description: 'User deleted successfully',
+    type: ApiResponseDto,
+  })
   @ApiCommonErrors()
   remove(@Param('id') id: string) {
     return this.commandBus.execute(new DeleteUserCommand(id));

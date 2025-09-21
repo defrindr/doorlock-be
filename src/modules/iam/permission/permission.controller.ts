@@ -46,7 +46,11 @@ export class PermissionController {
     description:
       'Creates a new permission in the system. Permissions define granular access controls and specific actions that can be assigned to roles or users.',
   })
-  @ApiSingleResponse(ResponsePermissionDto, 'Data berhasil ditambahkan')
+  @ApiSingleResponse(
+    ResponsePermissionDto,
+    'Permission successfully created',
+    201,
+  )
   @ApiCommonErrors()
   create(@Body() payload: CreatePermissionDto) {
     return this.commandBus.execute(new CreatePermissionCommand(payload));
@@ -70,7 +74,7 @@ export class PermissionController {
     description:
       'Retrieves detailed information about a specific permission by its unique identifier. Returns complete permission data including access scope and actions.',
   })
-  @ApiSingleResponse(ResponsePermissionDto, 'Data berhasil didapatkan')
+  @ApiSingleResponse(ResponsePermissionDto, 'Permission retrieved successfully')
   @ApiCommonErrors()
   findOne(@Param('id') id: string) {
     return this.queryBus.execute(new GetPermissionQuery(id));
@@ -82,7 +86,7 @@ export class PermissionController {
     description:
       'Updates an existing permission with new information. Supports partial updates - only provided fields will be modified while preserving existing access controls.',
   })
-  @ApiSingleResponse(ResponsePermissionDto, 'Data berhasil diubah')
+  @ApiSingleResponse(ResponsePermissionDto, 'Permission updated successfully')
   @ApiCommonErrors()
   @ApiBody({ type: UpdatePermissionDto })
   update(
@@ -100,7 +104,10 @@ export class PermissionController {
     description:
       'Permanently removes a permission from the system. This action cannot be undone. Roles and users with this permission will lose the associated access rights.',
   })
-  @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
+  @ApiOkResponse({
+    description: 'Permission deleted successfully',
+    type: ApiResponseDto,
+  })
   @ApiCommonErrors()
   remove(@Param('id') id: string) {
     return this.commandBus.execute(new DeletePermissionCommand(id));

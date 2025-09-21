@@ -48,7 +48,7 @@ export class GuestsController {
     description:
       'Create a new guest identity with personal information, company association, and photo upload. Supports multipart form data for file uploads.',
   })
-  @ApiSingleResponse(GuestDto, 'Guest created successfully')
+  @ApiSingleResponse(GuestDto, 'Guest created successfully', 201)
   @ApiCommonErrors()
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -138,7 +138,10 @@ export class GuestsController {
     description:
       'Permanently remove a guest from the system. This will also remove all associated access logs and identification records',
   })
-  @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
+  @ApiOkResponse({
+    description: 'Guest deleted successfully',
+    type: ApiResponseDto,
+  })
   @ApiCommonErrors()
   async remove(
     @Param('id', ParseUUIDPipe) id: string,

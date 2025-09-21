@@ -3,7 +3,7 @@ import { ApiResponseDto } from '../responses/api-response.dto';
 
 export const SingleResponseSchema = (
   dto: any,
-  exampleMessage = 'Berhasil',
+  exampleMessage = 'Successfull',
   code: number = 200,
 ) => ({
   allOf: [

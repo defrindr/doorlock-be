@@ -46,7 +46,7 @@ export class VisitsController {
     description:
       'Create a new visit record in the system with provided details such as visitor information, time, and purpose.',
   })
-  @ApiSingleResponse(VisitActionResponseDto, 'Visit created successfully')
+  @ApiSingleResponse(VisitActionResponseDto, 'Visit created successfully', 201)
   @ApiCommonErrors()
   async create(
     @Body() createVisitDto: CreateVisitDto,
@@ -106,7 +106,10 @@ export class VisitsController {
     description:
       'Permanently remove a visit record from the system using its unique identifier.',
   })
-  @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
+  @ApiOkResponse({
+    description: 'Visit deleted successfully',
+    type: ApiResponseDto,
+  })
   @ApiCommonErrors()
   async remove(
     @Param('id', ParseUUIDPipe) id: string,

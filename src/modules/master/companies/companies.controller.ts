@@ -45,7 +45,7 @@ export class CompaniesController {
     description:
       'Create a new company record in the system with provided details including name, address, and contact information',
   })
-  @ApiSingleResponse(CompanyDto, 'Company created successfully')
+  @ApiSingleResponse(CompanyDto, 'Company created successfully', 201)
   @ApiCommonErrors()
   async create(
     @Body() createCompanyDto: CreateCompanyDto,
@@ -108,7 +108,10 @@ export class CompaniesController {
       'Permanently remove a company from the system. This action cannot be undone and will also remove all associated data',
   })
   @ApiCommonErrors()
-  @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
+  @ApiOkResponse({
+    description: 'Company deleted successfully',
+    type: ApiResponseDto,
+  })
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ApiResponseDto<null>> {

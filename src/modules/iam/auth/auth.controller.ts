@@ -38,7 +38,7 @@ export class AuthController {
       'Authenticate user credentials and return JWT access token and refresh token for API access',
   })
   @Post('login')
-  @ApiSingleResponse(LoginResponseDto, 'Login successful')
+  @ApiSingleResponse(LoginResponseDto, 'Login successfully')
   @ApiCommonErrors()
   async login(@Body() payload: LoginDto): Promise<any> {
     return this.commandBus.execute(new LoginCommand(payload));

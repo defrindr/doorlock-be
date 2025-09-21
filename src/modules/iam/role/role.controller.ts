@@ -47,7 +47,7 @@ export class RoleController {
     description:
       'Creates a new role in the system with specified permissions and attributes. Roles define what actions users can perform within the application.',
   })
-  @ApiSingleResponse(RoleDto, 'Data berhasil ditambahkan', 201)
+  @ApiSingleResponse(RoleDto, 'Permission created successfully', 201)
   @ApiCommonErrors()
   create(@Body() createRoleDto: CreateRoleDto) {
     return this.commandBus.execute(new CreateRoleCommand(createRoleDto));
@@ -73,7 +73,7 @@ export class RoleController {
     description:
       'Retrieves detailed information about a specific role by its unique identifier. Returns complete role data including associated permissions.',
   })
-  @ApiSingleResponse(RoleDto, 'Data berhasil didapatkan', 200)
+  @ApiSingleResponse(RoleDto, 'Permission retrieved successfully', 200)
   @ApiCommonErrors()
   @HttpCode(200)
   findOne(@Param('id') id: string) {
@@ -86,7 +86,7 @@ export class RoleController {
     description:
       'Updates an existing role with new information. Supports partial updates - only provided fields will be modified while preserving existing data and permissions.',
   })
-  @ApiSingleResponse(RoleDto, 'Data berhasil diubah', 200)
+  @ApiSingleResponse(RoleDto, 'Permission updated successfully', 200)
   @ApiCommonErrors()
   update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
     return this.commandBus.execute(new UpdateRoleCommand(id, updateRoleDto));
@@ -98,7 +98,10 @@ export class RoleController {
     description:
       'Permanently removes a role from the system. This action cannot be undone. Users assigned to this role will lose the associated permissions.',
   })
-  @ApiOkResponse({ description: 'Data berhasil dihapus', type: ApiResponseDto })
+  @ApiOkResponse({
+    description: 'Permission deleted successfully',
+    type: ApiResponseDto,
+  })
   @ApiCommonErrors()
   remove(@Param('id') id: string) {
     return this.commandBus.execute(new DeleteRoleCommand(id));
