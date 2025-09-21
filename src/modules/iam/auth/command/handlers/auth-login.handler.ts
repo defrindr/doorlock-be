@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { BaseHandler } from '@src/shared/core/handlers/base.handler';
 import { JwtService } from '@nestjs/jwt';
 import { CommandHandler } from '@nestjs/cqrs';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { BadRequestHttpException } from '@src/shared/core/exceptions/exception';
 import { plainToInstance } from 'class-transformer';
 import { UserDto } from '@src/modules/iam/users/dto/user.dto';

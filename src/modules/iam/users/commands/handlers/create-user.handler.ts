@@ -7,7 +7,7 @@ import { CreatedResponse } from '@src/shared/core/handlers/response.handler';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { UserDto } from '../../dto/user.dto';
 import { CreateUserCommand } from '../imp/create-user.command';
 
