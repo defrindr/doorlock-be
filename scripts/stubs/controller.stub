@@ -41,7 +41,7 @@ export class {{PLURAL_PASCAL}}Controller {
 
   @Post()
   @ApiOperation({ summary: 'Create a new {{SINGULAR_CAMEL}}', description: '' })
-  @ApiSingleResponse({{SINGULAR_PASCAL}}Dto, '{{SINGULAR_PASCAL}} created successfully')
+  @ApiSingleResponse({{SINGULAR_PASCAL}}Dto, '{{SINGULAR_PASCAL}} created successfully', 201)
   @ApiCommonErrors()
   async create(
     @Body() create{{SINGULAR_PASCAL}}Dto: Create{{SINGULAR_PASCAL}}Dto,
