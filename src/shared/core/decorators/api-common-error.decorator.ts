@@ -4,32 +4,51 @@ import {
   ApiConflictResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { ApiExceptionDto } from '../exceptions/api-exception.dto';
 
 export function ApiCommonErrors() {
   return applyDecorators(
     ApiBadRequestResponse({
-      description: 'Permintaan tidak valid karena kesalahan input dari klien.',
+      description:
+        'The request is invalid due to incorrect input or missing required fields from the client.',
       type: ApiExceptionDto,
-      // 'example' sekarang berada di level atas
-      example: { code: 400, message: 'Invalid input' },
+      example: {
+        code: 400,
+        message: 'Invalid input or missing required fields',
+      },
+    }),
+
+    ApiUnauthorizedResponse({
+      description:
+        'The request could not be completed because the client is not authenticated. This typically occurs when missing or invalid credentials are provided.',
+      type: ApiExceptionDto,
+      example: {
+        code: 401,
+        message: 'Unauthorized: invalid or missing authentication credentials',
+      },
     }),
     ApiForbiddenResponse({
-      description: 'Akses ditolak karena tidak memiliki izin yang cukup.',
+      description:
+        'Access to the requested resource is denied due to insufficient permissions or authorization failure.',
       type: ApiExceptionDto,
-      example: { code: 403, message: 'Forbidden' },
+      example: { code: 403, message: 'Forbidden: insufficient permissions' },
     }),
     ApiNotFoundResponse({
-      description: 'Sumber daya yang diminta tidak dapat ditemukan.',
+      description:
+        'The requested resource could not be found. It may not exist or has been deleted.',
       type: ApiExceptionDto,
-      example: { code: 404, message: 'Not found' },
+      example: { code: 404, message: 'Resource not found' },
     }),
     ApiConflictResponse({
       description:
-        'Terjadi konflik karena data yang ada sudah ada (misalnya, duplikasi).',
+        'The request could not be completed due to a conflict with the current state of the resource, such as duplicate data or version mismatch.',
       type: ApiExceptionDto,
-      example: { code: 409, message: 'Conflict' },
+      example: {
+        code: 409,
+        message: 'Conflict: duplicate or conflicting data',
+      },
     }),
   );
 }
