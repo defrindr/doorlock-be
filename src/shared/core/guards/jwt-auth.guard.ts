@@ -1,52 +1,76 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
+import { Reflector } from '@nestjs/core';
 import { UserStorage } from '@src/shared/storage/user.storage';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  public permission: string;
-
   constructor(private reflector: Reflector) {
     super();
   }
 
   canActivate(context: ExecutionContext) {
-    // Add your custom authentication logic here
-    // for example, call super.logIn(request) to establish a session.
+    // Check if ApiBearerAuth exists on handler or controller
+    // const handler = context.getHandler();
+    // const controller = context.getClass();
 
-    const permissions = this.reflector.get<string[]>(
-      'permissions',
-      context.getHandler(),
+    // // --- Get all metadata keys on controller ---
+    // const classKeys = Reflect.getMetadataKeys(controller);
+    // const classMetadata = classKeys.reduce(
+    //   (acc, key) => {
+    //     acc[key] = Reflect.getMetadata(key, controller);
+    //     return acc;
+    //   },
+    //   {} as Record<string, any>,
+    // );
+    // console.log('Class metadata:', classMetadata);
+
+    const hasBearerAuth = this.reflector.getAllAndOverride<boolean>(
+      'swagger/apiSecurity',
+      [context.getHandler(), context.getClass()],
     );
-    if (!permissions) {
+    const hasPermission = this.reflector.getAllAndOverride<boolean>(
+      'permissions',
+      [context.getHandler(), context.getClass()],
+    );
+
+    if (!hasBearerAuth && !hasPermission) {
       return true;
     }
 
-    this.permission = permissions[0];
+    const permissions =
+      this.reflector.get<string[]>('permissions', context.getHandler()) ||
+      this.reflector.get<string[]>('permissions', context.getClass());
 
+    const request = context.switchToHttp().getRequest();
+    request._requiredPermissions = permissions;
+
+    // Run JWT authentication
     return super.canActivate(context);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  handleRequest(err: any, user: any, info: any) {
+  handleRequest(err: any, user: any, _info: any) {
     if (err || !user) {
       throw err || new UnauthorizedException();
     }
 
-    if (this.permission && !user.permissions.includes(this.permission)) {
+    const requiredPermissions = user?.request?._requiredPermissions;
+    if (
+      requiredPermissions?.length &&
+      !requiredPermissions.every((p: any) => user.permissions.includes(p))
+    ) {
       throw new ForbiddenException(
-        `Forbidden to access ${this.permission} resource`,
+        `Forbidden to access ${requiredPermissions.join(', ')} resource`,
       );
     }
 
     UserStorage.set(user);
-
     return user;
   }
 }

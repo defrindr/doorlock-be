@@ -45,7 +45,7 @@ export class PrepareDataService {
 
       return {
         id: visitAvailable.guest.account.id,
-        nip: '-',
+        nip: visitAvailable.guest.identificationNumber,
         nama: visitAvailable.guest.fullName,
         foto: visitAvailable.guest.account.photo,
         perusahaan: visitAvailable.visit.company?.name || '-',

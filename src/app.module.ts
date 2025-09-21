@@ -6,6 +6,8 @@ import { MasterModule } from './modules/master/master.module';
 import { VisitsModule } from './modules/visits/visits.module';
 import { NfcModule } from './modules/nfc';
 import { HistoriesModule } from './modules/histories/histories.module';
+import { APP_GUARD } from '@nestjs/core/constants';
+import { JwtAuthGuard } from './shared/core/guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -16,6 +18,12 @@ import { HistoriesModule } from './modules/histories/histories.module';
     VisitsModule,
     NfcModule,
     HistoriesModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
   ],
 })
 export class AppModule {}

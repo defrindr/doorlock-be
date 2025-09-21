@@ -24,15 +24,15 @@ import { CreateVisitCommand } from './commands/imp/create-visit.command';
 import { DeleteVisitCommand } from './commands/imp/delete-visit.command';
 import { UpdateVisitCommand } from './commands/imp/update-visit.command';
 import { CreateVisitDto } from './dto/create-visit.dto';
-import { VisitDto } from './dto/visit.dto';
 import { PageVisitDto } from './dto/page-visit.dto';
 import { UpdateVisitDto } from './dto/update-visit.dto';
+import { VisitActionResponseDto } from './dto/visit-action-response.dto';
+import { VisitDto } from './dto/visit.dto';
 import { GetVisitQuery } from './queries/imp/get-visit.query';
 import { GetVisitsQuery } from './queries/imp/get-visits.query';
-import { VisitActionResponseDto } from './dto/visit-action-response.dto';
 
 @Controller('visits')
-@ApiTags('visits')
+@ApiTags('Visits')
 @ApiBearerAuth()
 export class VisitsController {
   constructor(

@@ -2,10 +2,10 @@ import { Logger, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { ValidationPipe } from '@nestjs/common';
-import { env } from 'process';
-import { join } from 'path';
-import { AppModule } from './app.module';
 import { WsAdapter } from '@nestjs/platform-ws';
+import { join } from 'path';
+import { env } from 'process';
+import { AppModule } from './app.module';
 
 import {
   FastifyAdapter,

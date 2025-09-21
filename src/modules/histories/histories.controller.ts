@@ -1,12 +1,6 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.decorator';
 import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-response.decorator';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
@@ -15,10 +9,10 @@ import { SyncHistoryCommand } from './commands/imp/sync-history.command';
 import { PageHistoryDto } from './dto/page-history.dto';
 import { SyncHistoryDto } from './dto/sync-history.dto';
 import { GetHistoriesQuery } from './queries/imp/get-histories.query';
+import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
 
 @Controller('histories')
-@ApiTags('histories')
-@ApiBearerAuth()
+@ApiTags('Histories')
 export class HistoriesController {
   constructor(
     private readonly commandBus: CommandBus,
@@ -26,7 +20,7 @@ export class HistoriesController {
   ) {}
 
   @Post()
-  @ApiOperation({ summary: 'sync an history from hardware', description: '' })
+  @ApiOperation({ summary: 'Sync an history from hardware', description: '' })
   @ApiSingleResponse(null, 'History sync successfully', 201)
   @ApiCommonErrors()
   @ApiBody({
@@ -49,6 +43,7 @@ export class HistoriesController {
     type: PageHistoryDto,
   })
   @ApiCommonErrors()
+  @PermissionAccess()
   async findAll(
     @Query() pageOptionsDto: PageOptionsDto,
   ): Promise<PageHistoryDto> {
