@@ -7,7 +7,7 @@ import { OkResponse } from '@src/shared/core/handlers/response.handler';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
-import * as argon2 from 'argon2';
+import bcrypt from 'bcrypt';
 import { UserDto } from '../../dto/user.dto';
 import { UpdateUserCommand } from '../imp/update-user.command';
 
@@ -37,7 +37,7 @@ export class UpdateUserHandler extends BaseHandler<
     // Hash password if provided
     const updateData = { ...payload };
     if (payload.password) {
-      updateData.password = await argon2.hash(payload.password);
+      updateData.password = await bcrypt.hash(payload.password, 12);
     }
 
     const updatedUser = await this.userRepository.save({

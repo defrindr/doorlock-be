@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { BaseHandler } from '@src/shared/core/handlers/base.handler';
 import { JwtService } from '@nestjs/jwt';
 import { CommandHandler } from '@nestjs/cqrs';
-import * as argon2 from 'argon2';
+import bcrypt from 'bcrypt';
 import { BadRequestHttpException } from '@src/shared/core/exceptions/exception';
 import { plainToInstance } from 'class-transformer';
 import { UserDto } from '@src/modules/iam/users/dto/user.dto';
@@ -60,7 +60,7 @@ export class AuthLoginHandler extends BaseHandler<
       where: [{ username }, { email: username }],
     });
 
-    if (!user || !(await argon2.verify(user.password, password))) {
+    if (!user || !(await bcrypt.compare(user.password, password))) {
       throw new BadRequestHttpException('Credential is incorrect');
     }
     return user;

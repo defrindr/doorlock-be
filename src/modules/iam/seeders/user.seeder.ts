@@ -2,7 +2,7 @@ import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
 import { Role } from '../entities/role.entity';
 import { User } from '../entities/user.entity';
-import * as argon2 from 'argon2';
+import bcrypt from 'bcrypt';
 
 export default class UserSeeder implements Seeder {
   public async run(
@@ -22,14 +22,14 @@ export default class UserSeeder implements Seeder {
     const users = [
       {
         username: 'admin',
-        password: await argon2.hash('password'),
+        password: await bcrypt.hash('password', 12),
         name: 'Admin User',
         email: 'admin@example.com',
         roleId: AdminRole?.id,
       },
       {
         username: 'user',
-        password: await argon2.hash('password'),
+        password: await bcrypt.hash('password', 12),
         name: 'Regular User',
         email: 'user@example.com',
         roleId: UserRole?.id,

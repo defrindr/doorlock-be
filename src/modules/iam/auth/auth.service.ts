@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BadRequestHttpException } from '@src/shared/core/exceptions/exception';
 import { generateRandomString } from '@src/shared/utils/helpers';
-import * as argon2 from 'argon2';
+import bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { Role } from '../entities/role.entity';
 import { User } from '../entities/user.entity';
@@ -57,7 +57,7 @@ export class AuthService {
       where: [{ username }, { email: username }],
     });
 
-    if (!user || !(await argon2.verify(user.password, password))) {
+    if (!user || !(await bcrypt.compare(user.password, password))) {
       throw new BadRequestHttpException('Credential is incorrect');
     }
     return user;

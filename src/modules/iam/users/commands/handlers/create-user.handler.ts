@@ -7,7 +7,7 @@ import { CreatedResponse } from '@src/shared/core/handlers/response.handler';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
-import * as argon2 from 'argon2';
+import bcrypt from 'bcrypt';
 import { UserDto } from '../../dto/user.dto';
 import { CreateUserCommand } from '../imp/create-user.command';
 
@@ -38,7 +38,7 @@ export class CreateUserHandler extends BaseHandler<
     }
 
     // Hash password
-    const hashedPassword = await argon2.hash(payload.password);
+    const hashedPassword = await bcrypt.hash(payload.password, 12);
 
     // Create user with default status if not provided
     const userData = {
