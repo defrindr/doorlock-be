@@ -16,6 +16,13 @@ export class Gate {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({
+    type: 'integer',
+    nullable: false,
+    name: 'gate_identifier',
+  })
+  gateIdentifier: number;
+
   @Column({ type: 'nvarchar', length: 255, nullable: false })
   name: string;
 

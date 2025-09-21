@@ -19,6 +19,13 @@ export class GateDto {
   name: string;
 
   @ApiProperty({
+    description: 'Unique Identifier for gate (Using in Hardware)',
+    example: 'A1',
+  })
+  @Expose()
+  gateIdentifier: string;
+
+  @ApiProperty({
     description: 'Location ID where the gate is located',
     example: '123e4567-e89b-12d3-a456-426614174000',
   })

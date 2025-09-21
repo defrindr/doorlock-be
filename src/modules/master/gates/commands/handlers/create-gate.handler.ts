@@ -44,11 +44,13 @@ export class CreateGateHandler
     ]);
 
     // Create new gate
+    const identifier = await this.getMaxIdentifier();
     const gate = this.gateRepository.create({
       name: createGateDto.name,
       locationId: createGateDto.locationId,
       type: createGateDto.type,
       status: createGateDto.status ?? 1,
+      gateIdentifier: identifier,
     });
 
     // Save gate to database
@@ -97,5 +99,11 @@ export class CreateGateHandler
         `Gate with name '${name}' already exists in this location`,
       );
     }
+  }
+
+  private async getMaxIdentifier() {
+    const maxIdentifier = await this.gateRepository.maximum('gateIdentifier');
+
+    return maxIdentifier ? maxIdentifier + 1 : 1;
   }
 }

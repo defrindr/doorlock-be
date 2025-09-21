@@ -39,7 +39,7 @@ export class PrepareDataService {
 
       const accesses = dbAccesses
         .map((vGate) => {
-          return vGate.gate.id;
+          return vGate.gate.gateIdentifier;
         })
         .join(',');
 

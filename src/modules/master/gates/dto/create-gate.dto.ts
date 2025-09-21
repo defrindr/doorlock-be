@@ -23,6 +23,16 @@ export class CreateGateDto {
   @MaxLength(255)
   name: string;
 
+  // @ApiProperty({
+  //   description: 'Unique Identifier for gate',
+  //   example: 'A1',
+  //   maxLength: 50,
+  // })
+  // @IsString()
+  // @IsNotEmpty()
+  // @MaxLength(50)
+  // gateIdentifier: string;
+
   @ApiProperty({
     description: 'Location ID where the gate is located',
     example: '123e4567-e89b-12d3-a456-426614174000',

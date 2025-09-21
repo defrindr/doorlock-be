@@ -11,8 +11,7 @@ export class AddColumnGateIdentifierTable1758182403104
       'gates',
       new TableColumn({
         name: 'gate_identifier',
-        type: 'varchar',
-        length: '50',
+        type: 'int',
         isNullable: true, // or false, depending on your need
       }),
     );
