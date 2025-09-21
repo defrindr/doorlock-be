@@ -36,7 +36,7 @@ export class PageOptionsDto {
   @Type(() => Object)
   @IsOptional()
   @Transform(({ value }) => getSort(value))
-  readonly sort?: ISort;
+  sort?: ISort;
 
   @ApiPropertyOptional({ example: '', description: 'Global search' })
   @IsOptional()

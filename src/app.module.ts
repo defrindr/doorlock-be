@@ -5,6 +5,7 @@ import { IdentitiesModule } from './modules/identities/identities.module';
 import { MasterModule } from './modules/master/master.module';
 import { VisitsModule } from './modules/visits/visits.module';
 import { NfcModule } from './modules/nfc';
+import { HistoriesModule } from './modules/histories/histories.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { NfcModule } from './modules/nfc';
     IdentitiesModule,
     VisitsModule,
     NfcModule,
+    HistoriesModule,
   ],
 })
 export class AppModule {}

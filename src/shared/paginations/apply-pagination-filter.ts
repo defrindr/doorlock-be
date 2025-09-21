@@ -51,6 +51,10 @@ export function applyPaginationFilters<T extends ObjectLiteral>(
         );
       }
     });
+  } else {
+    if (allowedSort.length !== 0) {
+      qb.addOrderBy(getColumnName(allowedSort[0], alias), 'DESC');
+    }
   }
 
   // --- Global search ---

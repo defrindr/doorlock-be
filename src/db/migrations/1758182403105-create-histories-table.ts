@@ -65,13 +65,13 @@ export class CreateHistoriesTable1758182403105 implements MigrationInterface {
           { name: 'status', type: 'varchar', length: '10' },
           { name: 'message', type: 'nvarchar', length: 'MAX' },
           {
-            name: 'moreDetails',
+            name: 'more_details',
             type: 'nvarchar',
             length: 'MAX',
             isNullable: true,
           },
           { name: 'timestamp', type: 'datetime2' },
-          { name: 'syncAt', type: 'datetime2', default: 'getdate()' },
+          { name: 'sync_at', type: 'datetime2', default: 'getdate()' },
         ],
         checks: [
           new TableCheck({
