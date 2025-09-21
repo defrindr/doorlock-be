@@ -7,7 +7,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.decorator';
 import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-response.decorator';
 import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
@@ -24,7 +24,6 @@ import { GetProfileQuery } from './query/imp/get-profile.query';
 
 @ApiTags('Auth')
 @Controller('auth')
-@ApiBearerAuth()
 export class AuthController {
   constructor(
     private readonly queryBus: QueryBus,
