@@ -57,7 +57,7 @@ export class AuthService {
       where: [{ username }, { email: username }],
     });
 
-    if (!user || !(await bcrypt.compare(user.password, password))) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new BadRequestHttpException('Credential is incorrect');
     }
     return user;
