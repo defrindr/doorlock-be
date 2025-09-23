@@ -37,7 +37,7 @@ export class GetVisitHandler
       .leftJoinAndSelect('visitGates.gate', 'gate')
       .where('visit.id = :id', { id });
 
-    console.log(qb.getSql()); // 👈 prints the SQL
+    // console.log(qb.getSql()); // 👈 prints the SQL
     const visit = await qb.getOne();
 
     // const visit = await this.visitRepository.findOne({
@@ -57,7 +57,7 @@ export class GetVisitHandler
       throw new NotFoundHttpException('Visit not found');
     }
 
-    console.log(visit);
+    // console.log(visit);
 
     const participants =
       visit?.visitParticipants?.map((item) => {

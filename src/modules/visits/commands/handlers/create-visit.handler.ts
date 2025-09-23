@@ -47,7 +47,7 @@ export class CreateVisitHandler
       return await this.dataSource.transaction(
         async (manager: EntityManager) => {
           // Validate data
-          console.log(visitData.hostEmployeeId);
+          // console.log(visitData.hostEmployeeId);
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const [_employeeValid, _companyValid, participants, gates] =
             await Promise.all([

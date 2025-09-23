@@ -5,7 +5,6 @@ import {
   OnModuleDestroy,
 } from '@nestjs/common';
 import { NFC } from 'nfc-pcsc';
-import { NfcOperationsService } from './services/nfc-operations.service';
 import { NfcGateway } from './nfc.gateway';
 import { PrepareDataService } from './services/prepare-data.service';
 
@@ -16,7 +15,6 @@ export class NfcService implements OnModuleInit, OnModuleDestroy {
 
   constructor(
     private readonly gateway: NfcGateway,
-    private readonly nfcOperations: NfcOperationsService,
     private readonly prepareDataService: PrepareDataService,
   ) {}
 
@@ -30,8 +28,8 @@ export class NfcService implements OnModuleInit, OnModuleDestroy {
         this.logger.debug(`Card detected: ${card.type}, UID: ${card.uid}`);
 
         try {
-          const data = await this.nfcOperations.read({ reader });
-          this.gateway.broadcast({ type: 'READ_RESULT', payload: data });
+          // const data = await this.nfcOperations.read({ reader });
+          // this.gateway.broadcast({ type: 'READ_RESULT', payload: data });
         } catch (err) {
           this.logger.error(`❌ Error reading NFC data: ${err.message}`);
         }
@@ -75,7 +73,7 @@ export class NfcService implements OnModuleInit, OnModuleDestroy {
 
         if (data?.type === 'REMOVE_CARD_DATA') {
           try {
-            await this.nfcOperations.remove({ reader });
+            // await this.nfcOperations.remove({ reader });
             this.gateway.broadcast({
               type: 'REMOVE_OK',
               payload: { message: 'Card data removed.' },
@@ -92,12 +90,12 @@ export class NfcService implements OnModuleInit, OnModuleDestroy {
           const payload = await this.prepareDataService.prepare(data.payload);
           console.log('payload', payload);
           try {
-            await this.nfcOperations.remove({ reader });
+            // await this.nfcOperations.remove({ reader });
             await new Promise((res) => setTimeout(res, 50));
-            await this.nfcOperations.write({
-              reader,
-              value: payload,
-            });
+            // await this.nfcOperations.write({
+            //   reader,
+            //   value: payload,
+            // });
             this.gateway.broadcast({
               type: 'WRITE_OK',
               payload: { bytes: payload.length },
