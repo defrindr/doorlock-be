@@ -38,13 +38,17 @@ export class DateHelper {
   static formatMachineDateTime(date: Date) {
     const pad = (num: number) => String(num).padStart(2, '0');
 
-    const day = pad(date.getDate());
-    const month = pad(date.getMonth() + 1); // Months are 0-based
-    const year = date.getFullYear();
+    // Convert to UTC+7 (WIB - Western Indonesian Time)
+    const utcTime = date.getTime() + date.getTimezoneOffset() * 60000; // Convert to UTC
+    const wibDate = new Date(utcTime + 7 * 60 * 60 * 1000); // Add 7 hours for WIB
 
-    const hours = pad(date.getHours());
-    const minutes = pad(date.getMinutes());
-    const seconds = pad(date.getSeconds());
+    const day = pad(wibDate.getDate());
+    const month = pad(wibDate.getMonth() + 1); // Months are 0-based
+    const year = wibDate.getFullYear();
+
+    const hours = pad(wibDate.getHours());
+    const minutes = pad(wibDate.getMinutes());
+    const seconds = pad(wibDate.getSeconds());
 
     return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
   }
