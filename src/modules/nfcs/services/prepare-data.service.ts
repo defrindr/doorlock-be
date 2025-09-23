@@ -1,3 +1,4 @@
+import { DateHelper } from '@src/shared/utils/date-helper';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { VisitGate } from '@src/modules/visits/entities/visit-gate.entity';
 import { VisitParticipant } from '@src/modules/visits/entities/visit-participant.entity';
@@ -51,8 +52,12 @@ export class PrepareDataService {
         jabatan: '-',
         status_kartu: 'Tamu',
         poin: '-',
-        aktif_mulai: visitAvailable.visit.visitDate,
-        aktif_selesai: visitAvailable.visit.validUntil,
+        aktif_mulai: DateHelper.formatMachineDateTime(
+          visitAvailable.visit.visitDate,
+        ),
+        aktif_selesai: DateHelper.formatMachineDateTime(
+          visitAvailable.visit.validUntil,
+        ),
         access: accesses,
       };
     });

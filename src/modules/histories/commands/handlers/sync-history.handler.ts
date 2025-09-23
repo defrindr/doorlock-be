@@ -6,22 +6,21 @@ import { BaseHandler } from '@src/shared/core/handlers/base.handler';
 import { CreatedResponse } from '@src/shared/core/handlers/response.handler';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 
-import { History } from '../../entities/history.entity';
-import { SyncHistoryCommand } from '../imp/sync-history.command';
+import { AccountEmployee } from '@src/modules/identities/entities/account-employee.entity';
+import { AccountGuest } from '@src/modules/identities/entities/account-guest.entity';
+import { AccountIntern } from '@src/modules/identities/entities/account-intern.entity';
+import { AccountType } from '@src/modules/identities/entities/account-type.enum';
 import { Account } from '@src/modules/identities/entities/account.entity';
 import { Gate } from '@src/modules/master/gates/entities/gate.entity';
 import { BadRequestHttpException } from '@src/shared/core/exceptions/exception';
-import { AccountGuest } from '@src/modules/identities/entities/account-guest.entity';
-import { AccountEmployee } from '@src/modules/identities/entities/account-employee.entity';
-import { AccountIntern } from '@src/modules/identities/entities/account-intern.entity';
-import { AccountType } from '@src/modules/identities/entities/account-type.enum';
 import { DateHelper } from '@src/shared/utils/date-helper';
+import { History } from '../../entities/history.entity';
+import { SyncHistoryCommand } from '../imp/sync-history.command';
 
 @CommandHandler(SyncHistoryCommand)
 export class SyncHistoryHandler
   extends BaseHandler<SyncHistoryCommand, ApiResponseDto>
-  implements ICommandHandler<SyncHistoryCommand, ApiResponseDto>
-{
+  implements ICommandHandler<SyncHistoryCommand, ApiResponseDto> {
   constructor(
     @InjectRepository(History)
     private readonly historyRepository: Repository<History>,
@@ -56,11 +55,11 @@ export class SyncHistoryHandler
     for (const history of syncHistoriesDto) {
       const dto = this.historyRepository.create({});
 
-      const selectedAccount = accounts.filter(
+      let selectedAccount: any = accounts.filter(
         (account) => account.id === history.id_akun,
       )?.[0];
       if (!selectedAccount) {
-        throw new BadRequestHttpException('Account not exists');
+        selectedAccount = { id: null };
       }
 
       const selectedGate = gates.filter(
