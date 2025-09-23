@@ -5,6 +5,7 @@ import { HistoriesModule } from './modules/histories/histories.module';
 import { IamModule } from './modules/iam/iam.module';
 import { IdentitiesModule } from './modules/identities/identities.module';
 import { MasterModule } from './modules/master/master.module';
+import { NfcsModule } from './modules/nfcs/nfcs.module';
 import { VisitsModule } from './modules/visits/visits.module';
 import { JwtAuthGuard } from './shared/core/guards/jwt-auth.guard';
 
@@ -16,6 +17,7 @@ import { JwtAuthGuard } from './shared/core/guards/jwt-auth.guard';
     IdentitiesModule,
     VisitsModule,
     HistoriesModule,
+    NfcsModule,
   ],
   providers: [
     {
