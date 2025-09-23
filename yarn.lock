@@ -2228,6 +2228,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pokusew/pcsclite@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@pokusew/pcsclite@npm:0.6.0"
+  dependencies:
+    bindings: ^1.5.0
+    nan: ^2.14.0
+    node-gyp: latest
+  checksum: 873849293385be1f85769081b32dbc3a5ec8e85564e3ee0bfad2018081156321e6e7cb66abac278b863de0a3b6ea4ab0a63907516c5c5fad08fc8ce91f1e8bd2
+  languageName: node
+  linkType: hard
+
 "@redocly/ajv@npm:^8.11.2":
   version: 8.11.3
   resolution: "@redocly/ajv@npm:8.11.3"
@@ -3384,6 +3395,7 @@ __metadata:
     mssql: ^11.0.1
     mysql2: ^3.6.5
     nestjs-redox: ^2.2.1
+    nfc-pcsc: ^0.8.1
     passport: ^0.7.0
     passport-jwt: ^4.0.1
     prettier: ^3.0.0
@@ -3623,6 +3635,15 @@ __metadata:
     node-gyp: latest
     node-gyp-build: ^4.8.4
   checksum: 004e1920fab7a7183b15467257f3010b45f5db73ad91448fb108c9070dfe56c4e35cb16e12987dd88b9e03b997f08a6070494802cb5fd2a90e1664279ab8aef5
+  languageName: node
+  linkType: hard
+
+"bindings@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "bindings@npm:1.5.0"
+  dependencies:
+    file-uri-to-path: 1.0.0
+  checksum: 65b6b48095717c2e6105a021a7da4ea435aa8d3d3cd085cb9e85bcb6e5773cf318c4745c3f7c504412855940b585bdf9b918236612a1c7a7942491de176f1ae7
   languageName: node
   linkType: hard
 
@@ -5109,6 +5130,13 @@ __metadata:
     token-types: ^6.0.0
     uint8array-extras: ^1.4.0
   checksum: cc3ad4928a99829b8e44cf8607e8769e8e5d4a8588d8e1e223c24f20a41f6cf0340d132a516c73146dedec8e08d8c9e405dda8d33c9ca158a0f4070ee2b4da0d
+  languageName: node
+  linkType: hard
+
+"file-uri-to-path@npm:1.0.0":
+  version: 1.0.0
+  resolution: "file-uri-to-path@npm:1.0.0"
+  checksum: b648580bdd893a008c92c7ecc96c3ee57a5e7b6c4c18a9a09b44fb5d36d79146f8e442578bc0e173dc027adf3987e254ba1dfd6e3ec998b7c282873010502144
   languageName: node
   linkType: hard
 
@@ -7248,6 +7276,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nan@npm:^2.14.0":
+  version: 2.23.0
+  resolution: "nan@npm:2.23.0"
+  dependencies:
+    node-gyp: latest
+  checksum: 2d1fd612d69d4cf4dd63c8ce61ee6aa36ace2caf5363c98b3232833fc24ab761fb96742682997716dea5fb9abf57e2fe7e94e76e0c4c302ed1fcde5b908f3e8f
+  languageName: node
+  linkType: hard
+
 "native-duplexpair@npm:^1.0.0":
   version: 1.0.0
   resolution: "native-duplexpair@npm:1.0.0"
@@ -7294,6 +7331,15 @@ __metadata:
     "@nestjs/common": ^11.0.0
     "@nestjs/swagger": ^11.0.0
   checksum: ad5e026e36ffa12bec5ab5dd879e278fb079c2c5f8c6bdee4a96ff4abcdb0cf21463f313ec45feface0fcaaeac9414d62fecac4d78177e864ef569943365edb4
+  languageName: node
+  linkType: hard
+
+"nfc-pcsc@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "nfc-pcsc@npm:0.8.1"
+  dependencies:
+    "@pokusew/pcsclite": ^0.6.0
+  checksum: 2e8610eda95317c08db0745fec7b34d3c7f3193000668668a172fc65934f600af31f4c14149acddf760c592db656291ebf9b479fb7fd53721dd13ec809921179
   languageName: node
   linkType: hard
 
