@@ -70,7 +70,6 @@ export class CreateGuestHandler
       createGuestDto.photo,
     );
 
-    delete createGuestDto.photo;
     // Create Account
     const status = createGuestDto.status;
     delete createGuestDto.status;

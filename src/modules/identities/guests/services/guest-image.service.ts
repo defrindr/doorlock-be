@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { existsSync } from 'fs';
 import {
   ImageUploadHelper,
   UploadImageResult,
@@ -53,7 +54,7 @@ export class GuestImageService {
     }
 
     // Delete old photo if exists
-    if (currentPhotoPath) {
+    if (currentPhotoPath && this.existPhoto(currentPhotoPath)) {
       await this.deletePhoto(currentPhotoPath);
     }
 
@@ -72,6 +73,16 @@ export class GuestImageService {
       } as UploadImageResult);
     } catch (error) {
       console.warn('Failed to delete photo:', photoPath, error);
+    }
+  }
+
+  existPhoto(path: string): boolean {
+    try {
+      const fullPath = ImageUploadHelper.getUploadPath() + '/' + path;
+      return existsSync(fullPath);
+    } catch (error) {
+      console.warn('Error checking photo existence:', path, error);
+      return false;
     }
   }
 

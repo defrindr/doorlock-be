@@ -2,6 +2,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   ParseUUIDPipe,
   Post,
@@ -112,18 +113,19 @@ export class GuestsController {
     return this.queryBus.execute(new GetGuestQuery(id));
   }
 
-  @Put(':id')
+  @Post(':id')
   @ApiOperation({
     summary: 'Update guest by ID',
     description:
       'Update existing guest information including personal details, company association, contact information, and identification data',
   })
-  @ApiSingleResponse(GuestDto, 'Guest updated successfully')
+  @ApiSingleResponse(GuestDto, 'Guest updated successfully', 200)
   @ApiCommonErrors()
   @ApiBody({
     type: UpdateGuestDto,
     description: 'Guest update data with photo upload',
   })
+  @HttpCode(200)
   @ApiConsumes('multipart/form-data')
   async update(
     @Param('id', ParseUUIDPipe) id: string,

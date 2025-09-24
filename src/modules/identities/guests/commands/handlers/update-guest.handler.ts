@@ -60,7 +60,9 @@ export class UpdateGuestHandler
     // Update Data
     await Promise.all([
       // Update Guest
-      this.guestRepository.update(id, updateGuestDto),
+      this.guestRepository.update(id, {
+        ...updateGuestDto,
+      }),
       // Update Account
       this.accountRepository.update(guest.accountId, {
         status: status,
