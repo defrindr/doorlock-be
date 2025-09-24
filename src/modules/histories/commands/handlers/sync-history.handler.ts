@@ -45,26 +45,36 @@ export class SyncHistoryHandler
     const accountIds = syncHistoriesDto.map((history) => history.id_akun);
     const gateIdentifierIds = syncHistoriesDto.map((history) => history.pintu);
 
-    const [accounts, gates] = await Promise.all([
-      this.accountRepository.find({ where: { id: In(accountIds) } }),
-      this.gateRepository.find({
+    let accounts: any = [];
+    let gates: any = [];
+    try {
+      accounts = await this.accountRepository.find({
+        where: { id: In(accountIds) },
+      });
+    } catch (error) {
+      accounts = [];
+    }
+    try {
+      gates = await this.gateRepository.find({
         where: { gateIdentifier: In(gateIdentifierIds) },
-      }),
-    ]);
+      });
+    } catch (error) {
+      gates = [];
+    }
 
     const dtos: History[] = [];
     for (const history of syncHistoriesDto) {
       const dto = this.historyRepository.create({});
 
       let selectedAccount: any = accounts.filter(
-        (account) => account.id === history.id_akun,
+        (account: any) => account.id === history.id_akun,
       )?.[0];
       if (!selectedAccount) {
         selectedAccount = { id: null };
       }
 
       const selectedGate = gates.filter(
-        (gate) => Number(gate.gateIdentifier) === Number(history.pintu),
+        (gate: any) => Number(gate.gateIdentifier) === Number(history.pintu),
       )?.[0];
       if (!selectedGate) {
         throw new BadRequestHttpException('Gate not exists');
