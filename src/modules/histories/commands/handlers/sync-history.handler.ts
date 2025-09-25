@@ -20,8 +20,7 @@ import { SyncHistoryCommand } from '../imp/sync-history.command';
 @CommandHandler(SyncHistoryCommand)
 export class SyncHistoryHandler
   extends BaseHandler<SyncHistoryCommand, ApiResponseDto>
-  implements ICommandHandler<SyncHistoryCommand, ApiResponseDto>
-{
+  implements ICommandHandler<SyncHistoryCommand, ApiResponseDto> {
   constructor(
     @InjectRepository(History)
     private readonly historyRepository: Repository<History>,
@@ -65,6 +64,15 @@ export class SyncHistoryHandler
     const dtos: History[] = [];
     for (const history of syncHistoriesDto) {
       const dto = this.historyRepository.create({});
+
+      // Skip duplicate data
+      const checkDuplicate = await this.historyRepository.findOne({
+        where: {
+          timestamp: DateHelper.fromUnix(history.jam_tap),
+          cardUid: history.UID,
+        },
+      });
+      if (checkDuplicate) continue;
 
       let selectedAccount: any = accounts.filter(
         (account: any) => account.id === history.id_akun,
