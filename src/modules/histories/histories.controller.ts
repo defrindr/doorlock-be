@@ -45,7 +45,10 @@ export class HistoriesController {
   @ApiCommonErrors()
   @PermissionAccess()
   async findAll(
-    @Query() pageOptionsDto: PageOptionsDto,
+    @Query()
+    pageOptionsDto: PageOptionsDto & {
+      timestamp?: { start: string; end: string };
+    },
   ): Promise<PageHistoryDto> {
     return this.queryBus.execute(new GetHistoriesQuery(pageOptionsDto));
   }

@@ -26,16 +26,33 @@ export class GetHistoriesHandler
 
   async handle(query: GetHistoriesQuery): Promise<PageHistoryDto> {
     const { pageOptionsDto } = query;
+    const { timestamp, ...pageOptionsDtoFinal } = pageOptionsDto;
 
     let queryBuilder = this.historyRepository.createQueryBuilder('history');
+
+    console.log('timestamp', timestamp);
+    if (timestamp) {
+      queryBuilder.andWhere('history.timestamp BETWEEN :start AND :end', {
+        start: timestamp.start,
+        end: timestamp.end,
+      });
+    }
 
     queryBuilder = applyPaginationFilters(queryBuilder, {
       alias: 'history',
       allowedSort: ['timestamp', 'id', 'status'],
       allowedSearch: ['companyName', 'accountName', 'gateName'],
       allowedFilter: ['id', 'status'],
-      pageOptions: pageOptionsDto,
+      pageOptions: {
+        skip:
+          ((pageOptionsDtoFinal.page ?? 1) - 1) *
+          (pageOptionsDtoFinal.take ?? 20),
+        ...pageOptionsDtoFinal,
+      },
     });
+
+    // get raw query
+    console.log(queryBuilder.getSql());
 
     const [entities, itemCount] = await queryBuilder.getManyAndCount();
 
