@@ -1,12 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
+  IsArray,
+  IsDate,
   IsEmail,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   IsUUID,
-  IsDateString,
   MaxLength,
 } from 'class-validator';
 
@@ -68,7 +70,8 @@ export class CreateEmployeeDto {
     description: 'Employee hire date',
     example: '2020-01-15',
   })
-  @IsDateString()
+  @Type(() => Date)
+  @IsDate()
   @IsOptional()
   hireDate?: Date;
 
@@ -77,7 +80,6 @@ export class CreateEmployeeDto {
     example: 10,
   })
   @IsNumber()
-  @IsOptional()
   violationPoints?: number;
 
   @ApiPropertyOptional({
@@ -95,6 +97,14 @@ export class CreateEmployeeDto {
   @IsUUID()
   @IsOptional()
   locationId?: string;
+
+  @ApiPropertyOptional({
+    description: 'Company ID',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @IsUUID()
+  @IsOptional()
+  companyId?: string;
 
   @ApiProperty({
     type: 'string',
@@ -120,4 +130,16 @@ export class CreateEmployeeDto {
   @IsOptional()
   @MaxLength(255)
   nfcCode?: string;
+
+  @ApiProperty({
+    description: 'List of gate/door can accessed by guest',
+    example: [
+      'A1E2C3D4-5678-90AB-CDEF-1234567890AB',
+      'B1E2C3D4-5678-90AB-CDEF-1234567890AB',
+    ],
+  })
+  @Type(() => Array)
+  @IsArray()
+  @IsOptional()
+  accesses?: string[];
 }

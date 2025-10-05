@@ -12,6 +12,7 @@ export class EmployeeDataSeeder implements Seeder {
     const locationRepository = dataSource.getRepository(Location);
 
     // Check if data already exists
+    await employeeRepository.deleteAll();
     const existingEmployees = await employeeRepository.count();
     if (existingEmployees > 0) {
       console.log('Employee data already exists, skipping seeding...');
@@ -29,6 +30,15 @@ export class EmployeeDataSeeder implements Seeder {
       throw new Error(
         'Surabaya location not found. Please run location seeder first.',
       );
+    }
+
+    // Get the Company
+    const company = await locationRepository.findOne({
+      where: { name: 'PT Cipta Krida Bahari' },
+    });
+
+    if (!company) {
+      throw new Error('Company not found. Please run company seeder first.');
     }
 
     // Employee data from employee.data.ts
@@ -223,6 +233,8 @@ PT Cipta Krida Bahari	95000431	Muhammad Khoirul Anam	Driver Distribution Operati
           fullName,
           department,
           position,
+          companyId: company.id,
+          locationId: surabayaLocation.id,
           violationPoints: 10, // Default violation points
           hireDate: new Date('2020-01-01'), // Default hire date
         });

@@ -1,17 +1,21 @@
+import { Company } from '@src/modules/master/companies/entities/company.entity';
+import { Gate } from '@src/modules/master/gates/entities/gate.entity';
+import { Location } from '@src/modules/master/locations/entities/location.entity';
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
   DeleteDateColumn,
-  OneToOne,
+  Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Account } from './account.entity';
-import { Location } from '@src/modules/master/locations/entities/location.entity';
 
 @Entity('account_employees')
 export class AccountEmployee {
@@ -56,6 +60,9 @@ export class AccountEmployee {
   @Column({ type: 'uuid', nullable: true, name: 'location_id' })
   locationId: string;
 
+  @Column({ type: 'uuid', nullable: true, name: 'company_id' })
+  companyId: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -80,6 +87,18 @@ export class AccountEmployee {
   @JoinColumn({ name: 'location_id' })
   location: Location;
 
+  @ManyToOne(() => Company, { nullable: true })
+  @JoinColumn({ name: 'company_id' })
+  company: Company;
+
   @OneToMany(() => AccountEmployee, (employee) => employee.supervisor)
   subordinates: AccountEmployee[];
+
+  @ManyToMany(() => Gate)
+  @JoinTable({
+    name: 'employee_gates',
+    joinColumn: { name: 'employee_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'gate_id', referencedColumnName: 'id' },
+  })
+  accesses?: AccountEmployee[];
 }

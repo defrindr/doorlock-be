@@ -29,7 +29,7 @@ export class GetEmployeeHandler
 
     const employee = await this.employeeRepository.findOne({
       where: { id },
-      relations: ['account', 'supervisor', 'location'],
+      relations: ['account', 'supervisor', 'location', 'company', 'accesses'],
     });
 
     if (!employee) {

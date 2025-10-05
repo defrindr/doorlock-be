@@ -9,6 +9,8 @@ import { UpdateEmployeeHandler } from './commands/handlers/update-employee.handl
 import { EmployeesController } from './employees.controller';
 import { GetEmployeeHandler } from './queries/handlers/get-employee.handler';
 import { GetEmployeesHandler } from './queries/handlers/get-employees.handler';
+import { EmployeeImageService } from './services/employee-image.service';
+import { Company } from '@src/modules/master/companies/entities/company.entity';
 
 const commandHandlers = [
   CreateEmployeeHandler,
@@ -19,8 +21,11 @@ const commandHandlers = [
 const queryHandlers = [GetEmployeesHandler, GetEmployeeHandler];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Account, AccountEmployee]), CqrsModule],
+  imports: [
+    TypeOrmModule.forFeature([Account, Company, AccountEmployee]),
+    CqrsModule,
+  ],
   controllers: [EmployeesController],
-  providers: [...commandHandlers, ...queryHandlers],
+  providers: [...commandHandlers, ...queryHandlers, EmployeeImageService],
 })
 export class EmployeesModule {}

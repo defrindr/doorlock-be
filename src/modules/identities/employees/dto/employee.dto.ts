@@ -1,5 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Exclude, Expose } from 'class-transformer';
+import { CompanyDto } from '@src/modules/master/companies/dto/company.dto';
+import { LocationDto } from '@src/modules/master/locations/dto/location.dto';
+import { Exclude, Expose, Type } from 'class-transformer';
+import { AccountDto } from '../../dto/account.dto';
+import { GateDto } from '@src/modules/visits/dto/gate.dto';
 
 @Exclude()
 export class EmployeeDto {
@@ -91,7 +95,22 @@ export class EmployeeDto {
   @ApiPropertyOptional({
     description: 'Location details',
   })
-  location?: any;
+  @Type(() => LocationDto)
+  location?: LocationDto;
+
+  @Expose()
+  @ApiPropertyOptional({
+    description: 'Location ID',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  companyId?: string;
+
+  @Expose()
+  @ApiPropertyOptional({
+    description: 'Location details',
+  })
+  @Type(() => CompanyDto)
+  company?: CompanyDto;
 
   @Expose()
   @ApiProperty({
@@ -102,17 +121,18 @@ export class EmployeeDto {
 
   @Expose()
   @ApiPropertyOptional({
-    description: 'Photo URL',
-    example: 'photos/EMP001.jpg',
-  })
-  photo?: string;
-
-  @Expose()
-  @ApiPropertyOptional({
     description: 'NFC code',
     example: 'EMP001234',
   })
   nfcCode?: string;
+
+  @ApiProperty({
+    description: 'Guest Card Account information',
+  })
+  @Type(() => AccountDto)
+  @Type(() => AccountDto)
+  @Expose()
+  account?: AccountDto;
 
   @Expose()
   @ApiProperty({
@@ -134,4 +154,12 @@ export class EmployeeDto {
     example: '2024-01-01T00:00:00.000Z',
   })
   deletedAt?: Date;
+
+  @ApiProperty({
+    description: 'List of gates',
+    type: () => [GateDto],
+  })
+  @Type(() => GateDto)
+  @Expose()
+  accesses?: GateDto[];
 }

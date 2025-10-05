@@ -10,6 +10,7 @@ import { AccountEmployee } from '@src/modules/identities/entities/account-employ
 import { EmployeeDto } from '../../dto/employee.dto';
 import { PageEmployeeDto } from '../../dto/page-employee.dto';
 import { GetEmployeesQuery } from '../imp/get-employees.query';
+import { applyPaginationFilters } from '@src/shared/paginations/apply-pagination-filter';
 
 @QueryHandler(GetEmployeesQuery)
 export class GetEmployeesHandler
@@ -26,39 +27,31 @@ export class GetEmployeesHandler
   async handle(query: GetEmployeesQuery): Promise<PageEmployeeDto> {
     const { pageOptionsDto } = query;
 
-    const queryBuilder = this.employeeRepository
+    let qb = this.employeeRepository
       .createQueryBuilder('employee')
       .leftJoinAndSelect('employee.account', 'account')
+      .leftJoinAndSelect('employee.company', 'company')
       .leftJoinAndSelect('employee.supervisor', 'supervisor')
-      .leftJoinAndSelect('employee.location', 'location');
+      .leftJoinAndSelect('employee.location', 'location')
+      .leftJoinAndSelect('employee.accesses', 'accesses');
 
-    // Apply search filter
-    if (pageOptionsDto.search) {
-      queryBuilder.andWhere(
-        '(employee.fullName LIKE :search OR employee.employeeNumber LIKE :search OR employee.department LIKE :search OR employee.position LIKE :search)',
-        { search: `%${pageOptionsDto.search}%` },
-      );
-    }
+    qb = applyPaginationFilters(qb, {
+      alias: 'employee',
+      allowedSort: ['id', 'fullName', 'status', 'createdAt', 'locationId'],
+      allowedSearch: ['fullName', 'employeeNumber'],
+      allowedFilter: ['id', 'fullName', 'status', 'locationId'],
+      pageOptions: pageOptionsDto,
+    });
 
-    // Apply sorting
-    if (pageOptionsDto.sort) {
-      Object.entries(pageOptionsDto.sort).forEach(([key, value]) => {
-        queryBuilder.addOrderBy(`employee.${key}`, value as 'ASC' | 'DESC');
-      });
-    } else {
-      queryBuilder.orderBy('employee.createdAt', 'DESC');
-    }
+    const [employees, total] = await qb.getManyAndCount();
 
-    // Apply pagination
-    queryBuilder.skip(pageOptionsDto.skip).take(pageOptionsDto.take);
-
-    const itemCount = await queryBuilder.getCount();
-    const { entities } = await queryBuilder.getRawAndEntities();
-
-    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
-
-    const employeeDtos = plainToInstance(EmployeeDto, entities, {
+    const employeeDtos = plainToInstance(EmployeeDto, employees, {
       excludeExtraneousValues: true,
+    });
+
+    const pageMetaDto = new PageMetaDto({
+      itemCount: total,
+      pageOptionsDto,
     });
 
     return new PageEmployeeDto(employeeDtos, pageMetaDto);
