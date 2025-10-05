@@ -45,8 +45,8 @@ export class VisitParticipant {
   @ManyToMany(() => Gate)
   @JoinTable({
     name: 'visit_guest_gates',
-    joinColumn: { name: 'visitGuestId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'gateId', referencedColumnName: 'id' },
+    joinColumn: { name: 'visit_guest_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'gate_id', referencedColumnName: 'id' },
   })
   accesses?: Gate[];
 }

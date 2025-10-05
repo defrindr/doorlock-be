@@ -15,8 +15,7 @@ import { GetVisitQuery } from '../imp/get-visit.query';
 @QueryHandler(GetVisitQuery)
 export class GetVisitHandler
   extends BaseHandler<GetVisitQuery, ApiResponseDto<VisitDto>>
-  implements IQueryHandler<GetVisitQuery, ApiResponseDto<VisitDto>>
-{
+  implements IQueryHandler<GetVisitQuery, ApiResponseDto<VisitDto>> {
   constructor(
     @InjectRepository(Visit)
     private readonly visitRepository: Repository<Visit>,
@@ -31,13 +30,14 @@ export class GetVisitHandler
       .leftJoinAndSelect('visit.company', 'company')
       .leftJoinAndSelect('visit.hostEmployee', 'hostEmployee')
       .leftJoinAndSelect('visit.visitParticipants', 'visitParticipants')
+      .leftJoinAndSelect('visitParticipants.accesses', 'accesses')
       .leftJoinAndSelect('visitParticipants.guest', 'guest')
       .leftJoinAndSelect('guest.account', 'guestAccount')
       .leftJoinAndSelect('visit.visitGates', 'visitGates')
       .leftJoinAndSelect('visitGates.gate', 'gate')
       .where('visit.id = :id', { id });
 
-    // console.log(qb.getSql()); // 👈 prints the SQL
+    console.log(qb.getSql()); // 👈 prints the SQL
     const visit = await qb.getOne();
 
     // const visit = await this.visitRepository.findOne({
@@ -61,8 +61,9 @@ export class GetVisitHandler
 
     const participants =
       visit?.visitParticipants?.map((item) => {
+        console.log(item);
         const { account, ...guest } = item.guest;
-        return { ...guest, photoUrl: account.photo };
+        return { ...guest, photoUrl: account.photo, accesses: item.accesses };
       }) || [];
     const accesses =
       visit?.visitGates?.map((item) => {

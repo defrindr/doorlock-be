@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IdentificationType } from '@src/modules/identities/entities/account-type.enum';
 import { CompanyDto } from '@src/modules/master/companies/dto/company.dto';
 import { Expose, Type } from 'class-transformer';
+import { GateDto } from './gate.dto';
 
 export class GuestDto {
   @ApiProperty({
@@ -62,6 +63,14 @@ export class GuestDto {
   })
   @Expose()
   photoUrl?: string;
+
+  @ApiProperty({
+    description: 'List of gates can access by guest in the visit',
+    type: () => [GateDto],
+  })
+  @Type(() => GateDto)
+  @Expose()
+  accesses?: GateDto[];
 
   constructor(partial: Partial<GuestDto>) {
     Object.assign(this, partial);
