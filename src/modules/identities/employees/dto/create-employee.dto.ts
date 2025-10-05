@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
   IsDate,
@@ -142,4 +142,26 @@ export class CreateEmployeeDto {
   @IsArray()
   @IsOptional()
   accesses?: string[];
+
+  @ApiProperty({
+    description: 'List of certifications user have',
+    type: [String],
+    example: ['ISO 9001', 'Safety Training', 'First Aid'],
+  })
+  @Transform(({ value }) => {
+    // Handle string input (from JSON or form data)
+    if (typeof value === 'string') {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return [];
+      }
+    }
+    // Handle array input
+    return value || [];
+  })
+  @Type(() => Array)
+  @IsArray()
+  @IsOptional()
+  certification?: string[];
 }

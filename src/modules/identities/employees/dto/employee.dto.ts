@@ -1,9 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { CompanyDto } from '@src/modules/master/companies/dto/company.dto';
 import { LocationDto } from '@src/modules/master/locations/dto/location.dto';
-import { Exclude, Expose, Type } from 'class-transformer';
-import { AccountDto } from '../../dto/account.dto';
 import { GateDto } from '@src/modules/visits/dto/gate.dto';
+import { Exclude, Expose, Transform, Type } from 'class-transformer';
+import { AccountDto } from '../../dto/account.dto';
 
 @Exclude()
 export class EmployeeDto {
@@ -162,4 +162,23 @@ export class EmployeeDto {
   @Type(() => GateDto)
   @Expose()
   accesses?: GateDto[];
+
+  @ApiProperty({
+    description: 'List of certifications',
+    type: [String],
+    example: ['ISO 9001', 'Safety Training', 'First Aid'],
+  })
+  @Expose()
+  @Transform(({ value }) => {
+    // Transform from JSON string to array when reading from database
+    if (typeof value === 'string') {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return [];
+      }
+    }
+    return value || [];
+  })
+  certification?: string[];
 }

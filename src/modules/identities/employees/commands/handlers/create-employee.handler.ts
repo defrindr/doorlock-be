@@ -69,6 +69,7 @@ export class CreateEmployeeHandler
         ...employeDataFinal,
         accountId: savedAccount.id,
         violationPoints: createEmployeeDto.violationPoints ?? 0,
+        certification: JSON.stringify(createEmployeeDto?.certification || []),
       });
 
       const savedEmployee = await manager.save(AccountEmployee, employee);

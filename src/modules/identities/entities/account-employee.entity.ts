@@ -63,6 +63,9 @@ export class AccountEmployee {
   @Column({ type: 'uuid', nullable: true, name: 'company_id' })
   companyId: string;
 
+  @Column({ type: 'varchar', nullable: true, name: 'certification' })
+  certification: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

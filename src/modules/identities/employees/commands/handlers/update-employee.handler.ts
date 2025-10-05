@@ -98,6 +98,7 @@ export class UpdateEmployeeHandler
       await manager.update(AccountEmployee, id, {
         ...employeeFinal,
         violationPoints: employeeData?.violationPoints ?? 0,
+        certification: JSON.stringify(employeeFinal?.certification || []),
       });
 
       // Optionally update accesses separately here if needed
