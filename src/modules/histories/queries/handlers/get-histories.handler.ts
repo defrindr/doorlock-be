@@ -6,12 +6,11 @@ import { BaseHandler } from '@src/shared/core/handlers/base.handler';
 import { PageMetaDto } from '@src/shared/paginations/dto';
 import { plainToInstance } from 'class-transformer';
 
+import { applyPaginationFilters } from '@src/shared/paginations/apply-pagination-filter';
 import { HistoryDto } from '../../dto/history.dto';
 import { PageHistoryDto } from '../../dto/page-history.dto';
 import { History } from '../../entities/history.entity';
 import { GetHistoriesQuery } from '../imp/get-histories.query';
-import { applyPaginationFilters } from '@src/shared/paginations/apply-pagination-filter';
-import { Order } from '@src/shared/paginations';
 
 @QueryHandler(GetHistoriesQuery)
 export class GetHistoriesHandler

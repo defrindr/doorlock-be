@@ -6,7 +6,6 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
-  Put,
   Query,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -31,8 +30,8 @@ import { GuestDto } from './dto/guest.dto';
 import { PageGuestDto } from './dto/page-guest.dto';
 import { UpdateGuestDto } from './dto/update-guest.dto';
 import { GetGuestQuery } from './queries/imp/get-guest.query';
-import { GetGuestsQuery } from './queries/imp/get-guests.query';
 import { GetGuestsByCompanyQuery } from './queries/imp/get-guests-by-company.query';
+import { GetGuestsQuery } from './queries/imp/get-guests.query';
 
 @Controller('identities/guests')
 @ApiTags('Guests')
