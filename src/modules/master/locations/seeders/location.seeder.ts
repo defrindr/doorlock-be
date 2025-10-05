@@ -48,6 +48,11 @@ export class LocationSeeder implements Seeder {
         status: 1,
       },
       {
+        name: 'Surabaya, Osowilangun',
+        type: LocationType.WAREHOUSE,
+        status: 1,
+      },
+      {
         name: 'Chemical Plant Cikarang',
         type: LocationType.IN_PLANT,
         status: 0,

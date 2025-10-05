@@ -10,6 +10,7 @@ import { LocationSeeder } from '@src/modules/master/locations/seeders/location.s
 import { GateSeeder } from '@src/modules/master/gates/seeders/gate.seeder';
 import { AccountSeeder } from '@src/modules/identities/seeders/account.seeder';
 import { CompanySeeder } from '@src/modules/master/companies/seeders/company.seeder';
+import { EmployeeDataSeeder } from '@src/modules/identities/seeders/employee-data.seeder';
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -83,6 +84,7 @@ async function bootstrap() {
     gate: GateSeeder,
     company: CompanySeeder,
     account: AccountSeeder,
+    employeeData: EmployeeDataSeeder,
   };
 
   await dataSource.initialize();
@@ -109,6 +111,7 @@ async function bootstrap() {
     await runSeeder(dataSource, GateSeeder);
     await runSeeder(dataSource, CompanySeeder);
     await runSeeder(dataSource, AccountSeeder);
+    await runSeeder(dataSource, EmployeeDataSeeder);
     // IAM
     await runSeeder(dataSource, PermissionSeeder);
     await runSeeder(dataSource, RoleSeeder);

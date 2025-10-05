@@ -25,52 +25,7 @@ export class AccountSeeder implements Seeder {
     console.log('Seeding account data...');
 
     // Create employee accounts
-    const employeeAccounts = [
-      {
-        nfcCode: 'NFC001EMP',
-        accountType: AccountType.EMPLOYEE,
-        employeeNumber: 'EMP001',
-        fullName: 'John Smith',
-        department: 'Information Technology',
-        position: 'Senior Software Engineer',
-        email: 'john.smith@company.com',
-        phone: '+628123456001',
-        hireDate: new Date('2020-01-15'),
-      },
-      {
-        nfcCode: 'NFC002EMP',
-        accountType: AccountType.EMPLOYEE,
-        employeeNumber: 'EMP002',
-        fullName: 'Sarah Johnson',
-        department: 'Human Resources',
-        position: 'HR Manager',
-        email: 'sarah.johnson@company.com',
-        phone: '+628123456002',
-        hireDate: new Date('2019-03-20'),
-      },
-      {
-        nfcCode: 'NFC003EMP',
-        accountType: AccountType.EMPLOYEE,
-        employeeNumber: 'EMP003',
-        fullName: 'Michael Brown',
-        department: 'Information Technology',
-        position: 'DevOps Engineer',
-        email: 'michael.brown@company.com',
-        phone: '+628123456003',
-        hireDate: new Date('2021-06-10'),
-      },
-      {
-        nfcCode: 'NFC004EMP',
-        accountType: AccountType.EMPLOYEE,
-        employeeNumber: 'EMP004',
-        fullName: 'Lisa Davis',
-        department: 'Finance',
-        position: 'Financial Analyst',
-        email: 'lisa.davis@company.com',
-        phone: '+628123456004',
-        hireDate: new Date('2022-02-14'),
-      },
-    ];
+    const employeeAccounts: any = [];
 
     const createdEmployees = [];
     for (const empData of employeeAccounts) {

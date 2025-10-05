@@ -105,6 +105,7 @@ export class CreateIdentityTable1758182403102 implements MigrationInterface {
           { name: 'phone', type: 'varchar', length: '50', isNullable: true },
           { name: 'hire_date', type: 'date', isNullable: true },
           { name: 'supervisor_id', type: 'uniqueidentifier', isNullable: true },
+          { name: 'location_id', type: 'uniqueidentifier', isNullable: true },
           { name: 'createdAt', type: 'datetime2', default: 'getdate()' },
           { name: 'updatedAt', type: 'datetime2', default: 'getdate()' },
           { name: 'deletedAt', type: 'datetime2', isNullable: true },
@@ -117,6 +118,10 @@ export class CreateIdentityTable1758182403102 implements MigrationInterface {
           {
             name: 'IDX_account_employees_employee_number',
             columnNames: ['employee_number'],
+          },
+          {
+            name: 'IDX_account_employees_position',
+            columnNames: ['position'],
           },
           {
             name: 'IDX_account_employees_department',
@@ -301,6 +306,12 @@ export class CreateIdentityTable1758182403102 implements MigrationInterface {
       new TableForeignKey({
         columnNames: ['supervisor_id'],
         referencedTableName: 'account_employees',
+        referencedColumnNames: ['id'],
+        onDelete: 'NO ACTION',
+      }),
+      new TableForeignKey({
+        columnNames: ['location_id'],
+        referencedTableName: 'locations',
         referencedColumnNames: ['id'],
         onDelete: 'NO ACTION',
       }),
