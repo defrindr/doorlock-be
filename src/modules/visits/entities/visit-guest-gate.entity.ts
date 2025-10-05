@@ -7,12 +7,10 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Visit } from './visit.entity';
 import { VisitParticipant } from './visit-participant.entity';
 
 @Entity('visit_guest_gates')
 export class VisitGuestGate {
-  [x: string]: any;
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -30,9 +28,13 @@ export class VisitGuestGate {
   createdAt: Date;
 
   // Relations
-  @ManyToOne(() => Visit, (visit) => visit.accesses, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(
+    () => VisitParticipant,
+    (visitParticipant) => visitParticipant.accesses,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
   @JoinColumn({ name: 'visit_guest_id' })
   visitGuest: VisitParticipant;
 

@@ -66,7 +66,7 @@ export class GuestDto {
 
   @ApiProperty({
     description: 'List of gates can access by guest in the visit',
-    type: () => [GateDto],
+    // type: () => [GateDto],
   })
   @Type(() => GateDto)
   @Expose()

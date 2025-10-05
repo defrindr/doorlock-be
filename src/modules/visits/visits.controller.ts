@@ -22,9 +22,11 @@ import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { PageOptionsDto } from '@src/shared/paginations';
 import { CreateVisitCommand } from './commands/imp/create-visit.command';
 import { DeleteVisitCommand } from './commands/imp/delete-visit.command';
+import { SyncParticipantGatesCommand } from './commands/imp/sync-participant-gates.command';
 import { UpdateVisitCommand } from './commands/imp/update-visit.command';
 import { CreateVisitDto } from './dto/create-visit.dto';
 import { PageVisitDto } from './dto/page-visit.dto';
+import { SyncParticipantGatesDto } from './dto/sync-participant-gates.dto';
 import { UpdateVisitDto } from './dto/update-visit.dto';
 import { VisitActionResponseDto } from './dto/visit-action-response.dto';
 import { VisitDto } from './dto/visit.dto';
@@ -115,5 +117,26 @@ export class VisitsController {
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ApiResponseDto<null>> {
     return this.commandBus.execute(new DeleteVisitCommand(id));
+  }
+
+  @Post('participants/:visitId/:participantId/gates')
+  @ApiOperation({
+    summary: 'Sync gates for visit participant',
+    description:
+      'Synchronize gate assignments for a specific visit participant. Gates in the request will be assigned, gates not in the request will be removed.',
+  })
+  @ApiOkResponse({
+    description: 'Participant gates synchronized successfully',
+    type: ApiResponseDto,
+  })
+  @ApiCommonErrors()
+  async syncParticipantGates(
+    @Param('visitId', ParseUUIDPipe) visitId: string,
+    @Param('participantId', ParseUUIDPipe) participantId: string,
+    @Body() syncGatesDto: SyncParticipantGatesDto,
+  ): Promise<ApiResponseDto<null>> {
+    return this.commandBus.execute(
+      new SyncParticipantGatesCommand(visitId, participantId, syncGatesDto),
+    );
   }
 }

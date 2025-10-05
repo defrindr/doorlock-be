@@ -38,7 +38,7 @@ export class GetVisitHandler
       .leftJoinAndSelect('visitGates.gate', 'gate')
       .where('visit.id = :id', { id });
 
-    console.log(qb.getSql()); // 👈 prints the SQL
+    // console.log(qb.getSql()); // 👈 prints the SQL
     const visit = await qb.getOne();
 
     // const visit = await this.visitRepository.findOne({
@@ -60,12 +60,17 @@ export class GetVisitHandler
 
     // console.log(visit);
 
-    const participants =
-      visit?.visitParticipants?.map((item) => {
-        console.log(item);
-        const { account, ...guest } = item.guest;
-        return { ...guest, photoUrl: account.photo, accesses: item.accesses };
-      }) || [];
+    const participants: any = [];
+
+    for (let i = 0; i < (visit?.visitParticipants?.length || 0); i++) {
+      const { account, ...guest }: any = visit?.visitParticipants?.[i].guest;
+      participants.push({
+        ...guest,
+        photoUrl: account.photo,
+        accesses: visit?.visitParticipants?.[i]?.accesses || [],
+      });
+    }
+
     const accesses =
       visit?.visitGates?.map((item) => {
         const { ...gate } = item.gate;
