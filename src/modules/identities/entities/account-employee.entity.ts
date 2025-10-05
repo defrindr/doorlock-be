@@ -11,6 +11,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Account } from './account.entity';
+import { Location } from '@src/modules/master/locations/entities/location.entity';
 
 @Entity('account_employees')
 export class AccountEmployee {
@@ -52,6 +53,9 @@ export class AccountEmployee {
   @Column({ type: 'uuid', nullable: true, name: 'supervisor_id' })
   supervisorId: string;
 
+  @Column({ type: 'uuid', nullable: true, name: 'location_id' })
+  locationId: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -71,6 +75,10 @@ export class AccountEmployee {
   })
   @JoinColumn({ name: 'supervisor_id' })
   supervisor: AccountEmployee;
+
+  @ManyToOne(() => Location, { nullable: true })
+  @JoinColumn({ name: 'location_id' })
+  location: Location;
 
   @OneToMany(() => AccountEmployee, (employee) => employee.supervisor)
   subordinates: AccountEmployee[];

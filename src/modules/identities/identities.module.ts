@@ -2,6 +2,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Account } from './entities/account.entity';
 import { Module } from '@nestjs/common';
 import { GuestsModule } from './guests/guests.module';
+import { EmployeesModule } from './employees/employees.module';
 import { AccountEmployee } from './entities/account-employee.entity';
 import { AccountGuest } from './entities/account-guest.entity';
 import { AccountIntern } from './entities/account-intern.entity';
@@ -15,6 +16,7 @@ import { AccountIntern } from './entities/account-intern.entity';
       AccountGuest,
     ]),
     GuestsModule,
+    EmployeesModule,
   ],
   controllers: [],
 })

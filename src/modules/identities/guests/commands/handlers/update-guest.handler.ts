@@ -51,7 +51,7 @@ export class UpdateGuestHandler
     // Handle photo update if provided
     const photoPath = await this.guestImageService.handlePhotoUpdate(
       updateGuestDto.photo,
-      account.photo,
+      account?.photo ?? undefined,
     );
     const status = updateGuestDto.status;
 

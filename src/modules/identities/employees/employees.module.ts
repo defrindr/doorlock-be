@@ -1,0 +1,26 @@
+import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AccountEmployee } from '../entities/account-employee.entity';
+import { Account } from '../entities/account.entity';
+import { CreateEmployeeHandler } from './commands/handlers/create-employee.handler';
+import { DeleteEmployeeHandler } from './commands/handlers/delete-employee.handler';
+import { UpdateEmployeeHandler } from './commands/handlers/update-employee.handler';
+import { EmployeesController } from './employees.controller';
+import { GetEmployeeHandler } from './queries/handlers/get-employee.handler';
+import { GetEmployeesHandler } from './queries/handlers/get-employees.handler';
+
+const commandHandlers = [
+  CreateEmployeeHandler,
+  UpdateEmployeeHandler,
+  DeleteEmployeeHandler,
+];
+
+const queryHandlers = [GetEmployeesHandler, GetEmployeeHandler];
+
+@Module({
+  imports: [TypeOrmModule.forFeature([Account, AccountEmployee]), CqrsModule],
+  controllers: [EmployeesController],
+  providers: [...commandHandlers, ...queryHandlers],
+})
+export class EmployeesModule {}

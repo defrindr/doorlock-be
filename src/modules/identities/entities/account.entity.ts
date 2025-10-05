@@ -26,8 +26,8 @@ export class Account {
   })
   nfcCode: string | null;
 
-  @Column({ type: 'varchar', length: 255, unique: true, name: 'photo' })
-  photo: string;
+  @Column({ type: 'varchar', length: 255, nullable: true, name: 'photo' })
+  photo: string | null;
 
   @Column({ type: 'varchar', nullable: true, name: 'more_details' })
   moreDetails: string;
