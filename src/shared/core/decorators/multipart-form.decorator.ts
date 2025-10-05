@@ -33,6 +33,17 @@ export const MultipartForm = createParamDecorator(
           buffer,
         };
       } else {
+        if (
+          typeof part.value === 'string' &&
+          part.value.startsWith('[') &&
+          part.value.endsWith(']')
+        ) {
+          try {
+            part.value = JSON.parse(part.value);
+          } catch {
+            // if it's not valid JSON, just keep it as-is
+          }
+        }
         formData[part.fieldname] = part.value;
       }
     }
