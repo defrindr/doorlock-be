@@ -15,7 +15,8 @@ import { GetVisitQuery } from '../imp/get-visit.query';
 @QueryHandler(GetVisitQuery)
 export class GetVisitHandler
   extends BaseHandler<GetVisitQuery, ApiResponseDto<VisitDto>>
-  implements IQueryHandler<GetVisitQuery, ApiResponseDto<VisitDto>> {
+  implements IQueryHandler<GetVisitQuery, ApiResponseDto<VisitDto>>
+{
   constructor(
     @InjectRepository(Visit)
     private readonly visitRepository: Repository<Visit>,
