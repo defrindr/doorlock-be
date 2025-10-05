@@ -4,10 +4,13 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Visit } from './visit.entity';
+import { Gate } from '@src/modules/master/gates/entities/gate.entity';
 
 @Entity('visit_participants')
 export class VisitParticipant {
@@ -38,4 +41,12 @@ export class VisitParticipant {
   @ManyToOne(() => AccountGuest)
   @JoinColumn({ name: 'guest_id' })
   guest: AccountGuest;
+
+  @ManyToMany(() => Gate)
+  @JoinTable({
+    name: 'visit_guest_gates',
+    joinColumn: { name: 'visitGuestId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'gateId', referencedColumnName: 'id' },
+  })
+  accesses?: Gate[];
 }

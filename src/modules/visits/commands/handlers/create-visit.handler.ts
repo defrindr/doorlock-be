@@ -9,16 +9,17 @@ import { plainToInstance } from 'class-transformer';
 import { AccountEmployee } from '@src/modules/identities/entities/account-employee.entity';
 import { AccountGuest } from '@src/modules/identities/entities/account-guest.entity';
 import { Company } from '@src/modules/master/companies/entities/company.entity';
+import { Gate } from '@src/modules/master/gates/entities/gate.entity';
 import {
   BadRequestHttpException,
   NotFoundHttpException,
 } from '@src/shared/core/exceptions/exception';
 import { VisitActionResponseDto } from '../../dto/visit-action-response.dto';
+import { VisitGate } from '../../entities/visit-gate.entity';
+import { VisitGuestGate } from '../../entities/visit-guest-gate.entity';
 import { VisitParticipant } from '../../entities/visit-participant.entity';
 import { Visit } from '../../entities/visit.entity';
 import { CreateVisitCommand } from '../imp/create-visit.command';
-import { Gate } from '@src/modules/master/gates/entities/gate.entity';
-import { VisitGate } from '../../entities/visit-gate.entity';
 
 @CommandHandler(CreateVisitCommand)
 export class CreateVisitHandler
@@ -137,6 +138,28 @@ export class CreateVisitHandler
                 )
               : Promise.resolve(),
           ]);
+
+          if (accessIds) {
+            const visitGuests = await manager.find(VisitParticipant, {
+              where: {
+                visitId: savedVisit.id,
+              },
+            });
+
+            const visitGuestGates: any = [];
+
+            visitGuests.map((vG) => {
+              return accessIds.map((gateId) => {
+                visitGuestGates.push(
+                  manager.create(VisitGuestGate, {
+                    visitGuestId: vG.id,
+                    gate: { id: gateId },
+                  }),
+                );
+              });
+            });
+            await manager.save(visitGuestGates);
+          }
 
           const visitDto = plainToInstance(VisitActionResponseDto, savedVisit, {
             excludeExtraneousValues: true,
