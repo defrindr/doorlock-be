@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { AccountEmployee } from '@src/modules/identities/entities/account-employee.entity';
 import { EmployeeGate } from '@src/modules/identities/entities/employee-gates.entity';
-import { VisitGate } from '@src/modules/visits/entities/visit-gate.entity';
+import { VisitGuestGate } from '@src/modules/visits/entities/visit-guest-gate.entity';
 import { VisitParticipant } from '@src/modules/visits/entities/visit-participant.entity';
 import { DateHelper } from '@src/shared/utils/date-helper';
 import { DataSource, EntityManager } from 'typeorm';
@@ -75,8 +75,8 @@ export class PrepareDataService {
         throw new BadRequestException('Data visit not valid');
       }
 
-      const dbAccesses = await manager.find(VisitGate, {
-        where: { visitId },
+      const dbAccesses = await manager.find(VisitGuestGate, {
+        where: { visitGuestId: visitAvailable.id },
         relations: ['gate'],
       });
 
