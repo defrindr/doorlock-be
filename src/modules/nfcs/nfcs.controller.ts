@@ -29,6 +29,25 @@ Returns the NFC payload wrapped in the standard API response format.`,
     @Param('guestId') guestId: string,
   ): Promise<ApiResponseDto<NfcDto>> {
     console.log(visitId, guestId);
-    return this.queryBus.execute(new GetNfcQuery('visitor', visitId, guestId));
+    return this.queryBus.execute(
+      new GetNfcQuery('visitor', { visitId, guestId }),
+    );
+  }
+
+  @Get('employee/:employeeId')
+  @ApiOperation({
+    summary: 'Retrieve NFC record for a employee account',
+    description: `Fetch the NFC information linked to a specific employee and account.
+Path parameters:
+- \`employeeId\`: UUID of the employee
+
+Returns the NFC payload wrapped in the standard API response format.`,
+  })
+  @ApiSingleResponse(NfcDto, 'Nfc retrieved successfully')
+  @ApiCommonErrors()
+  async findEmployee(
+    @Param('employeeId') employeeId: string,
+  ): Promise<ApiResponseDto<NfcDto>> {
+    return this.queryBus.execute(new GetNfcQuery('employee', { employeeId }));
   }
 }

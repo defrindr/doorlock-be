@@ -1,7 +1,9 @@
-import { DateHelper } from '@src/shared/utils/date-helper';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { AccountEmployee } from '@src/modules/identities/entities/account-employee.entity';
+import { EmployeeGate } from '@src/modules/identities/entities/employee-gates.entity';
 import { VisitGate } from '@src/modules/visits/entities/visit-gate.entity';
 import { VisitParticipant } from '@src/modules/visits/entities/visit-participant.entity';
+import { DateHelper } from '@src/shared/utils/date-helper';
 import { DataSource, EntityManager } from 'typeorm';
 
 @Injectable()
@@ -12,9 +14,51 @@ export class PrepareDataService {
     let data = {};
     if (payload.type == 'visitor') {
       data = await this.prepareVisitorData(payload.guestId, payload.visitId);
+    } else if (payload.type == 'employee') {
+      data = await this.prepareEmployeeData(payload.employeeId);
     }
 
     return data;
+  }
+
+  async prepareEmployeeData(employeeId: string) {
+    return await this.dataSource.transaction(async (manager: EntityManager) => {
+      const employee = await manager.findOne(AccountEmployee, {
+        where: {
+          id: employeeId,
+        },
+        relations: ['account', 'company'],
+      });
+
+      if (!employee) {
+        throw new BadRequestException('Employee not valid');
+      }
+
+      const dbAccesses = await manager.find(EmployeeGate, {
+        where: { employeeId },
+        relations: ['gate'],
+      });
+
+      const accesses = dbAccesses
+        .map((vGate) => {
+          return vGate.gate.gateIdentifier;
+        })
+        .join(',');
+
+      return {
+        id: employee.account.id,
+        nip: employee.employeeNumber,
+        nama: employee.fullName,
+        foto: employee.account.photo,
+        perusahaan: employee.company?.name || '-',
+        jabatan: employee.position || '-',
+        status_kartu: 'Employee',
+        poin: employee.violationPoints,
+        aktif_mulai: null,
+        aktif_selesai: null,
+        access: accesses,
+      };
+    });
   }
 
   async prepareVisitorData(guestId: string, visitId: string) {
@@ -31,7 +75,6 @@ export class PrepareDataService {
         throw new BadRequestException('Data visit not valid');
       }
 
-      console.log('visitId', visitId);
       const dbAccesses = await manager.find(VisitGate, {
         where: { visitId },
         relations: ['gate'],
