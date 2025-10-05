@@ -206,11 +206,9 @@ PT Cipta Krida Bahari	95000431	Muhammad Khoirul Anam	Driver Distribution Operati
         }
 
         // Generate a unique NFC code
-        const nfcCode = '';
-
         // Create account
         const account = accountRepository.create({
-          nfcCode,
+          nfcCode: null,
           accountType: AccountType.EMPLOYEE,
           photo: `photos/${employeeNumber}.jpg`, // Placeholder photo path
           status: 1,

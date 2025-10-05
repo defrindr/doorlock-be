@@ -10,6 +10,7 @@ export const dbOptions: DataSourceOptions & SeederOptions = {
   password: DbConfig.password,
   database: DbConfig.database,
   synchronize: false,
+  requestTimeout: 60000,
   options: {
     encrypt: false, // set true if using Azure or SSL
     enableArithAbort: true,
