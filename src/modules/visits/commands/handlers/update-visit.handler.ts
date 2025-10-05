@@ -94,38 +94,38 @@ export class UpdateVisitHandler
       }
 
       // Optionally update accesses separately here if needed
-      // if (accesses?.length) {
-      //   // Delete old participants not in the new list
-      //   const deletePromise = manager.delete(VisitGate, {
-      //     visitId: id,
-      //     gateId: Not(In(accesses)),
-      //   });
+      if (accesses?.length) {
+        // Delete old participants not in the new list
+        const deletePromise = manager.delete(VisitGate, {
+          visitId: id,
+          gateId: Not(In(accesses)),
+        });
 
-      //   // Find existing participants to avoid duplicates
-      //   const existingPromise = manager.find(VisitGate, {
-      //     where: { visitId: id, gateId: In(accesses) },
-      //     select: ['gateId'],
-      //   });
+        // Find existing participants to avoid duplicates
+        const existingPromise = manager.find(VisitGate, {
+          where: { visitId: id, gateId: In(accesses) },
+          select: ['gateId'],
+        });
 
-      //   const [_, existingParticipants] = await Promise.all([
-      //     deletePromise,
-      //     existingPromise,
-      //   ]);
+        const [_, existingParticipants] = await Promise.all([
+          deletePromise,
+          existingPromise,
+        ]);
 
-      //   const existingIds = existingParticipants.map((p) => p.gateId);
-      //   const newIds = accesses.filter((pid) => !existingIds.includes(pid));
+        const existingIds = existingParticipants.map((p) => p.gateId);
+        const newIds = accesses.filter((pid) => !existingIds.includes(pid));
 
-      //   // Insert new participants
-      //   if (newIds.length) {
-      //     const insertParticipants = newIds.map((gateId) =>
-      //       manager.create(VisitGate, { visitId: id, gateId }),
-      //     );
-      //     await manager.save(insertParticipants);
-      //   }
-      // } else {
-      //   // Delete all participants if the new list is empty
-      //   await manager.delete(VisitGate, { visitId: id });
-      // }
+        // Insert new participants
+        if (newIds.length) {
+          const insertParticipants = newIds.map((gateId) =>
+            manager.create(VisitGate, { visitId: id, gateId }),
+          );
+          await manager.save(insertParticipants);
+        }
+      } else {
+        // Delete all participants if the new list is empty
+        await manager.delete(VisitGate, { visitId: id });
+      }
 
       const visitDto = plainToInstance(VisitActionResponseDto, visit, {
         excludeExtraneousValues: true,
