@@ -20,7 +20,8 @@ import { SyncHistoryCommand } from '../imp/sync-history.command';
 @CommandHandler(SyncHistoryCommand)
 export class SyncHistoryHandler
   extends BaseHandler<SyncHistoryCommand, ApiResponseDto>
-  implements ICommandHandler<SyncHistoryCommand, ApiResponseDto> {
+  implements ICommandHandler<SyncHistoryCommand, ApiResponseDto>
+{
   constructor(
     @InjectRepository(History)
     private readonly historyRepository: Repository<History>,
