@@ -12,6 +12,7 @@ import { DeleteGateHandler } from './commands/handlers/delete-gate.handler';
 
 // Query Handlers
 import { GetGateHandler } from './queries/handlers/get-gate.handler';
+import { GetPortableGatesHandler } from './queries/handlers/get-portable-gates.handler';
 import { GetGatesHandler } from './queries/handlers/get-gates.handler';
 
 const CommandHandlers = [
@@ -20,7 +21,11 @@ const CommandHandlers = [
   DeleteGateHandler,
 ];
 
-const QueryHandlers = [GetGateHandler, GetGatesHandler];
+const QueryHandlers = [
+  GetPortableGatesHandler,
+  GetGateHandler,
+  GetGatesHandler,
+];
 
 @Module({
   imports: [TypeOrmModule.forFeature([Gate, Location]), CqrsModule],

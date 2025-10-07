@@ -26,6 +26,8 @@ import { DeleteGateCommand } from './commands/imp/delete-gate.command';
 import { UpdateGateCommand } from './commands/imp/update-gate.command';
 import { GetGateQuery } from './queries/imp/get-gate.query';
 import { GetGatesQuery } from './queries/imp/get-gates.query';
+import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
+import { GetPortableGatesQuery } from './queries/imp/get-portable-gates.query';
 
 @ApiTags('Gates')
 @Controller('master/gates')
@@ -43,11 +45,28 @@ export class GatesController {
   })
   @ApiSingleResponse(GateDto, 'Gate created successfully', 201)
   @ApiCommonErrors()
+  @PermissionAccess()
   async create(
     @Body() createGateDto: CreateGateDto,
   ): Promise<ApiResponseDto<GateDto>> {
     const command = new CreateGateCommand(createGateDto);
     return await this.commandBus.execute(command);
+  }
+
+  @Get('/portable-gates')
+  @ApiOperation({
+    summary: 'Get all portable gates with pagination',
+    description:
+      'Retrieve a paginated list of all portable gates in the system including their location, type, and access control settings',
+  })
+  @ApiSingleResponse(GateDto, 'Portable Gates retrieved successfully', 200)
+  @ApiCommonErrors()
+  @PermissionAccess()
+  async findPortableGates(
+    @Query() pageOptionsDto: PageOptionsDto,
+  ): Promise<ApiResponseDto<PageGateDto>> {
+    const query = new GetPortableGatesQuery(pageOptionsDto);
+    return await this.queryBus.execute(query);
   }
 
   @Get()
@@ -58,6 +77,7 @@ export class GatesController {
   })
   @ApiSingleResponse(GateDto, 'Gates retrieved successfully', 200)
   @ApiCommonErrors()
+  @PermissionAccess()
   async findAll(
     @Query() pageOptionsDto: PageOptionsDto,
   ): Promise<ApiResponseDto<PageGateDto>> {
@@ -73,6 +93,7 @@ export class GatesController {
   })
   @ApiSingleResponse(GateDto, 'Gate retrieved successfully', 200)
   @ApiCommonErrors()
+  @PermissionAccess()
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ApiResponseDto<GateDto>> {
@@ -88,6 +109,7 @@ export class GatesController {
   })
   @ApiSingleResponse(GateDto, 'Gate updated successfully', 200)
   @ApiCommonErrors()
+  @PermissionAccess()
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateGateDto: UpdateGateDto,
@@ -107,6 +129,7 @@ export class GatesController {
     type: ApiResponseDto,
   })
   @ApiCommonErrors()
+  @PermissionAccess()
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ApiResponseDto<null>> {
