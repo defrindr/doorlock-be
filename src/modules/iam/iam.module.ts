@@ -12,10 +12,10 @@ import { UsersModule } from './users/users.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Role, Permission, RolePermission]),
+    AuthModule,
     UsersModule,
     RoleModule,
     PermissionModule,
-    AuthModule,
   ],
 })
 export class IamModule {}
