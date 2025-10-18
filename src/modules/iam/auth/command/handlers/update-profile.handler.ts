@@ -7,10 +7,10 @@ import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { UserStorage } from '@src/shared/storage/user.storage';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
-import { UserDto } from '../../dto/user.dto';
 import { UpdateProfileCommand } from '../imp/update-profile.command';
 import { ForbiddenHttpException } from '@src/shared/core/exceptions/exception';
 import { Injectable } from '@nestjs/common';
+import { UserDto } from '@src/modules/iam/users/dto/user.dto';
 
 @CommandHandler(UpdateProfileCommand)
 @Injectable()
@@ -48,6 +48,7 @@ export class UpdateProfileHandler extends BaseHandler<
 
     const user = await this.userRepository.findOne({
       where: { id: currentAuth.sub },
+      relations: ['role'],
     });
 
     const userDto = plainToInstance(UserDto, user, {

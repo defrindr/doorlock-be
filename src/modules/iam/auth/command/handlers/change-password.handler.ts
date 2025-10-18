@@ -14,7 +14,7 @@ import {
 } from '@src/shared/core/exceptions/exception';
 import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
-import { UserDto } from '../../dto/user.dto';
+import { UserDto } from '@src/modules/iam/users/dto/user.dto';
 
 @CommandHandler(ChangePasswordCommand)
 export class ChangePasswordHandler extends BaseHandler<
@@ -37,6 +37,7 @@ export class ChangePasswordHandler extends BaseHandler<
     if (!currentAuth) throw new BadRequestHttpException();
     const user = await this.userRepository.findOne({
       where: { id: currentAuth.sub },
+      relations: ['role'],
     });
 
     if (!user) {
