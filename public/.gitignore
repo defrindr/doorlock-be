@@ -1,2 +1,5 @@
-*
+employees/*
+guests/*
+uploads/*
 !.gitignore
+!template/*
