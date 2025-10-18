@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { History } from './entities/history.entity';
 import { HistoriesController } from './histories.controller';
 import { GetHistoriesHandler } from './queries/handlers/get-histories.handler';
+import { ExportHistoriesHandler } from './queries/handlers/export-histories.handler';
 import { SyncHistoryHandler } from './commands/handlers/sync-history.handler';
 import { Account } from '../identities/entities/account.entity';
 import { Gate } from '../master/gates/entities/gate.entity';
@@ -13,7 +14,7 @@ import { AccountIntern } from '../identities/entities/account-intern.entity';
 
 const commandHandlers = [SyncHistoryHandler];
 
-const queryHandlers = [GetHistoriesHandler];
+const queryHandlers = [GetHistoriesHandler, ExportHistoriesHandler];
 
 @Module({
   imports: [
