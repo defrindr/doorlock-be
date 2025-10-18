@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core/constants';
 import { DbModule } from './db/db.module';
+import { DashboardModule } from './modules/general/dashboard/dashboard.module';
 import { HistoriesModule } from './modules/histories/histories.module';
 import { IamModule } from './modules/iam/iam.module';
 import { IdentitiesModule } from './modules/identities/identities.module';
@@ -8,7 +9,7 @@ import { MasterModule } from './modules/master/master.module';
 import { NfcsModule } from './modules/nfcs/nfcs.module';
 import { VisitsModule } from './modules/visits/visits.module';
 import { JwtAuthGuard } from './shared/core/guards/jwt-auth.guard';
-import { DashboardModule } from './modules/general/dashboard/dashboard.module';
+import { UserContextMiddleware } from './shared/storage/user-context.middleware';
 
 @Module({
   imports: [
@@ -28,4 +29,8 @@ import { DashboardModule } from './modules/general/dashboard/dashboard.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(UserContextMiddleware).forRoutes('*');
+  }
+}

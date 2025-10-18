@@ -13,10 +13,17 @@ export interface IUser {
 
 export const UserStorage = {
   storage: new AsyncLocalStorage<IUser>(),
-  get() {
-    return this.storage.getStore();
+  get(): IUser | undefined {
+    return this.storage.getStore()?.user;
   },
+
   set(user: IUser) {
-    return this.storage.enterWith(user);
+    const store = this.storage.getStore();
+    if (store) {
+      store.user = user; // ← isi context aktif
+    } else {
+      // fallback kalau belum ada context (harusnya jarang kejadian)
+      this.storage.run({ user }, () => {});
+    }
   },
 };

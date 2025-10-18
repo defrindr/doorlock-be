@@ -12,6 +12,8 @@ import { LoginHandler } from './command/handlers/login.handler';
 import { RefreshTokenHandler } from './command/handlers/refresh-token.handler';
 import { GetProfileHandler } from './query/handlers/get-profile.handler';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { ChangePasswordHandler } from './command/handlers/change-password.handler';
+import { UpdateProfileHandler } from './command/handlers/update-profile.handler';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { JwtStrategy } from './strategy/jwt.strategy';
     LoginHandler,
     RefreshTokenHandler,
     GetProfileHandler,
+    ChangePasswordHandler,
+    UpdateProfileHandler,
   ],
 })
 export class AuthModule {}

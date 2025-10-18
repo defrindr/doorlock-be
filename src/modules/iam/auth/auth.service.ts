@@ -55,12 +55,25 @@ export class AuthService {
   async authenticateUser(username: string, password: string): Promise<User> {
     const user = await this.userRepository.findOne({
       where: [{ username }, { email: username }],
+      relations: ['role'],
     });
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    if (!user) {
+      throw new BadRequestHttpException('Credential is incorrect');
+    }
+
+    const correctPasword = await this.validatePassword(
+      password,
+      user?.password,
+    );
+    if (!correctPasword) {
       throw new BadRequestHttpException('Credential is incorrect');
     }
     return user;
+  }
+
+  async validatePassword(plainPassword: string, hashedPassword: string) {
+    return await bcrypt.compare(plainPassword, hashedPassword);
   }
 
   async authenticateUserByRefreshToken(refreshToken: string): Promise<User> {
@@ -104,6 +117,8 @@ export class AuthService {
     if (!user) {
       throw new BadRequestHttpException('User doesnt exist in our system');
     }
+
+    console.log(user);
 
     return user;
   }

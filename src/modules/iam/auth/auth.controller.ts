@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -15,11 +16,15 @@ import { User } from '@src/shared/core/decorators/user.decorator';
 import { IUser } from '@src/shared/storage/user.storage';
 import { UserDto } from '../users/dto/user.dto';
 import { AuthService } from './auth.service';
+import { ChangePasswordCommand } from './command/imp/change-password.command';
 import { LoginCommand } from './command/imp/login.command';
 import { RefreshTokenCommand } from './command/imp/refresh-token.command';
+import { UpdateProfileCommand } from './command/imp/update-profile.command';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { GetProfileQuery } from './query/imp/get-profile.query';
 
 @ApiTags('Auth')
@@ -41,6 +46,32 @@ export class AuthController {
   @ApiCommonErrors()
   async login(@Body() payload: LoginDto): Promise<any> {
     return this.commandBus.execute(new LoginCommand(payload));
+  }
+
+  @ApiOperation({
+    summary: 'Update User Profile',
+    description:
+      "Update the authenticated user's profile information including name, username, and email",
+  })
+  @Put('profile')
+  @ApiSingleResponse(UserDto, 'Profile updated successfully')
+  @ApiCommonErrors()
+  @PermissionAccess()
+  async updateProfile(@Body() payload: UpdateProfileDto): Promise<any> {
+    return this.commandBus.execute(new UpdateProfileCommand(payload));
+  }
+
+  @ApiOperation({
+    summary: 'Change User Password',
+    description:
+      "Change the authenticated user's password by providing current password and new password",
+  })
+  @Post('change-password')
+  @ApiSingleResponse(null, 'Password changed successfully')
+  @ApiCommonErrors()
+  @PermissionAccess()
+  async changePassword(@Body() payload: ChangePasswordDto): Promise<any> {
+    return this.commandBus.execute(new ChangePasswordCommand(payload));
   }
 
   @Get('profile')
