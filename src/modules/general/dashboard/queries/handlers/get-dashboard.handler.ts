@@ -88,7 +88,7 @@ export class GetDashboardHandler
 
   private fetchLatestHistories() {
     return this.historyRepository.find({
-      take: 10,
+      take: 5,
       order: {
         timestamp: 'desc',
       },
