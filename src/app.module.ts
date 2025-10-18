@@ -8,9 +8,11 @@ import { MasterModule } from './modules/master/master.module';
 import { NfcsModule } from './modules/nfcs/nfcs.module';
 import { VisitsModule } from './modules/visits/visits.module';
 import { JwtAuthGuard } from './shared/core/guards/jwt-auth.guard';
+import { DashboardModule } from './modules/general/dashboard/dashboard.module';
 
 @Module({
   imports: [
+    DashboardModule,
     IamModule,
     DbModule,
     MasterModule,
