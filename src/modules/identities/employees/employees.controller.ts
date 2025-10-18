@@ -26,10 +26,13 @@ import { PageOptionsDto } from '@src/shared/paginations';
 import { CreateEmployeeCommand } from './commands/imp/create-employee.command';
 import { DeleteEmployeeCommand } from './commands/imp/delete-employee.command';
 import { UpdateEmployeeCommand } from './commands/imp/update-employee.command';
+import { BulkInsertEmployeeCommand } from './commands/imp/bulk-insert-employee.command';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
+import { BulkInsertEmployeeDto } from './dto/bulk-insert-employee.dto';
 import { EmployeeDto } from './dto/employee.dto';
 import { PageEmployeeDto } from './dto/page-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { BulkInsertResultDto } from './dto/bulk-insert-result.dto';
 import { GetEmployeeQuery } from './queries/imp/get-employee.query';
 import { GetEmployeesQuery } from './queries/imp/get-employees.query';
 
@@ -60,6 +63,30 @@ export class EmployeesController {
   ): Promise<ApiResponseDto<EmployeeDto>> {
     return this.commandBus.execute(
       new CreateEmployeeCommand(createEmployeeDto),
+    );
+  }
+
+  @Post('bulk-insert')
+  @ApiOperation({
+    summary: 'Bulk insert employees',
+    description: 'Bulk insert employees with excel file',
+  })
+  @ApiOkResponse({
+    description: 'Employees bulk inserted successfully',
+    type: BulkInsertResultDto,
+  })
+  @ApiCommonErrors()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: BulkInsertEmployeeDto,
+    description: 'Excel file for bulk employee insertion',
+  })
+  async bulkInsert(
+    @MultipartForm(BulkInsertEmployeeDto)
+    bulkInsertEmployeeDto: BulkInsertEmployeeDto,
+  ): Promise<ApiResponseDto<BulkInsertResultDto>> {
+    return this.commandBus.execute(
+      new BulkInsertEmployeeCommand(bulkInsertEmployeeDto),
     );
   }
 
