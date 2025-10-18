@@ -12,12 +12,14 @@ import { GetEmployeesHandler } from './queries/handlers/get-employees.handler';
 import { EmployeeImageService } from './services/employee-image.service';
 import { Company } from '@src/modules/master/companies/entities/company.entity';
 import { BulkInsertEmployeeHandler } from './commands/handlers/bulk-insert-employee.handler';
+import { ResetEmployeeViolationPointsHandler } from './commands/handlers/reset-employee-violation-points.handler';
 
 const commandHandlers = [
   CreateEmployeeHandler,
   UpdateEmployeeHandler,
   DeleteEmployeeHandler,
   BulkInsertEmployeeHandler,
+  ResetEmployeeViolationPointsHandler,
 ];
 
 const queryHandlers = [GetEmployeesHandler, GetEmployeeHandler];

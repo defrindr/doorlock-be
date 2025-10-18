@@ -23,16 +23,17 @@ import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-respon
 import { MultipartForm } from '@src/shared/core/decorators/multipart-form.decorator';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { PageOptionsDto } from '@src/shared/paginations';
+import { BulkInsertEmployeeCommand } from './commands/imp/bulk-insert-employee.command';
 import { CreateEmployeeCommand } from './commands/imp/create-employee.command';
 import { DeleteEmployeeCommand } from './commands/imp/delete-employee.command';
+import { ResetEmployeeViolationPointsCommand } from './commands/imp/reset-employee-violation-points.command';
 import { UpdateEmployeeCommand } from './commands/imp/update-employee.command';
-import { BulkInsertEmployeeCommand } from './commands/imp/bulk-insert-employee.command';
-import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { BulkInsertEmployeeDto } from './dto/bulk-insert-employee.dto';
+import { BulkInsertResultDto } from './dto/bulk-insert-result.dto';
+import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { EmployeeDto } from './dto/employee.dto';
 import { PageEmployeeDto } from './dto/page-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
-import { BulkInsertResultDto } from './dto/bulk-insert-result.dto';
 import { GetEmployeeQuery } from './queries/imp/get-employee.query';
 import { GetEmployeesQuery } from './queries/imp/get-employees.query';
 
@@ -141,6 +142,21 @@ export class EmployeesController {
     return this.commandBus.execute(
       new UpdateEmployeeCommand(id, updateEmployeeDto),
     );
+  }
+
+  @Post(':id/reset-point')
+  @ApiOperation({
+    summary: 'Reset employee violation points to zero',
+    description:
+      'Reset the violation points of a specific employee to zero. This action cannot be undone.',
+  })
+  @ApiSingleResponse(null, 'Employee violation points reset successfully', 200)
+  @ApiCommonErrors()
+  @HttpCode(200)
+  async resetViolationPoints(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ApiResponseDto<null>> {
+    return this.commandBus.execute(new ResetEmployeeViolationPointsCommand(id));
   }
 
   @Delete(':id')

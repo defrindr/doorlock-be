@@ -8,6 +8,7 @@ import { IdentitiesModule } from './modules/identities/identities.module';
 import { MasterModule } from './modules/master/master.module';
 import { NfcsModule } from './modules/nfcs/nfcs.module';
 import { VisitsModule } from './modules/visits/visits.module';
+import { ViolationsModule } from './modules/violations/violations.module';
 import { JwtAuthGuard } from './shared/core/guards/jwt-auth.guard';
 import { UserContextMiddleware } from './shared/storage/user-context.middleware';
 
@@ -21,6 +22,7 @@ import { UserContextMiddleware } from './shared/storage/user-context.middleware'
     VisitsModule,
     HistoriesModule,
     NfcsModule,
+    ViolationsModule,
   ],
   providers: [
     {
