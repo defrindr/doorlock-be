@@ -12,19 +12,25 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.decorator';
 import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-response.decorator';
+import { MultipartForm } from '@src/shared/core/decorators/multipart-form.decorator';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { PageOptionsDto } from '@src/shared/paginations';
 import { CreateVisitCommand } from './commands/imp/create-visit.command';
 import { DeleteVisitCommand } from './commands/imp/delete-visit.command';
+import { ImportVisitCommand } from './commands/imp/import-visit.command';
 import { SyncParticipantGatesCommand } from './commands/imp/sync-participant-gates.command';
 import { UpdateVisitCommand } from './commands/imp/update-visit.command';
 import { CreateVisitDto } from './dto/create-visit.dto';
+import { ImportVisitDto } from './dto/import-visit.dto';
+import { ImportVisitResultDto } from './dto/import-visit-result.dto';
 import { PageVisitDto } from './dto/page-visit.dto';
 import { SyncParticipantGatesDto } from './dto/sync-participant-gates.dto';
 import { UpdateVisitDto } from './dto/update-visit.dto';
@@ -54,6 +60,27 @@ export class VisitsController {
     @Body() createVisitDto: CreateVisitDto,
   ): Promise<ApiResponseDto<VisitActionResponseDto>> {
     return this.commandBus.execute(new CreateVisitCommand(createVisitDto));
+  }
+
+  @Post('import')
+  @ApiOperation({
+    summary: 'Import visits from Excel file',
+    description: 'Import visit data with participants from Excel file',
+  })
+  @ApiOkResponse({
+    description: 'Visits imported successfully',
+    type: ImportVisitResultDto,
+  })
+  @ApiCommonErrors()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: ImportVisitDto,
+    description: 'Excel file containing visit data to import',
+  })
+  async import(
+    @MultipartForm(ImportVisitDto) importVisitDto: ImportVisitDto,
+  ): Promise<ApiResponseDto<ImportVisitResultDto>> {
+    return this.commandBus.execute(new ImportVisitCommand(importVisitDto));
   }
 
   @Get()

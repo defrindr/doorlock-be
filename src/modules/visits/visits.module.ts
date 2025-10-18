@@ -3,6 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateVisitHandler } from './commands/handlers/create-visit.handler';
 import { DeleteVisitHandler } from './commands/handlers/delete-visit.handler';
+import { ImportVisitHandler } from './commands/handlers/import-visit.handler';
 import { UpdateVisitHandler } from './commands/handlers/update-visit.handler';
 import { Visit } from './entities/visit.entity';
 import { VisitsController } from './visits.controller';
@@ -16,6 +17,7 @@ const commandHandlers = [
   CreateVisitHandler,
   UpdateVisitHandler,
   DeleteVisitHandler,
+  ImportVisitHandler,
   SyncParticipantGatesHandler,
 ];
 
