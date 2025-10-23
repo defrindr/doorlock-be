@@ -35,7 +35,7 @@ export class CreateVisitDto {
     example: 'B9E1C8E0-5D57-4F35-A299-8B7C4325DA4D',
   })
   @IsUUID()
-  @IsOptional()
+  @IsNotEmpty()
   hostEmployeeId?: string;
 
   @ApiPropertyOptional({

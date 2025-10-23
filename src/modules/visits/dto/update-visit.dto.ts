@@ -32,7 +32,7 @@ export class UpdateVisitDto {
     example: '97DF423E-F36B-1410-88E6-00BD8D009321',
   })
   @IsUUID()
-  @IsOptional()
+  @IsNotEmpty()
   hostEmployeeId?: string;
 
   @ApiPropertyOptional({
