@@ -54,8 +54,12 @@ export class PrepareDataService {
         jabatan: employee.position || '-',
         status_kartu: 'Employee',
         poin: employee.violationPoints,
-        aktif_mulai: null,
-        aktif_selesai: null,
+        aktif_mulai: employee.hireDate
+          ? DateHelper.formatMachineDateTime(employee.hireDate)
+          : null,
+        aktif_selesai: employee.endDate
+          ? DateHelper.formatMachineDateTime(employee.endDate)
+          : null,
         access: accesses,
       };
     });
