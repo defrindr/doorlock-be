@@ -25,6 +25,7 @@ interface ExcelEmployeeData {
   Email?: string;
   Phone?: string;
   HireDate?: string;
+  EndDate?: string;
   ViolationPoint?: number;
   LocationID?: string;
   CompanyID?: string;
@@ -131,6 +132,7 @@ export class BulkInsertEmployeeHandler
       email,
       phone,
       hireDate,
+      endDate,
       violationPoint,
       locationID,
       companyID,
@@ -150,6 +152,7 @@ export class BulkInsertEmployeeHandler
       Email: email ? String(email).trim() : undefined,
       Phone: phone ? String(phone).trim() : undefined,
       HireDate: hireDate ? String(hireDate).trim() : undefined,
+      EndDate: endDate ? String(endDate).trim() : undefined,
       ViolationPoint: violationPoint ? Number(violationPoint) : 0,
       LocationID: locationID ? String(locationID).trim() : undefined,
       CompanyID: companyID ? String(companyID).trim() : undefined,
@@ -180,6 +183,14 @@ export class BulkInsertEmployeeHandler
         const parsedDate = this.parseDate(data.HireDate);
         if (parsedDate) {
           hireDate = parsedDate;
+        }
+      }
+      // Parse hire date
+      let endDate: Date | undefined = undefined;
+      if (data.EndDate) {
+        const parsedDate = this.parseDate(data.EndDate);
+        if (parsedDate) {
+          endDate = parsedDate;
         }
       }
 
@@ -224,6 +235,7 @@ export class BulkInsertEmployeeHandler
         email: data.Email,
         phone: data.Phone,
         hireDate: hireDate,
+        endDate: endDate,
         violationPoints: data.ViolationPoint || 0,
         locationId: data.LocationID,
         companyId: data.CompanyID,

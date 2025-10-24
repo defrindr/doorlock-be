@@ -39,7 +39,7 @@ export class ResetEmployeeViolationPointsHandler
 
     // Reset violation points to 0
     await this.employeeRepository.update(employeeId, {
-      violationPoints: 0,
+      violationPoints: 5,
     });
 
     return OkResponse(

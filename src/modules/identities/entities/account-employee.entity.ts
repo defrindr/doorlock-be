@@ -54,6 +54,9 @@ export class AccountEmployee {
   @Column({ type: 'date', nullable: true, name: 'hire_date' })
   hireDate: Date;
 
+  @Column({ type: 'date', nullable: true, name: 'end_date' })
+  endDate: Date;
+
   @Column({ type: 'uuid', nullable: true, name: 'supervisor_id' })
   supervisorId: string;
 

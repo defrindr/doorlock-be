@@ -79,6 +79,13 @@ export class EmployeeDto {
 
   @Expose()
   @ApiPropertyOptional({
+    description: 'End date',
+    example: '2020-01-15',
+  })
+  endDate?: Date;
+
+  @Expose()
+  @ApiPropertyOptional({
     description: 'Supervisor employee ID',
     example: '123e4567-e89b-12d3-a456-426614174000',
   })

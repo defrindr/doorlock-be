@@ -76,6 +76,15 @@ export class CreateEmployeeDto {
   hireDate?: Date;
 
   @ApiPropertyOptional({
+    description: 'Employee end date',
+    example: '2020-01-15',
+  })
+  @Type(() => Date)
+  @IsDate()
+  @IsOptional()
+  endDate?: Date;
+
+  @ApiPropertyOptional({
     description: 'Violation points (default: 10)',
     example: 10,
   })
