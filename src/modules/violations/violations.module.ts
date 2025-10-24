@@ -10,8 +10,13 @@ import { GetViolationHandler } from './queries/handlers/get-violation.handler';
 import { GetViolationsHandler } from './queries/handlers/get-violations.handler';
 import { ViolationsController } from './violations.controller';
 import { Account } from '../identities/entities/account.entity';
+import { MarkScannedViolationHandler } from './commands/handlers/mark-scanned.handler';
 
-const commandHandlers = [CreateViolationHandler, DeleteViolationHandler];
+const commandHandlers = [
+  CreateViolationHandler,
+  DeleteViolationHandler,
+  MarkScannedViolationHandler,
+];
 
 const queryHandlers = [GetViolationHandler, GetViolationsHandler];
 

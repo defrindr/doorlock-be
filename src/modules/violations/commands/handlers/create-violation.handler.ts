@@ -46,7 +46,7 @@ export class CreateViolationHandler
     }
 
     const pointBefore = accountEmployee.violationPoints || 0;
-    const pointAfter = pointBefore + createViolationDto.pointMinus;
+    const pointAfter = pointBefore - createViolationDto.pointMinus;
 
     const violation = this.violationRepository.create({
       employeeId: accountEmployee.id,

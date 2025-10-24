@@ -21,6 +21,7 @@ import { PageViolationDto } from './dto/page-violation.dto';
 import { ViolationDto } from './dto/violation.dto';
 import { GetViolationQuery } from './queries/imp/get-violation.query';
 import { GetViolationsQuery } from './queries/imp/get-violations.query';
+import { MarkScannedViolationCommand } from './commands/imp/mark-scanned-violation.command';
 
 @Controller('violations')
 @ApiTags('Violations')
@@ -73,6 +74,21 @@ export class ViolationsController {
   @PermissionAccess()
   async findOne(@Param('id') id: string): Promise<ViolationDto> {
     return this.queryBus.execute(new GetViolationQuery(id));
+  }
+
+  @Get(':id/scanned')
+  @ApiOperation({
+    summary: 'Mark violation scanned by ID',
+    description: '',
+  })
+  @ApiOkResponse({
+    description: 'Violation mark scanned successfully',
+    type: ViolationDto,
+  })
+  @ApiCommonErrors()
+  @PermissionAccess()
+  async markScanned(@Param('id') id: string): Promise<ViolationDto> {
+    return this.commandBus.execute(new MarkScannedViolationCommand(id));
   }
 
   @Delete(':id')

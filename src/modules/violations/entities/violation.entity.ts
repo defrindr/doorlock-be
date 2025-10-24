@@ -43,6 +43,13 @@ export class Violation {
   })
   createdAt: Date;
 
+  @CreateDateColumn({
+    name: 'scannedAt',
+    type: 'datetime2',
+    default: () => null,
+  })
+  scannedAt?: Date | null;
+
   // Relations
   @ManyToOne(() => AccountEmployee, { eager: false })
   @JoinColumn({ name: 'employee_id' })
