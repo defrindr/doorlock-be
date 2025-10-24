@@ -15,9 +15,19 @@ export class AlterViolationTable1759683217011 implements MigrationInterface {
         isNullable: true, // or false, depending on your need
       }),
     );
+
+    await queryRunner.addColumn(
+      'account_employees',
+      new TableColumn({
+        name: 'end_date',
+        type: 'date',
+        isNullable: true,
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<any> {
+    await queryRunner.dropColumn('account_employees', 'end_date');
     await queryRunner.dropColumn('violations', 'scannedAt');
   }
 }
