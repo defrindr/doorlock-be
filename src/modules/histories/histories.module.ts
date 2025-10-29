@@ -11,10 +11,15 @@ import { Gate } from '../master/gates/entities/gate.entity';
 import { AccountGuest } from '../identities/entities/account-guest.entity';
 import { AccountEmployee } from '../identities/entities/account-employee.entity';
 import { AccountIntern } from '../identities/entities/account-intern.entity';
+import { GetLatestHistoriesHandler } from './queries/handlers/get-latest-histories.handler';
 
 const commandHandlers = [SyncHistoryHandler];
 
-const queryHandlers = [GetHistoriesHandler, ExportHistoriesHandler];
+const queryHandlers = [
+  GetHistoriesHandler,
+  ExportHistoriesHandler,
+  GetLatestHistoriesHandler,
+];
 
 @Module({
   imports: [

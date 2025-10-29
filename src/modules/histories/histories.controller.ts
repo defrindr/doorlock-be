@@ -18,6 +18,7 @@ import { SyncHistoryDto } from './dto/sync-history.dto';
 import { GetHistoriesQuery } from './queries/imp/get-histories.query';
 import { ExportHistoriesQuery } from './queries/imp/export-histories.query';
 import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
+import { GetLatestHistoriesQuery } from './queries/imp/get-latest-histories.query';
 
 @Controller('histories')
 @ApiTags('Histories')
@@ -59,6 +60,21 @@ export class HistoriesController {
     },
   ): Promise<PageHistoryDto> {
     return this.queryBus.execute(new GetHistoriesQuery(pageOptionsDto));
+  }
+
+  @Get('/latest')
+  @ApiOperation({
+    summary: 'Get 50 latest histories for realtime access',
+    description: '',
+  })
+  @ApiOkResponse({
+    description: 'Histories retrieved successfully',
+    type: PageHistoryDto,
+  })
+  @ApiCommonErrors()
+  @PermissionAccess()
+  async findLatestHistory(): Promise<PageHistoryDto> {
+    return this.queryBus.execute(new GetLatestHistoriesQuery());
   }
 
   @Get('export')
