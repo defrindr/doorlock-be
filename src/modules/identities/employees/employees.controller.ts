@@ -8,10 +8,10 @@ import {
   Patch,
   Post,
   Query,
+  Res,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
-  ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiOkResponse,
@@ -21,8 +21,10 @@ import {
 import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.decorator';
 import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-response.decorator';
 import { MultipartForm } from '@src/shared/core/decorators/multipart-form.decorator';
+import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { PageOptionsDto } from '@src/shared/paginations';
+import { FastifyReply } from 'fastify';
 import { BulkInsertEmployeeCommand } from './commands/imp/bulk-insert-employee.command';
 import { CreateEmployeeCommand } from './commands/imp/create-employee.command';
 import { DeleteEmployeeCommand } from './commands/imp/delete-employee.command';
@@ -36,14 +38,15 @@ import { PageEmployeeDto } from './dto/page-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { GetEmployeeQuery } from './queries/imp/get-employee.query';
 import { GetEmployeesQuery } from './queries/imp/get-employees.query';
+import { EmployeeExcelTemplateService } from './services/employee-excel-template.service';
 
 @Controller('identities/employees')
 @ApiTags('Employees')
-@ApiBearerAuth()
 export class EmployeesController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
+    private readonly employeeExcelTemplateService: EmployeeExcelTemplateService,
   ) {}
 
   @Post()
@@ -59,6 +62,7 @@ export class EmployeesController {
     type: CreateEmployeeDto,
     description: 'Employee creation data with photo upload',
   })
+  @PermissionAccess()
   async create(
     @MultipartForm(CreateEmployeeDto) createEmployeeDto: CreateEmployeeDto,
   ): Promise<ApiResponseDto<EmployeeDto>> {
@@ -82,6 +86,7 @@ export class EmployeesController {
     type: BulkInsertEmployeeDto,
     description: 'Excel file for bulk employee insertion',
   })
+  @PermissionAccess()
   async bulkInsert(
     @MultipartForm(BulkInsertEmployeeDto)
     bulkInsertEmployeeDto: BulkInsertEmployeeDto,
@@ -102,6 +107,7 @@ export class EmployeesController {
     type: PageEmployeeDto,
   })
   @ApiCommonErrors()
+  @PermissionAccess()
   async findAll(
     @Query() pageOptionsDto: PageOptionsDto,
   ): Promise<ApiResponseDto<PageEmployeeDto>> {
@@ -116,6 +122,7 @@ export class EmployeesController {
   })
   @ApiSingleResponse(EmployeeDto, 'Employee retrieved successfully')
   @ApiCommonErrors()
+  @PermissionAccess()
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ApiResponseDto<EmployeeDto>> {
@@ -135,6 +142,7 @@ export class EmployeesController {
     type: UpdateEmployeeDto,
     description: 'Employee update data with optional photo upload',
   })
+  @PermissionAccess()
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @MultipartForm(UpdateEmployeeDto) updateEmployeeDto: UpdateEmployeeDto,
@@ -153,6 +161,7 @@ export class EmployeesController {
   @ApiSingleResponse(null, 'Employee violation points reset successfully', 200)
   @ApiCommonErrors()
   @HttpCode(200)
+  @PermissionAccess()
   async resetViolationPoints(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ApiResponseDto<null>> {
@@ -170,9 +179,39 @@ export class EmployeesController {
     description: 'Employee deleted successfully',
   })
   @ApiCommonErrors()
+  @PermissionAccess()
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ApiResponseDto<null>> {
     return this.commandBus.execute(new DeleteEmployeeCommand(id));
+  }
+
+  @Get('template/download')
+  @ApiOperation({
+    summary: 'Download employee Excel template',
+    description:
+      'Download an Excel template file for bulk employee import with sample data and validation rules.',
+  })
+  @ApiOkResponse({
+    description: 'Excel template file downloaded successfully',
+    content: {
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {},
+    },
+  })
+  @ApiCommonErrors()
+  async downloadTemplate(@Res() res: FastifyReply): Promise<void> {
+    const buffer = await this.employeeExcelTemplateService.generateTemplate();
+
+    res.header(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.header(
+      'Content-Disposition',
+      'attachment; filename="employee-template.xlsx"',
+    );
+    res.header('Content-Length', buffer.length.toString());
+
+    res.send(buffer);
   }
 }

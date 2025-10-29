@@ -16,6 +16,8 @@ import { EmployeeDto } from '../../dto/employee.dto';
 import { EmployeeImageService } from '../../services/employee-image.service';
 import { BulkInsertEmployeeCommand } from '../imp/bulk-insert-employee.command';
 import { Gate } from '@src/modules/master/gates/entities/gate.entity';
+import { Company } from '@src/modules/master/companies/entities/company.entity';
+import { Location } from '@src/modules/master/locations/entities/location.entity';
 
 interface ExcelEmployeeData {
   EmployeeNumber: string;
@@ -224,7 +226,19 @@ export class BulkInsertEmployeeHandler
         status: 1, // Active by default
       });
 
-      const savedAccount = await manager.save(Account, account);
+      const [savedAccount, company, location] = await Promise.all([
+        manager.save(Account, account),
+        manager.findOne(Company, {
+          where: { name: data.CompanyID },
+        }),
+        manager.findOne(Location, {
+          where: { name: data.LocationID },
+        }),
+      ]);
+
+      if (!company || !location) {
+        throw new Error('Company / Location doesnt exist in our database');
+      }
 
       // Create Employee
       const employee = manager.create(AccountEmployee, {
@@ -237,8 +251,8 @@ export class BulkInsertEmployeeHandler
         hireDate: hireDate,
         endDate: endDate,
         violationPoints: data.ViolationPoint || 0,
-        locationId: data.LocationID,
-        companyId: data.CompanyID,
+        locationId: location.id,
+        companyId: company.id,
         certification: JSON.stringify(certifications),
         accountId: savedAccount.id,
       });

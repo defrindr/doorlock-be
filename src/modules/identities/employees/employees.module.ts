@@ -10,7 +10,10 @@ import { EmployeesController } from './employees.controller';
 import { GetEmployeeHandler } from './queries/handlers/get-employee.handler';
 import { GetEmployeesHandler } from './queries/handlers/get-employees.handler';
 import { EmployeeImageService } from './services/employee-image.service';
+import { EmployeeExcelTemplateService } from './services/employee-excel-template.service';
 import { Company } from '@src/modules/master/companies/entities/company.entity';
+import { Location } from '@src/modules/master/locations/entities/location.entity';
+import { Gate } from '@src/modules/master/gates/entities/gate.entity';
 import { BulkInsertEmployeeHandler } from './commands/handlers/bulk-insert-employee.handler';
 import { ResetEmployeeViolationPointsHandler } from './commands/handlers/reset-employee-violation-points.handler';
 
@@ -26,10 +29,21 @@ const queryHandlers = [GetEmployeesHandler, GetEmployeeHandler];
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Account, Company, AccountEmployee]),
+    TypeOrmModule.forFeature([
+      Account,
+      Company,
+      Location,
+      Gate,
+      AccountEmployee,
+    ]),
     CqrsModule,
   ],
   controllers: [EmployeesController],
-  providers: [...commandHandlers, ...queryHandlers, EmployeeImageService],
+  providers: [
+    ...commandHandlers,
+    ...queryHandlers,
+    EmployeeImageService,
+    EmployeeExcelTemplateService,
+  ],
 })
 export class EmployeesModule {}
