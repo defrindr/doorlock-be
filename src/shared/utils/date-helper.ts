@@ -35,8 +35,12 @@ export class DateHelper {
     return date.getTime();
   }
 
-  static formatMachineDateTime(date: Date) {
+  static formatMachineDateTime(date: Date | null) {
     const pad = (num: number) => String(num).padStart(2, '0');
+
+    if (!date || date instanceof Date === false) {
+      return null;
+    }
 
     // Convert to UTC+7 (WIB - Western Indonesian Time)
     const utcTime = date.getTime() + date.getTimezoneOffset() * 60000; // Convert to UTC

@@ -55,10 +55,14 @@ export class PrepareDataService {
         status_kartu: 'Employee',
         poin: employee.violationPoints,
         aktif_mulai: employee.hireDate
-          ? DateHelper.formatMachineDateTime(employee.hireDate)
+          ? DateHelper.formatMachineDateTime(
+              employee.hireDate ? new Date(employee.hireDate) : null,
+            )
           : null,
         aktif_selesai: employee.endDate
-          ? DateHelper.formatMachineDateTime(employee.endDate)
+          ? DateHelper.formatMachineDateTime(
+              employee.endDate ? new Date(employee.endDate) : null,
+            )
           : null,
         access: accesses,
       };
