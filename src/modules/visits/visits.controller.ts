@@ -38,6 +38,7 @@ import { VisitActionResponseDto } from './dto/visit-action-response.dto';
 import { VisitDto } from './dto/visit.dto';
 import { GetVisitQuery } from './queries/imp/get-visit.query';
 import { GetVisitsQuery } from './queries/imp/get-visits.query';
+import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
 
 @Controller('visits')
 @ApiTags('Visits')
@@ -56,6 +57,7 @@ export class VisitsController {
   })
   @ApiSingleResponse(VisitActionResponseDto, 'Visit created successfully', 201)
   @ApiCommonErrors()
+  @PermissionAccess('visits:manage')
   async create(
     @Body() createVisitDto: CreateVisitDto,
   ): Promise<ApiResponseDto<VisitActionResponseDto>> {
@@ -73,6 +75,7 @@ export class VisitsController {
   })
   @ApiCommonErrors()
   @ApiConsumes('multipart/form-data')
+  @PermissionAccess('visits:manage')
   @ApiBody({
     type: ImportVisitDto,
     description: 'Excel file containing visit data to import',
@@ -122,6 +125,7 @@ export class VisitsController {
   })
   @ApiSingleResponse(VisitActionResponseDto, 'Visit updated successfully')
   @ApiCommonErrors()
+  @PermissionAccess('visits:manage')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateVisitDto: UpdateVisitDto,
@@ -139,6 +143,7 @@ export class VisitsController {
     description: 'Visit deleted successfully',
     type: ApiResponseDto,
   })
+  @PermissionAccess('visits:manage')
   @ApiCommonErrors()
   async remove(
     @Param('id', ParseUUIDPipe) id: string,

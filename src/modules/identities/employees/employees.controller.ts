@@ -62,7 +62,7 @@ export class EmployeesController {
     type: CreateEmployeeDto,
     description: 'Employee creation data with photo upload',
   })
-  @PermissionAccess()
+  @PermissionAccess('identity:manage')
   async create(
     @MultipartForm(CreateEmployeeDto) createEmployeeDto: CreateEmployeeDto,
   ): Promise<ApiResponseDto<EmployeeDto>> {
@@ -86,7 +86,7 @@ export class EmployeesController {
     type: BulkInsertEmployeeDto,
     description: 'Excel file for bulk employee insertion',
   })
-  @PermissionAccess()
+  @PermissionAccess('identity:manage')
   async bulkInsert(
     @MultipartForm(BulkInsertEmployeeDto)
     bulkInsertEmployeeDto: BulkInsertEmployeeDto,
@@ -142,7 +142,7 @@ export class EmployeesController {
     type: UpdateEmployeeDto,
     description: 'Employee update data with optional photo upload',
   })
-  @PermissionAccess()
+  @PermissionAccess('identity:manage')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @MultipartForm(UpdateEmployeeDto) updateEmployeeDto: UpdateEmployeeDto,
@@ -161,7 +161,7 @@ export class EmployeesController {
   @ApiSingleResponse(null, 'Employee violation points reset successfully', 200)
   @ApiCommonErrors()
   @HttpCode(200)
-  @PermissionAccess()
+  @PermissionAccess('identity:manage')
   async resetViolationPoints(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ApiResponseDto<null>> {
@@ -179,7 +179,7 @@ export class EmployeesController {
     description: 'Employee deleted successfully',
   })
   @ApiCommonErrors()
-  @PermissionAccess()
+  @PermissionAccess('identity:manage')
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ApiResponseDto<null>> {

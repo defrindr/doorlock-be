@@ -29,6 +29,7 @@ import { PageLocationDto } from './dto/page-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
 import { GetLocationQuery } from './queries/imp/get-location.query';
 import { GetLocationsQuery } from './queries/imp/get-locations.query';
+import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
 
 @ApiTags('Locations')
 @Controller({
@@ -50,6 +51,7 @@ export class LocationsController {
   })
   @ApiSingleResponse(LocationDto, 'Location created successfully', 201)
   @ApiCommonErrors()
+  @PermissionAccess('master:manage')
   async create(
     @Body() createLocationDto: CreateLocationDto,
   ): Promise<ApiResponseDto<LocationDto>> {
@@ -95,6 +97,7 @@ export class LocationsController {
   })
   @ApiSingleResponse(LocationDto, 'Location updated successfully', 200)
   @ApiCommonErrors()
+  @PermissionAccess('master:manage')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateLocationDto: UpdateLocationDto,
@@ -115,6 +118,7 @@ export class LocationsController {
     type: ApiResponseDto,
   })
   @ApiCommonErrors()
+  @PermissionAccess('master:manage')
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ApiResponseDto<boolean>> {

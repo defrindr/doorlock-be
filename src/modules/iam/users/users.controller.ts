@@ -30,6 +30,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { GetUserQuery } from './queries/imp/get-user.query';
 import { GetUsersQuery } from './queries/imp/get-users.query';
+import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
 
 @ApiTags('Users')
 @Controller('iam/users')
@@ -48,6 +49,7 @@ export class UsersController {
   })
   @ApiSingleResponse(UserDto, 'User created successfully', 201)
   @ApiCommonErrors()
+  @PermissionAccess('users:manage')
   create(@Body() createUserDto: CreateUserDto) {
     return this.commandBus.execute(new CreateUserCommand(createUserDto));
   }
@@ -85,6 +87,7 @@ export class UsersController {
   })
   @ApiSingleResponse(UserDto, 'User updated successfully', 200)
   @ApiCommonErrors()
+  @PermissionAccess('users:manage')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.commandBus.execute(new UpdateUserCommand(id, updateUserDto));
   }
@@ -100,6 +103,7 @@ export class UsersController {
     type: ApiResponseDto,
   })
   @ApiCommonErrors()
+  @PermissionAccess('users:manage')
   remove(@Param('id') id: string) {
     return this.commandBus.execute(new DeleteUserCommand(id));
   }

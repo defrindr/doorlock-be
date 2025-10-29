@@ -35,6 +35,7 @@ export class ViolationsController {
   @ApiOperation({ summary: 'Create a new violation', description: '' })
   @ApiSingleResponse(ViolationDto, 'Violation created successfully', 201)
   @ApiCommonErrors()
+  @PermissionAccess('violation:manage')
   async create(
     @Body() createViolationDto: CreateViolationDto,
   ): Promise<ApiResponseDto<ViolationDto>> {
@@ -94,7 +95,7 @@ export class ViolationsController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete violation by ID', description: '' })
   @ApiSingleResponse(null, 'Violation deleted successfully', 200)
-  @ApiCommonErrors()
+  @PermissionAccess('violation:manage')
   async remove(@Param('id') id: string): Promise<ApiResponseDto<null>> {
     await this.commandBus.execute(new DeleteViolationCommand(id));
     return new ApiResponseDto(200, 'Violation deleted successfully', null);

@@ -40,19 +40,24 @@ export class RefreshTokenHandler extends BaseHandler<
       authContext.permissions,
     );
 
-    return this._formatResponse(user, token);
+    return this._formatResponse(user, token, authContext.permissions);
   }
 
   private _formatResponse(
     user: User,
     token: string,
+    permissions: string[] = [],
   ): ApiResponseDto<LoginResponseDto> {
     const decodedToken = this.jwtService.decode(token) as { exp: number };
     const expiredAt = decodedToken.exp * 1000;
 
-    const userDto = plainToInstance(UserDto, user, {
-      excludeExtraneousValues: true,
-    });
+    const userDto = plainToInstance(
+      UserDto,
+      { ...user, permissions },
+      {
+        excludeExtraneousValues: true,
+      },
+    );
 
     return OkResponse<any>(
       {

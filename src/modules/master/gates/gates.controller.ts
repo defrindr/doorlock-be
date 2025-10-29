@@ -61,7 +61,7 @@ export class GatesController {
   })
   @ApiSingleResponse(GateDto, 'Portable Gates retrieved successfully', 200)
   @ApiCommonErrors()
-  @PermissionAccess()
+  @PermissionAccess('master:manage')
   async findPortableGates(
     @Query() pageOptionsDto: PageOptionsDto,
   ): Promise<ApiResponseDto<PageGateDto>> {
@@ -109,7 +109,7 @@ export class GatesController {
   })
   @ApiSingleResponse(GateDto, 'Gate updated successfully', 200)
   @ApiCommonErrors()
-  @PermissionAccess()
+  @PermissionAccess('master:manage')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateGateDto: UpdateGateDto,
@@ -129,7 +129,7 @@ export class GatesController {
     type: ApiResponseDto,
   })
   @ApiCommonErrors()
-  @PermissionAccess()
+  @PermissionAccess('master:manage')
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ApiResponseDto<null>> {

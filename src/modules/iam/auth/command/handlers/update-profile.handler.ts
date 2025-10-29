@@ -11,6 +11,7 @@ import { UpdateProfileCommand } from '../imp/update-profile.command';
 import { ForbiddenHttpException } from '@src/shared/core/exceptions/exception';
 import { Injectable } from '@nestjs/common';
 import { UserDto } from '@src/modules/iam/users/dto/user.dto';
+import { AuthService } from '../../auth.service';
 
 @CommandHandler(UpdateProfileCommand)
 @Injectable()
@@ -21,6 +22,7 @@ export class UpdateProfileHandler extends BaseHandler<
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly authService: AuthService,
   ) {
     super();
   }
@@ -35,7 +37,7 @@ export class UpdateProfileHandler extends BaseHandler<
       throw new ForbiddenHttpException('Unauthed user');
     }
 
-    const success = await this.userRepository.update(
+    await this.userRepository.update(
       { id: currentAuth.sub },
       {
         username,
@@ -44,16 +46,22 @@ export class UpdateProfileHandler extends BaseHandler<
       },
     );
 
-    console.log(success);
-
     const user = await this.userRepository.findOne({
       where: { id: currentAuth.sub },
       relations: ['role'],
     });
+    if (!user) {
+      throw new ForbiddenHttpException('Unauthed user');
+    }
+    const authContext = await this.authService.getAuthorizationContext(user!);
 
-    const userDto = plainToInstance(UserDto, user, {
-      excludeExtraneousValues: true,
-    });
+    const userDto = plainToInstance(
+      UserDto,
+      { ...user, permissions: authContext.permissions },
+      {
+        excludeExtraneousValues: true,
+      },
+    );
 
     return OkResponse(userDto, 'Update profile successfully');
   }

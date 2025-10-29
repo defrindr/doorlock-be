@@ -32,6 +32,7 @@ import { UpdateGuestDto } from './dto/update-guest.dto';
 import { GetGuestQuery } from './queries/imp/get-guest.query';
 import { GetGuestsByCompanyQuery } from './queries/imp/get-guests-by-company.query';
 import { GetGuestsQuery } from './queries/imp/get-guests.query';
+import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
 
 @Controller('identities/guests')
 @ApiTags('Guests')
@@ -55,6 +56,7 @@ export class GuestsController {
     type: CreateGuestDto,
     description: 'Guest creation data with photo upload',
   })
+  @PermissionAccess('identity:manage')
   async create(
     @MultipartForm(CreateGuestDto) createGuestDto: CreateGuestDto,
   ): Promise<ApiResponseDto<GuestDto>> {
@@ -126,6 +128,7 @@ export class GuestsController {
   })
   @HttpCode(200)
   @ApiConsumes('multipart/form-data')
+  @PermissionAccess('identity:manage')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @MultipartForm(UpdateGuestDto) updateGuestDto: UpdateGuestDto,
@@ -144,6 +147,7 @@ export class GuestsController {
     type: ApiResponseDto,
   })
   @ApiCommonErrors()
+  @PermissionAccess('identity:manage')
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ApiResponseDto<null>> {

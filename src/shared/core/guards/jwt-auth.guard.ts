@@ -55,18 +55,19 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return super.canActivate(context);
   }
 
-  handleRequest(err: any, user: any, _info: any) {
+  handleRequest(err: any, user: any, _info: any, context?: ExecutionContext) {
     if (err || !user) {
       throw err || new UnauthorizedException();
     }
 
-    const requiredPermissions = user?.request?._requiredPermissions;
+    const request = (context as any)?.switchToHttp?.()?.getRequest?.();
+    const requiredPermissions = request?._requiredPermissions || [];
     if (
       requiredPermissions?.length &&
       !requiredPermissions.every((p: any) => user.permissions.includes(p))
     ) {
       throw new ForbiddenException(
-        `Forbidden to access ${requiredPermissions.join(', ')} resource`,
+        `Forbidden access: you dont have ${requiredPermissions.join(', ')} permission(s)`,
       );
     }
 

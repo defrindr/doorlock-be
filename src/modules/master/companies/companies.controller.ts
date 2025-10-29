@@ -29,6 +29,7 @@ import { PageCompanyDto } from './dto/page-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { GetCompanyQuery } from './queries/imp/get-company.query';
 import { GetCompaniesQuery } from './queries/imp/get-companies.query';
+import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
 
 @Controller('master/companies')
 @ApiTags('Companies')
@@ -47,6 +48,7 @@ export class CompaniesController {
   })
   @ApiSingleResponse(CompanyDto, 'Company created successfully', 201)
   @ApiCommonErrors()
+  @PermissionAccess('master:manage')
   async create(
     @Body() createCompanyDto: CreateCompanyDto,
   ): Promise<ApiResponseDto<CompanyDto>> {
@@ -92,6 +94,7 @@ export class CompaniesController {
   })
   @ApiSingleResponse(CompanyDto, 'Company updated successfully')
   @ApiCommonErrors()
+  @PermissionAccess('master:manage')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateCompanyDto: UpdateCompanyDto,
@@ -112,6 +115,7 @@ export class CompaniesController {
     description: 'Company deleted successfully',
     type: ApiResponseDto,
   })
+  @PermissionAccess('master:manage')
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ApiResponseDto<null>> {

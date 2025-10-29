@@ -30,6 +30,7 @@ import { ResponsePermissionDto } from './dto/response-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { GetPermissionQuery } from './queries/imp/get-permission.query';
 import { GetPermissionsQuery } from './queries/imp/get-permissions.query';
+import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
 
 @ApiTags('Permissions')
 @Controller('iam/permissions')
@@ -52,6 +53,7 @@ export class PermissionController {
     201,
   )
   @ApiCommonErrors()
+  @PermissionAccess('permissions:manage')
   create(@Body() payload: CreatePermissionDto) {
     return this.commandBus.execute(new CreatePermissionCommand(payload));
   }
@@ -89,6 +91,7 @@ export class PermissionController {
   @ApiSingleResponse(ResponsePermissionDto, 'Permission updated successfully')
   @ApiCommonErrors()
   @ApiBody({ type: UpdatePermissionDto })
+  @PermissionAccess('permissions:manage')
   update(
     @Param('id') id: string,
     @Body() updatePermissionDto: UpdatePermissionDto,
@@ -109,6 +112,7 @@ export class PermissionController {
     type: ApiResponseDto,
   })
   @ApiCommonErrors()
+  @PermissionAccess('permissions:manage')
   remove(@Param('id') id: string) {
     return this.commandBus.execute(new DeletePermissionCommand(id));
   }

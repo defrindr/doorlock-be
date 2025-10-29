@@ -36,6 +36,10 @@ export class UserDto {
   @Type(() => UserRoleDto)
   public role?: UserRoleDto;
 
+  @ApiPropertyOptional()
+  @Expose()
+  public permissions?: string[];
+
   @ApiProperty()
   @Expose()
   public status: 'active' | 'inactive';

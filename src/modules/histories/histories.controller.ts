@@ -72,7 +72,7 @@ export class HistoriesController {
     type: PageHistoryDto,
   })
   @ApiCommonErrors()
-  @PermissionAccess()
+  @PermissionAccess('history:manage')
   async findLatestHistory(): Promise<PageHistoryDto> {
     return this.queryBus.execute(new GetLatestHistoriesQuery());
   }
@@ -91,7 +91,7 @@ export class HistoriesController {
     },
   })
   @ApiCommonErrors()
-  @PermissionAccess()
+  @PermissionAccess('history:manage')
   async exportHistories(
     @Query()
     pageOptionsDto: PageOptionsDto & {

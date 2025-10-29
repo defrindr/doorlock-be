@@ -31,6 +31,7 @@ import { RoleDto } from './dto/role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { GetRoleQuery } from './queries/imp/get-role.query';
 import { GetRolesQuery } from './queries/imp/get-roles.query';
+import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
 
 @ApiTags('Roles')
 @Controller('iam/roles')
@@ -49,6 +50,7 @@ export class RoleController {
   })
   @ApiSingleResponse(RoleDto, 'Permission created successfully', 201)
   @ApiCommonErrors()
+  @PermissionAccess('roles:manage')
   create(@Body() createRoleDto: CreateRoleDto) {
     return this.commandBus.execute(new CreateRoleCommand(createRoleDto));
   }
@@ -88,6 +90,7 @@ export class RoleController {
   })
   @ApiSingleResponse(RoleDto, 'Permission updated successfully', 200)
   @ApiCommonErrors()
+  @PermissionAccess('roles:manage')
   update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
     return this.commandBus.execute(new UpdateRoleCommand(id, updateRoleDto));
   }
@@ -103,6 +106,7 @@ export class RoleController {
     type: ApiResponseDto,
   })
   @ApiCommonErrors()
+  @PermissionAccess('roles:manage')
   remove(@Param('id') id: string) {
     return this.commandBus.execute(new DeleteRoleCommand(id));
   }

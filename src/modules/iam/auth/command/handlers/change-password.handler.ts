@@ -65,10 +65,15 @@ export class ChangePasswordHandler extends BaseHandler<
         password: hashedPassword,
       },
     );
+    const authContext = await this.authService.getAuthorizationContext(user!);
 
-    const userDto = plainToInstance(UserDto, user, {
-      excludeExtraneousValues: true,
-    });
+    const userDto = plainToInstance(
+      UserDto,
+      { ...user, permissions: authContext.permissions },
+      {
+        excludeExtraneousValues: true,
+      },
+    );
 
     return OkResponse(userDto, 'Change Password successfully');
   }
