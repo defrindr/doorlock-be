@@ -14,7 +14,7 @@ export class BadRequestHttpException extends ApiException {
 }
 
 export class ForbiddenHttpException extends ApiException {
-  constructor(message = 'Akses ditolak') {
+  constructor(message = 'Access Denied') {
     super(message, HttpStatus.FORBIDDEN);
   }
 }

@@ -30,7 +30,6 @@ export class GetHistoriesHandler
 
     let queryBuilder = this.historyRepository.createQueryBuilder('history');
 
-    console.log('timestamp', timestamp);
     if (timestamp) {
       queryBuilder.andWhere('history.timestamp BETWEEN :start AND :end', {
         start: timestamp.start,

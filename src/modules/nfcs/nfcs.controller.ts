@@ -32,7 +32,6 @@ Returns the NFC payload wrapped in the standard API response format.`,
     @Param('visitId') visitId: string,
     @Param('guestId') guestId: string,
   ): Promise<ApiResponseDto<NfcDto>> {
-    console.log(visitId, guestId);
     return this.queryBus.execute(
       new GetNfcQuery('visitor', { visitId, guestId }),
     );

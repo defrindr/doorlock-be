@@ -66,6 +66,7 @@ export function applyPaginationFilters<T extends ObjectLiteral>(
   }
 
   // --- Column-specific filters ---
+  console.log('pageOptions.filter', pageOptions);
   if (pageOptions.filter) {
     Object.entries(pageOptions.filter).forEach(([key, value]) => {
       if (allowedFilter.includes(key)) {

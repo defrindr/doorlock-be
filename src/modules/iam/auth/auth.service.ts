@@ -118,8 +118,6 @@ export class AuthService {
       throw new BadRequestHttpException('User doesnt exist in our system');
     }
 
-    console.log(user);
-
     return user;
   }
 }
