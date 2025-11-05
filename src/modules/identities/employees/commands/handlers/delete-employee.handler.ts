@@ -10,6 +10,7 @@ import { NotFoundHttpException } from '@src/shared/core/exceptions/exception';
 import { AccountEmployee } from '@src/modules/identities/entities/account-employee.entity';
 import { Account } from '@src/modules/identities/entities/account.entity';
 import { DeleteEmployeeCommand } from '../imp/delete-employee.command';
+import { GateOccupant } from '@src/modules/histories/entities/gate-occupant.entity';
 
 @CommandHandler(DeleteEmployeeCommand)
 export class DeleteEmployeeHandler
@@ -21,6 +22,8 @@ export class DeleteEmployeeHandler
     private readonly employeeRepository: Repository<AccountEmployee>,
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
+    @InjectRepository(GateOccupant)
+    private readonly gateOccupantRepository: Repository<GateOccupant>,
   ) {
     super();
   }
@@ -36,6 +39,13 @@ export class DeleteEmployeeHandler
 
     if (!employee) {
       throw new NotFoundHttpException('Employee not found');
+    }
+
+    // Clean up gate occupants for this employee
+    if (employee.accountId) {
+      await this.gateOccupantRepository.delete({
+        accountId: employee.accountId,
+      });
     }
 
     // Soft delete employee (cascade will handle account deletion)

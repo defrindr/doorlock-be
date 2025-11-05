@@ -6,12 +6,13 @@ import { BaseHandler } from '@src/shared/core/handlers/base.handler';
 import { OkResponse } from '@src/shared/core/handlers/response.handler';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 
+import { History } from '@src/modules/histories/entities/history.entity';
+import { GateOccupant } from '@src/modules/histories/entities/gate-occupant.entity';
 import { AccountEmployee } from '@src/modules/identities/entities/account-employee.entity';
 import { Gate } from '@src/modules/master/gates/entities/gate.entity';
 import { plainToInstance } from 'class-transformer';
 import { DashboardDto } from '../../dto/dashboard.dto';
 import { GetDashboardQuery } from '../imp/get-dashboard.query';
-import { History } from '@src/modules/histories/entities/history.entity';
 
 @QueryHandler(GetDashboardQuery)
 export class GetDashboardHandler
@@ -25,19 +26,28 @@ export class GetDashboardHandler
     private readonly gateRepository: Repository<Gate>,
     @InjectRepository(History)
     private readonly historyRepository: Repository<History>,
+    @InjectRepository(GateOccupant)
+    private readonly gateOccupantRepository: Repository<GateOccupant>,
   ) {
     super();
   }
 
   async handle(): Promise<ApiResponseDto<DashboardDto>> {
-    const [employeeCount, gateCount, tapInSuccess, tapInFailed, tapInList] =
-      await Promise.all([
-        this.fetchEmployeeCount(),
-        this.fetchGateCount(),
-        this.fetchTotalTransactionToday('success'),
-        this.fetchTotalTransactionToday('denied'),
-        this.fetchLatestHistories(),
-      ]);
+    const [
+      employeeCount,
+      gateCount,
+      tapInSuccess,
+      tapInFailed,
+      tapInList,
+      peopleInGates,
+    ] = await Promise.all([
+      this.fetchEmployeeCount(),
+      this.fetchGateCount(),
+      this.fetchTotalTransactionToday('success'),
+      this.fetchTotalTransactionToday('denied'),
+      this.fetchLatestHistories(),
+      this.fetchPeopleInGates(),
+    ]);
 
     const responseDto = plainToInstance(
       DashboardDto,
@@ -47,6 +57,7 @@ export class GetDashboardHandler
         tapInSuccess,
         tapInFailed,
         tapInList,
+        peopleInGates,
       },
       {
         excludeExtraneousValues: true,
@@ -93,5 +104,26 @@ export class GetDashboardHandler
         timestamp: 'desc',
       },
     });
+  }
+
+  private fetchPeopleInGates() {
+    return this.gateOccupantRepository
+      .createQueryBuilder('occupant')
+      .select([
+        'occupant.gateId as gateId',
+        'occupant.gateName as gateName',
+        'COUNT(occupant.accountId) as count',
+      ])
+      .groupBy('occupant.gateId')
+      .addGroupBy('occupant.gateName')
+      .orderBy('occupant.gateName', 'ASC')
+      .getRawMany()
+      .then((rawResults) => {
+        return rawResults.map((result) => ({
+          gateId: result.gateId,
+          gateName: result.gateName || 'Unknown Gate',
+          count: parseInt(result.count, 10),
+        }));
+      });
   }
 }

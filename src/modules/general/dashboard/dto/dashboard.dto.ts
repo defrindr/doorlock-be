@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { HistoryDto } from '@src/modules/histories/dto/history.dto';
 import { Expose, Type } from 'class-transformer';
+import { PeopleInGateDto } from './people-in-gates.dto';
 
 export class DashboardDto {
   @ApiProperty({
@@ -42,4 +43,12 @@ export class DashboardDto {
   @Type(() => HistoryDto)
   @Expose()
   tapInList: HistoryDto[];
+
+  @ApiProperty({
+    description: 'List of people count per gate',
+    type: [PeopleInGateDto],
+  })
+  @Type(() => PeopleInGateDto)
+  @Expose()
+  peopleInGates: PeopleInGateDto[];
 }

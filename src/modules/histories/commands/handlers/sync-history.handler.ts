@@ -15,6 +15,7 @@ import { Gate } from '@src/modules/master/gates/entities/gate.entity';
 import { BadRequestHttpException } from '@src/shared/core/exceptions/exception';
 import { DateHelper } from '@src/shared/utils/date-helper';
 import { History } from '../../entities/history.entity';
+import { GateOccupant } from '../../entities/gate-occupant.entity';
 import { SyncHistoryCommand } from '../imp/sync-history.command';
 
 @CommandHandler(SyncHistoryCommand)
@@ -25,6 +26,8 @@ export class SyncHistoryHandler
   constructor(
     @InjectRepository(History)
     private readonly historyRepository: Repository<History>,
+    @InjectRepository(GateOccupant)
+    private readonly gateOccupantRepository: Repository<GateOccupant>,
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
     @InjectRepository(Gate)
@@ -143,6 +146,51 @@ export class SyncHistoryHandler
     // save dtos
     await this.historyRepository.save(dtos);
 
+    // Manage gate occupants for successful taps
+    const successfulHistories = dtos.filter((dto) => dto.status === 'success');
+    if (successfulHistories.length > 0) {
+      await this.manageGateOccupants(successfulHistories);
+    }
+
     return CreatedResponse(null, 'History created successfully');
+  }
+
+  private async manageGateOccupants(histories: History[]): Promise<void> {
+    // Get unique account IDs from successful histories in this sync
+    const accountIds = [...new Set(histories.map((h) => h.accountId))];
+
+    for (const accountId of accountIds) {
+      // Find the most recent successful history for this account across all time
+      const latestHistory = await this.historyRepository.findOne({
+        where: {
+          accountId,
+          status: 'success',
+        },
+        order: {
+          timestamp: 'DESC',
+        },
+      });
+
+      if (!latestHistory) continue;
+
+      // Delete existing occupant for this account (if any)
+      await this.gateOccupantRepository.delete({
+        accountId,
+      });
+
+      // Insert new occupant record based on the latest history
+      const occupant = this.gateOccupantRepository.create({
+        accountId: latestHistory.accountId,
+        accountIdentifier: latestHistory.accountIdentifier,
+        accountName: latestHistory.accountName,
+        gateId: latestHistory.gateId,
+        gateIdentifier: latestHistory.gateIdentifier,
+        gateName: latestHistory.gateName,
+        cardUid: latestHistory.cardUid,
+        companyName: latestHistory.companyName,
+      });
+
+      await this.gateOccupantRepository.save(occupant);
+    }
   }
 }

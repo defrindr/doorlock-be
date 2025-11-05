@@ -11,6 +11,7 @@ import { DeleteGuestCommand } from '../imp/delete-guest.command';
 import { AccountGuest } from '@src/modules/identities/entities/account-guest.entity';
 import { Account } from '@src/modules/identities/entities/account.entity';
 import { GuestImageService } from '../../services/guest-image.service';
+import { GateOccupant } from '@src/modules/histories/entities/gate-occupant.entity';
 
 @CommandHandler(DeleteGuestCommand)
 export class DeleteGuestHandler
@@ -22,6 +23,8 @@ export class DeleteGuestHandler
     private readonly guestRepository: Repository<AccountGuest>,
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
+    @InjectRepository(GateOccupant)
+    private readonly gateOccupantRepository: Repository<GateOccupant>,
     private readonly guestImageService: GuestImageService,
   ) {
     super();
@@ -42,6 +45,11 @@ export class DeleteGuestHandler
     // Clean up guest photo if exists
     if (guest.account && guest.account.photo) {
       // await this.guestImageService.cleanupGuestPhoto(guest.account);
+    }
+
+    // Clean up gate occupants for this guest
+    if (guest.accountId) {
+      await this.gateOccupantRepository.delete({ accountId: guest.accountId });
     }
 
     // Soft delete guest and account
