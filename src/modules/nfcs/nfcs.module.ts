@@ -6,12 +6,14 @@ import { NfcsController } from './nfcs.controller';
 import { GetNfcHandler } from './queries/handlers/get-nfc.handler';
 import { PrepareDataService } from './services/prepare-data.service';
 import { UnassignNfcHandler } from './commands/handlers/unassign-nfc.handler';
+import { GateOccupant } from '../histories/entities/gate-occupant.entity';
+import { Account } from '../identities/entities/account.entity';
 
 const commandHandlers = [UnassignNfcHandler];
 const queryHandlers = [GetNfcHandler];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Nfc]), CqrsModule],
+  imports: [TypeOrmModule.forFeature([Nfc, GateOccupant, Account]), CqrsModule],
   controllers: [NfcsController],
   providers: [...commandHandlers, ...queryHandlers, PrepareDataService],
 })

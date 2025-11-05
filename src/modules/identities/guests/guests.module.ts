@@ -12,6 +12,7 @@ import { GetGuestHandler } from './queries/handlers/get-guest.handler';
 import { GetGuestsByCompanyHandler } from './queries/handlers/get-guests-by-company.handler';
 import { GetGuestsHandler } from './queries/handlers/get-guests.handler';
 import { GuestImageService } from './services/guest-image.service';
+import { GateOccupant } from '@src/modules/histories/entities/gate-occupant.entity';
 
 const commandHandlers = [
   CreateGuestHandler,
@@ -27,7 +28,7 @@ const queryHandlers = [
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Account, AccountGuest, Company]),
+    TypeOrmModule.forFeature([Account, AccountGuest, Company, GateOccupant]),
     CqrsModule,
   ],
   controllers: [GuestsController],

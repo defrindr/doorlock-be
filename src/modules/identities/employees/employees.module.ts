@@ -16,6 +16,7 @@ import { Location } from '@src/modules/master/locations/entities/location.entity
 import { Gate } from '@src/modules/master/gates/entities/gate.entity';
 import { BulkInsertEmployeeHandler } from './commands/handlers/bulk-insert-employee.handler';
 import { ResetEmployeeViolationPointsHandler } from './commands/handlers/reset-employee-violation-points.handler';
+import { GateOccupant } from '@src/modules/histories/entities/gate-occupant.entity';
 
 const commandHandlers = [
   CreateEmployeeHandler,
@@ -35,6 +36,7 @@ const queryHandlers = [GetEmployeesHandler, GetEmployeeHandler];
       Location,
       Gate,
       AccountEmployee,
+      GateOccupant,
     ]),
     CqrsModule,
   ],
