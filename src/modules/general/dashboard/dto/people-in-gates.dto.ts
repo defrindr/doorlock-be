@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+import { OccupantDto } from './occupant.dto';
 
 export class PeopleInGateDto {
   @ApiProperty({
@@ -22,4 +23,12 @@ export class PeopleInGateDto {
   })
   @Expose()
   count: number;
+
+  @ApiProperty({
+    description: 'List Of Person',
+    type: [OccupantDto],
+  })
+  @Type(() => OccupantDto)
+  @Expose()
+  list: OccupantDto[];
 }

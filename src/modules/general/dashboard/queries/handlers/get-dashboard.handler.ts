@@ -14,6 +14,7 @@ import { Gate } from '@src/modules/master/gates/entities/gate.entity';
 import { plainToInstance } from 'class-transformer';
 import { DashboardDto } from '../../dto/dashboard.dto';
 import { GetDashboardQuery } from '../imp/get-dashboard.query';
+import { OccupantDto } from '../../dto/occupant.dto';
 
 @QueryHandler(GetDashboardQuery)
 export class GetDashboardHandler
@@ -112,24 +113,60 @@ export class GetDashboardHandler
     });
   }
 
-  private fetchPeopleInGates() {
-    return this.gateOccupantRepository
-      .createQueryBuilder('occupant')
-      .select([
-        'occupant.gateId as gateId',
-        'occupant.gateName as gateName',
-        'COUNT(occupant.accountId) as count',
-      ])
-      .groupBy('occupant.gateId')
-      .addGroupBy('occupant.gateName')
-      .orderBy('occupant.gateName', 'ASC')
-      .getRawMany()
-      .then((rawResults) => {
-        return rawResults.map((result) => ({
-          gateId: result.gateId,
-          gateName: result.gateName || 'Unknown Gate',
-          count: parseInt(result.count, 10),
-        }));
-      });
+  private async fetchPeopleInGates() {
+    const [personInsideGatesCount, personInsideGates, gates] =
+      await Promise.all([
+        this.gateOccupantRepository
+          .createQueryBuilder('occupant')
+          .select([
+            'occupant.gateId as gateId',
+            'occupant.gateName as gateName',
+            'COUNT(occupant.accountId) as count',
+          ])
+          .groupBy('occupant.gateId')
+          .addGroupBy('occupant.gateName')
+          .orderBy('occupant.gateName', 'ASC')
+          .getRawMany()
+          .then((rawResults) => {
+            return rawResults.reduce((acc, result) => {
+              acc[result.gateId] = {
+                count: parseInt(result.count, 10),
+              };
+              return acc;
+            }, {});
+          }),
+        this.gateOccupantRepository
+          .createQueryBuilder('occupant')
+          .orderBy('occupant.gateName', 'ASC')
+          .getMany()
+          .then((rawResults): { [key: string]: OccupantDto[] } => {
+            return rawResults.reduce((acc: any, result) => {
+              if (!acc?.[result.gateId]) acc[result.gateId] = [];
+              acc[result.gateId].push({
+                name: result.accountName,
+                identifier: result.accountIdentifier,
+                companyName: result.companyName,
+              });
+              return acc;
+            }, {});
+          }),
+        this.gateRepository.find({
+          where: {
+            status: 1,
+          },
+          order: {
+            gateIdentifier: 'ASC',
+          },
+        }),
+      ]);
+
+    const allGates = gates.map((result) => ({
+      gateId: result.id,
+      gateName: result.name || 'Unknown Gate',
+      count: personInsideGatesCount[result.id]?.count ?? 0,
+      list: personInsideGates?.[result.id] ?? [],
+    }));
+
+    return allGates;
   }
 }
