@@ -12,12 +12,12 @@ import { AccountEmployee } from '@src/modules/identities/entities/account-employ
 import { AccountType } from '@src/modules/identities/entities/account-type.enum';
 import { Account } from '@src/modules/identities/entities/account.entity';
 import { EmployeeGate } from '@src/modules/identities/entities/employee-gates.entity';
+import { Company } from '@src/modules/master/companies/entities/company.entity';
+import { Gate } from '@src/modules/master/gates/entities/gate.entity';
+import { Location } from '@src/modules/master/locations/entities/location.entity';
 import { EmployeeDto } from '../../dto/employee.dto';
 import { EmployeeImageService } from '../../services/employee-image.service';
 import { BulkInsertEmployeeCommand } from '../imp/bulk-insert-employee.command';
-import { Gate } from '@src/modules/master/gates/entities/gate.entity';
-import { Company } from '@src/modules/master/companies/entities/company.entity';
-import { Location } from '@src/modules/master/locations/entities/location.entity';
 
 interface ExcelEmployeeData {
   EmployeeNumber: string;
@@ -146,6 +146,13 @@ export class BulkInsertEmployeeHandler
       throw new Error('EmployeeNumber and FullName are required');
     }
 
+    let fixViolationPoint = 5;
+    if (!isNaN(violationPoint)) {
+      if (Number(violationPoint) >= 0 && Number(violationPoint) <= 5) {
+        fixViolationPoint = Number(violationPoint);
+      }
+    }
+
     return {
       EmployeeNumber: String(employeeNumber).trim(),
       FullName: String(fullName).trim(),
@@ -155,7 +162,7 @@ export class BulkInsertEmployeeHandler
       Phone: phone ? String(phone).trim() : undefined,
       HireDate: hireDate ? String(hireDate).trim() : undefined,
       EndDate: endDate ? String(endDate).trim() : undefined,
-      ViolationPoint: violationPoint ? Number(violationPoint) : 0,
+      ViolationPoint: fixViolationPoint,
       LocationID: locationID ? String(locationID).trim() : undefined,
       CompanyID: companyID ? String(companyID).trim() : undefined,
       Sertifikasi: sertifikasi ? String(sertifikasi).trim() : undefined,
@@ -250,7 +257,7 @@ export class BulkInsertEmployeeHandler
         phone: data.Phone,
         hireDate: hireDate,
         endDate: endDate,
-        violationPoints: data.ViolationPoint || 0,
+        violationPoints: data.ViolationPoint || 5,
         locationId: location.id,
         companyId: company.id,
         certification: JSON.stringify(certifications),

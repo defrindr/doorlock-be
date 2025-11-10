@@ -9,7 +9,9 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  Max,
   MaxLength,
+  Min,
 } from 'class-validator';
 
 export class CreateEmployeeDto {
@@ -85,10 +87,12 @@ export class CreateEmployeeDto {
   endDate?: Date;
 
   @ApiPropertyOptional({
-    description: 'Violation points (default: 10)',
-    example: 10,
+    description: 'Violation points (default: 5)',
+    example: 5,
   })
   @IsNumber()
+  @Max(5)
+  @Min(0)
   violationPoints?: number;
 
   @ApiPropertyOptional({

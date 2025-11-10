@@ -37,7 +37,7 @@ export class ResetEmployeeViolationPointsHandler
       throw new NotFoundHttpException('Employee not found');
     }
 
-    // Reset violation points to 0
+    // Reset violation points to 5
     await this.employeeRepository.update(employeeId, {
       violationPoints: 5,
     });

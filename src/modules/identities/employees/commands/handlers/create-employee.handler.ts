@@ -68,7 +68,7 @@ export class CreateEmployeeHandler
       const employee = manager.create(AccountEmployee, {
         ...employeDataFinal,
         accountId: savedAccount.id,
-        violationPoints: createEmployeeDto.violationPoints ?? 0,
+        violationPoints: createEmployeeDto.violationPoints ?? 5,
         certification: JSON.stringify(createEmployeeDto?.certification || []),
       });
 
