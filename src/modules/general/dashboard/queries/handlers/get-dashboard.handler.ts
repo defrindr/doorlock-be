@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { BaseHandler } from '@src/shared/core/handlers/base.handler';
 import { OkResponse } from '@src/shared/core/handlers/response.handler';
@@ -13,8 +13,8 @@ import { AccountType } from '@src/modules/identities/entities/account-type.enum'
 import { Gate } from '@src/modules/master/gates/entities/gate.entity';
 import { plainToInstance } from 'class-transformer';
 import { DashboardDto } from '../../dto/dashboard.dto';
-import { GetDashboardQuery } from '../imp/get-dashboard.query';
 import { OccupantDto } from '../../dto/occupant.dto';
+import { GetDashboardQuery } from '../imp/get-dashboard.query';
 
 @QueryHandler(GetDashboardQuery)
 export class GetDashboardHandler
@@ -91,17 +91,19 @@ export class GetDashboardHandler
     const endOfToday = new Date();
     endOfToday.setHours(23, 59, 59, 999);
 
-    const count = await this.historyRepository.count({
-      where: {
-        timestamp: Between(startOfToday, endOfToday),
-        status: 'success',
-        account: {
-          accountType: type,
-        },
-      },
-    });
+    const result = await this.historyRepository
+      .createQueryBuilder('histories')
+      .select('COUNT(DISTINCT histories.accountId)', 'count')
+      .innerJoin('histories.account', 'account')
+      .where('histories.timestamp BETWEEN :start AND :end', {
+        start: startOfToday,
+        end: endOfToday,
+      })
+      .andWhere('histories.status = :status', { status: 'success' })
+      .andWhere('account.accountType = :type', { type })
+      .getRawOne();
 
-    return count;
+    return parseInt(result.count, 10) || 0;
   }
 
   private fetchLatestHistories() {

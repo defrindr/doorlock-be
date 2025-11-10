@@ -6,11 +6,13 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   OneToOne,
+  OneToMany,
 } from 'typeorm';
 import { AccountType } from './account-type.enum';
 import { AccountEmployee } from './account-employee.entity';
 import { AccountIntern } from './account-intern.entity';
 import { AccountGuest } from './account-guest.entity';
+import { History } from '@src/modules/histories/entities/history.entity';
 
 @Entity('accounts')
 export class Account {
@@ -70,4 +72,10 @@ export class Account {
     eager: false,
   })
   guest?: AccountGuest;
+
+  @OneToMany(() => History, (history) => history.account, {
+    cascade: true,
+    eager: false,
+  })
+  histories?: AccountGuest;
 }
