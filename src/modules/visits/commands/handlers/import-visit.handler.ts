@@ -143,7 +143,7 @@ export class ImportVisitHandler
       const phone = this.getCellValue(row, 3); // Phone
       const idType = this.getCellValue(row, 4); // Type ID Card
       const idNumber = this.getCellValue(row, 5); // ID Card Number
-      if (!name || !email || !phone || !idType || !idNumber) {
+      if (!name || !idType || !idNumber) {
         throw new BadRequestHttpException(
           `Missing participant information in row ${i - 6}`,
         );
@@ -151,8 +151,8 @@ export class ImportVisitHandler
 
       participants.push({
         name: name.toString().trim(),
-        email: email.toString().trim(),
-        phone: phone.toString().trim(),
+        email: email?.toString()?.trim() ?? null,
+        phone: phone?.toString()?.trim() ?? null,
         idType: idType.toString().trim(),
         idNumber: idNumber.toString().trim(),
       });

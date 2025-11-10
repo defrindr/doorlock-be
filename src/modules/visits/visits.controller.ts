@@ -8,10 +8,10 @@ import {
   Post,
   Put,
   Query,
+  Res,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
-  ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiOkResponse,
@@ -21,16 +21,18 @@ import {
 import { ApiCommonErrors } from '@src/shared/core/decorators/api-common-error.decorator';
 import { ApiSingleResponse } from '@src/shared/core/decorators/api-single-response.decorator';
 import { MultipartForm } from '@src/shared/core/decorators/multipart-form.decorator';
+import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 import { PageOptionsDto } from '@src/shared/paginations';
+import { FastifyReply } from 'fastify';
 import { CreateVisitCommand } from './commands/imp/create-visit.command';
 import { DeleteVisitCommand } from './commands/imp/delete-visit.command';
 import { ImportVisitCommand } from './commands/imp/import-visit.command';
 import { SyncParticipantGatesCommand } from './commands/imp/sync-participant-gates.command';
 import { UpdateVisitCommand } from './commands/imp/update-visit.command';
 import { CreateVisitDto } from './dto/create-visit.dto';
-import { ImportVisitDto } from './dto/import-visit.dto';
 import { ImportVisitResultDto } from './dto/import-visit-result.dto';
+import { ImportVisitDto } from './dto/import-visit.dto';
 import { PageVisitDto } from './dto/page-visit.dto';
 import { SyncParticipantGatesDto } from './dto/sync-participant-gates.dto';
 import { UpdateVisitDto } from './dto/update-visit.dto';
@@ -38,15 +40,15 @@ import { VisitActionResponseDto } from './dto/visit-action-response.dto';
 import { VisitDto } from './dto/visit.dto';
 import { GetVisitQuery } from './queries/imp/get-visit.query';
 import { GetVisitsQuery } from './queries/imp/get-visits.query';
-import { PermissionAccess } from '@src/shared/core/decorators/permission-access.decorator';
+import { VisitExcelTemplateService } from './services/visit-excel-template.service';
 
 @Controller('visits')
 @ApiTags('Visits')
-@ApiBearerAuth()
 export class VisitsController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
+    private readonly visitExcelTemplateService: VisitExcelTemplateService,
   ) {}
 
   @Post()
@@ -97,6 +99,7 @@ export class VisitsController {
     type: PageVisitDto,
   })
   @ApiCommonErrors()
+  @PermissionAccess()
   async findAll(
     @Query() pageOptionsDto: PageOptionsDto,
   ): Promise<PageVisitDto> {
@@ -111,6 +114,7 @@ export class VisitsController {
   })
   @ApiSingleResponse(VisitDto, 'Visit retrieved successfully')
   @ApiCommonErrors()
+  @PermissionAccess()
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ApiResponseDto<VisitDto>> {
@@ -161,6 +165,7 @@ export class VisitsController {
     description: 'Participant gates synchronized successfully',
     type: ApiResponseDto,
   })
+  @PermissionAccess()
   @ApiCommonErrors()
   async syncParticipantGates(
     @Param('visitId', ParseUUIDPipe) visitId: string,
@@ -170,5 +175,34 @@ export class VisitsController {
     return this.commandBus.execute(
       new SyncParticipantGatesCommand(visitId, participantId, syncGatesDto),
     );
+  }
+
+  @Get('template/download')
+  @ApiOperation({
+    summary: 'Download guest visit Excel template',
+    description:
+      'Download an Excel template file for guest visit registration with sample data and validation rules.',
+  })
+  @ApiOkResponse({
+    description: 'Excel template file downloaded successfully',
+    content: {
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {},
+    },
+  })
+  @ApiCommonErrors()
+  async downloadTemplate(@Res() res: FastifyReply): Promise<void> {
+    const buffer = await this.visitExcelTemplateService.generateTemplate();
+
+    res.header(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.header(
+      'Content-Disposition',
+      'attachment; filename="guest-visit-template.xlsx"',
+    );
+    res.header('Content-Length', buffer.length.toString());
+
+    res.send(buffer);
   }
 }
