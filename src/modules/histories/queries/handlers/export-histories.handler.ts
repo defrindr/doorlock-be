@@ -116,7 +116,7 @@ export class ExportHistoriesHandler
 
   private generatePDF(histories: History[]): Promise<Buffer> {
     return new Promise((resolve) => {
-      const doc = new PDFKit();
+      const doc = new PDFKit({ layout: 'landscape' });
       const buffers: Buffer[] = [];
 
       doc.on('data', buffers.push.bind(buffers));
@@ -149,6 +149,7 @@ export class ExportHistoriesHandler
 
       // Table headers
       const headers = [
+        'ID',
         'Timestamp',
         'Account',
         'Company',
@@ -158,7 +159,7 @@ export class ExportHistoriesHandler
       ];
 
       let yPosition = doc.y + 20;
-      const columnWidths = [80, 80, 80, 60, 50, 150];
+      const columnWidths = [20, 130, 150, 120, 80, 60, 130];
       let xPosition = 50;
 
       doc.fontSize(10).font('Helvetica-Bold');
@@ -180,8 +181,8 @@ export class ExportHistoriesHandler
       doc.font('Helvetica');
       yPosition += 25;
 
-      histories.forEach((history) => {
-        if (yPosition > 700) {
+      histories.forEach((history, index) => {
+        if (yPosition > 500) {
           // New page if needed
           doc.addPage();
           yPosition = 50;
@@ -189,6 +190,7 @@ export class ExportHistoriesHandler
 
         xPosition = 50;
         const rowData = [
+          index + 1,
           history.timestamp.toLocaleString(),
           history.accountName || history.accountIdentifier,
           history.companyName,
@@ -200,14 +202,14 @@ export class ExportHistoriesHandler
         ];
 
         rowData.forEach((data, colIndex) => {
-          doc.text(data, xPosition, yPosition, {
+          doc.text(data.toString(), xPosition, yPosition, {
             width: columnWidths[colIndex],
             align: 'left',
           });
           xPosition += columnWidths[colIndex];
         });
 
-        yPosition += 20;
+        yPosition += 25;
       });
 
       doc.end();
