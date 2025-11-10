@@ -26,7 +26,7 @@ export class DashboardDto {
     type: Number,
   })
   @Expose()
-  tapInSuccess: number;
+  tapInEmployee: number;
 
   @ApiProperty({
     description: 'Number of failed tap-in events',
@@ -34,7 +34,7 @@ export class DashboardDto {
     type: Number,
   })
   @Expose()
-  tapInFailed: number;
+  tapInGuest: number;
 
   @ApiProperty({
     description: 'List of recent tap-in history records',

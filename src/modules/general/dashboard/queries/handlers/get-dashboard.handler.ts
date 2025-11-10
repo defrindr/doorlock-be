@@ -6,9 +6,10 @@ import { BaseHandler } from '@src/shared/core/handlers/base.handler';
 import { OkResponse } from '@src/shared/core/handlers/response.handler';
 import { ApiResponseDto } from '@src/shared/core/responses/api-response.dto';
 
-import { History } from '@src/modules/histories/entities/history.entity';
 import { GateOccupant } from '@src/modules/histories/entities/gate-occupant.entity';
+import { History } from '@src/modules/histories/entities/history.entity';
 import { AccountEmployee } from '@src/modules/identities/entities/account-employee.entity';
+import { AccountType } from '@src/modules/identities/entities/account-type.enum';
 import { Gate } from '@src/modules/master/gates/entities/gate.entity';
 import { plainToInstance } from 'class-transformer';
 import { DashboardDto } from '../../dto/dashboard.dto';
@@ -36,15 +37,15 @@ export class GetDashboardHandler
     const [
       employeeCount,
       gateCount,
-      tapInSuccess,
-      tapInFailed,
+      tapInEmployee,
+      tapInGuest,
       tapInList,
       peopleInGates,
     ] = await Promise.all([
       this.fetchEmployeeCount(),
       this.fetchGateCount(),
-      this.fetchTotalTransactionToday('success'),
-      this.fetchTotalTransactionToday('denied'),
+      this.fetchTotalTransactionToday(AccountType.EMPLOYEE),
+      this.fetchTotalTransactionToday(AccountType.GUEST),
       this.fetchLatestHistories(),
       this.fetchPeopleInGates(),
     ]);
@@ -54,8 +55,8 @@ export class GetDashboardHandler
       {
         employeeCount,
         gateCount,
-        tapInSuccess,
-        tapInFailed,
+        tapInEmployee,
+        tapInGuest,
         tapInList,
         peopleInGates,
       },
@@ -82,19 +83,24 @@ export class GetDashboardHandler
     });
   }
 
-  private fetchTotalTransactionToday(type: 'success' | 'denied') {
+  private async fetchTotalTransactionToday(type: AccountType) {
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
 
     const endOfToday = new Date();
     endOfToday.setHours(23, 59, 59, 999);
 
-    return this.historyRepository.count({
+    const count = await this.historyRepository.count({
       where: {
         timestamp: Between(startOfToday, endOfToday),
-        status: type,
+        status: 'success',
+        account: {
+          accountType: type,
+        },
       },
     });
+
+    return count;
   }
 
   private fetchLatestHistories() {
