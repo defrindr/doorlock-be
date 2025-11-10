@@ -211,9 +211,9 @@ export class EmployeeExcelTemplateService {
       companyCell.dataValidation = {
         type: 'list',
         formulae: [companyRange],
-        error: 'Pilih perusahaan dari dropdown',
-        errorTitle: 'Perusahaan Tidak Valid',
-        showErrorMessage: true,
+        // error: 'Pilih perusahaan dari dropdown',
+        // errorTitle: 'Perusahaan Tidak Valid',
+        showErrorMessage: false,
       };
     }
 

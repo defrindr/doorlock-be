@@ -233,7 +233,8 @@ export class BulkInsertEmployeeHandler
         status: 1, // Active by default
       });
 
-      const [savedAccount, company, location] = await Promise.all([
+      // eslint-disable-next-line prefer-const
+      let [savedAccount, company, location] = await Promise.all([
         manager.save(Account, account),
         manager.findOne(Company, {
           where: { name: data.CompanyID },
@@ -242,6 +243,15 @@ export class BulkInsertEmployeeHandler
           where: { name: data.LocationID },
         }),
       ]);
+
+      if (!company) {
+        company = await manager.save(
+          Company,
+          manager.create(Company, {
+            name: data.CompanyID,
+          }),
+        );
+      }
 
       if (!company || !location) {
         throw new Error('Company / Location doesnt exist in our database');
