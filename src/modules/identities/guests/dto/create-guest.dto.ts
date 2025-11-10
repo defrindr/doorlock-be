@@ -7,6 +7,7 @@ import {
   IsString,
   IsUUID,
   MaxLength,
+  ValidateIf,
 } from 'class-validator';
 import { IdentificationType } from '../../entities/account-type.enum';
 
@@ -29,6 +30,7 @@ export class CreateGuestDto {
     description: 'Guest email for contact information',
     example: 'guest@ckb.co.id',
   })
+  @ValidateIf((o) => o.email !== '')
   @IsEmail()
   email: string;
 
@@ -36,6 +38,7 @@ export class CreateGuestDto {
     description: 'Guest phone for contact information',
     example: '628577812748',
   })
+  @ValidateIf((o) => o.phone !== '')
   @IsString()
   phone: string;
 
